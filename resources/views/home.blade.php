@@ -15,7 +15,13 @@
     </div>
     <div class="min-h-full">
         <div class="p-2">
-            <div class="mx-auto container">Welcome</div>
+            <div class="mx-auto container">
+                <div>Welcome {{ auth()->user()->name }}</div>
+                <form method="post" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="border rounded-lg py-1 px-2">Logout</button>
+                </form>
+            </div>
         </div>
     </div>
     <footer class="sticky top-[100vh]">
