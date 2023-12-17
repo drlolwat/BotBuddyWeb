@@ -44,4 +44,29 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function account_groups()
+    {
+        return $this->hasMany(AccountGroup::class);
+    }
+
+    public function proxy_groups()
+    {
+        return $this->hasMany(ProxyGroup::class);
+    }
+
+    public function scripts()
+    {
+        return $this->hasMany(UserScript::class);
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
+    public function proxies()
+    {
+        return $this->hasMany(Proxy::class);
+    }
 }
