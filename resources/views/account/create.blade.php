@@ -1,0 +1,39 @@
+<x-layout>
+    <div class="mb-2 text-xl font-bold">Create Account</div>
+
+    @if($errors->isNotEmpty())
+        <div>{{ $errors }}</div>
+    @endif
+    @if (session('status'))
+        <div>{{ session('status') }}</div>
+    @endif
+
+    <form method="post" action="{{ route('account.store') }}">
+        @csrf
+        <div>Email</div>
+        <input type="text" name="email" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" />
+        <div>Password</div>
+        <input type="text" name="password" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" />
+        <div>Group</div>
+        <select name="account_group_id" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">
+            <option value="0">None</option>
+            @foreach(auth()->user()->account_groups as $group)
+                <option value="{{ $group->id }}">{{ $group->name }}</option>
+            @endforeach
+        </select>
+        <div>Proxy</div>
+        <select name="proxy_id" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">
+            <option value="0">None</option>
+            @foreach(auth()->user()->proxies as $proxy)
+                <option value="{{ $proxy->id }}">{{ $proxy->host }}</option>
+            @endforeach
+        </select>
+        <div>Script</div>
+        <select name="script_id" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">
+            @foreach(auth()->user()->scripts as $script)
+                <option value="{{ $script->id }}">{{ $script->name }}</option>
+            @endforeach
+        </select>
+        <button type="submit" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">Create</button>
+    </form>
+</x-layout>

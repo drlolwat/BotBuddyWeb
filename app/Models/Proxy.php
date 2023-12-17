@@ -9,7 +9,7 @@ class Proxy extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['ip', 'port', 'password', 'user_id', 'proxy_group_id'];
+    protected $fillable = ['host', 'port', 'password', 'user_id', 'proxy_group_id'];
 
     public function user()
     {
