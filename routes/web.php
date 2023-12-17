@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,12 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
-
-Route::get('home', function () {
-    return view('home');
-});
-
-Route::get('account', [\App\Http\Controllers\AccountController::class, 'index'])->name('account');
+Route::get('/', [IndexController::class, 'index'])->name('index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/account', [AccountController::class, 'index'])->name('account');
