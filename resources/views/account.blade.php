@@ -1,4 +1,6 @@
 <x-layout>
+    <div class="mb-2 text-xl font-bold">Account</div>
+
     @if($errors->isNotEmpty())
         <div>{{ $errors }}</div>
     @endif

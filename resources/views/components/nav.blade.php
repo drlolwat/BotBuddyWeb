@@ -1,5 +1,5 @@
-<nav>
-    <ul>
+<nav class="bg-black text-white md:bg-white md:text-black hidden md:block">
+    <ul class="mx-auto container p-2 pt-0 md:pt-2">
         <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
         <li><a href="{{ route('account') }}">Account</a></li>
         <li>

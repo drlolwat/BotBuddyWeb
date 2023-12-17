@@ -5,6 +5,7 @@
     @if (session('status'))
         <div>{{ session('status') }}</div>
     @endif
+    <div class="mb-2">Please confirm your password to proceed.</div>
     <form method="post" class="grid gap-2">
         @csrf
         <label class="block">
