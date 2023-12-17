@@ -3,50 +3,66 @@
 
     <hr />
 
-    <div class="grid grid-cols-[auto,1fr] gap-2">
+    <div class="grid grid-cols-[1fr,auto] gap-2 py-2">
         <div class="py-2 font-bold">Proxy Groups</div>
-        <div class="py-2"><a href="{{ route('proxy.group.create') }}" class="btn btn-primary">Create Proxy Group</a></div>
+        <div class="py-2"><a href="{{ route('account.group.create') }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Create</a></div>
     </div>
-    <table class="table-auto">
-        <thead>
-        <tr>
-            <th>Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach(auth()->user()->proxy_groups as $group)
+
+    <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-white bg-gray-500">
             <tr>
-                <td>{{ $group->name }}</td>
+                <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3"></th>
             </tr>
-        @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach(auth()->user()->proxy_groups as $group)
+                <tr class="bg-white border hover:bg-gray-50">
+                    <td class="px-6 py-4">{{ $group->name }}</td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{{ route('proxy.group.show', $group->id) }}" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
 
-    <hr />
-
-    <div class="grid grid-cols-[auto,1fr] gap-2">
+    <div class="grid grid-cols-[1fr,auto] gap-2 py-2">
         <div class="py-2 font-bold">Proxies</div>
-        <div class="py-2"><a href="{{ route('proxy.create') }}" class="btn btn-primary">Add Proxy</a></div>
+        <div class="py-2"><a href="{{ route('proxy.create') }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Add</a></div>
     </div>
-    <table class="table-auto">
-        <thead>
-        <tr>
-            <th>Host</th>
-            <th>Port</th>
-            <th>Password</th>
-            <th>Group</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach(auth()->user()->proxies as $proxy)
+
+    <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-white bg-gray-500">
             <tr>
-                <td>{{ $proxy->host }}</td>
-                <td>{{ $proxy->port }}</td>
-                <td>{{ $proxy->password }}</td>
-                <td>{{ $proxy->proxy_group?->name }}</td>
+                <th class="px-6 py-3">Host</th>
+                <th class="px-6 py-3">Port</th>
+                <th class="px-6 py-3">Password</th>
+                <th class="px-6 py-3">Group</th>
+                <th class="px-6 py-3"></th>
             </tr>
-        @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach(auth()->user()->proxies as $proxy)
+                <tr class="bg-white border hover:bg-gray-50">
+                    <td class="px-6 py-4">{{ $proxy->host }}</td>
+                    <td class="px-6 py-4">{{ $proxy->port }}</td>
+                    <td class="px-6 py-4">{{ $proxy->password }}</td>
+                    <td class="px-6 py-4">
+                        @if($proxy->proxy_group)
+                            <a href="{{ route('proxy.group.show', $proxy->proxy_group_id) }}" class="text-blue-600 hover:text-blue-500">{{ $proxy->proxy_group->name }}</a>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{{ route('proxy.show', $proxy->id) }}" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
 
 </x-layout>
