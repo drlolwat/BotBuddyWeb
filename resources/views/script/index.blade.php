@@ -1,7 +1,11 @@
 <x-layout>
     <div class="mb-2 text-xl font-bold">Script Management</div>
-
-    <hr />
+    @if($errors->isNotEmpty())
+        <div>{{ $errors }}</div>
+    @endif
+    @if (session('status'))
+        <div>{{ session('status') }}</div>
+    @endif
 
     <div class="grid grid-cols-[1fr,auto] gap-2 py-2">
         <div class="py-2 font-bold">Scripts</div>

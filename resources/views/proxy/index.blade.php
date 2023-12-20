@@ -1,11 +1,15 @@
 <x-layout>
     <div class="mb-2 text-xl font-bold">Proxy Management</div>
-
-    <hr />
+    @if($errors->isNotEmpty())
+        <div>{{ $errors }}</div>
+    @endif
+    @if (session('status'))
+        <div>{{ session('status') }}</div>
+    @endif
 
     <div class="grid grid-cols-[1fr,auto] gap-2 py-2">
         <div class="py-2 font-bold">Proxy Groups</div>
-        <div class="py-2"><a href="{{ route('account.group.create') }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Create</a></div>
+        <div class="py-2"><a href="{{ route('proxy.group.create') }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Create</a></div>
     </div>
 
     <div class="relative overflow-x-auto">

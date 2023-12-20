@@ -52,7 +52,7 @@ class AccountGroupController extends Controller
 
     public function destroy(AccountGroup $group)
     {
-        $groupInUse = Account::where('group_id', $group->id)->count();
+        $groupInUse = Account::where('account_group_id', $group->id)->count();
 
         if ($groupInUse > 0) {
             return redirect(route('account.group.show', $group))->withErrors(['Cannot delete account group as it is in use']);

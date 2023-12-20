@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Proxy;
 use App\Models\ProxyGroup;
 use Illuminate\Http\Request;
 
@@ -51,7 +52,7 @@ class ProxyGroupController extends Controller
 
     public function destroy(ProxyGroup $group)
     {
-        $groupInUse = Proxy::where('group_id', $group->id)->count();
+        $groupInUse = Proxy::where('proxy_group_id', $group->id)->count();
 
         if ($groupInUse > 0) {
             return redirect(route('proxy.group.show', $group))->withErrors(['Cannot delete proxy group as it is in use']);
@@ -59,6 +60,6 @@ class ProxyGroupController extends Controller
 
         $group->delete();
 
-        return redirect(route('proxy.group.index'))->with('status', 'Proxy group deleted');
+        return redirect(route('proxy'))->with('status', 'Proxy group deleted');
     }
 }
