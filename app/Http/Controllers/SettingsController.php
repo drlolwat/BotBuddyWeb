@@ -15,4 +15,31 @@ class SettingsController extends Controller
     {
         return view('settings');
     }
+
+    public function update(Request $request)
+    {
+        $validated = $this->validate($request, [
+            'dreambot_username' => '',
+            'dreambot_password' => '',
+            'dreambot_client' => '',
+        ]);
+
+        $user = auth()->user();
+
+        if ($validated['dreambot_username'] != $user->dreambot_username) {
+            $user->dreambot_username = $validated['dreambot_username'];
+        }
+
+        if (strlen($validated['dreambot_password']) > 0 && $validated['dreambot_password'] != $user->dreambot_password) {
+            $user->dreambot_password = $validated['dreambot_password'];
+        }
+
+        if ($validated['dreambot_client'] != $user->dreambot_client) {
+            $user->dreambot_client = $validated['dreambot_client'];
+        }
+
+        $user->save();
+
+        return redirect(route('settings'))->with('status', 'Global settings updated');
+    }
 }

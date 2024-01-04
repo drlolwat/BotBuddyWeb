@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('dreambot_username')->nullable();
+            $table->string('dreambot_password')->nullable();
+            $table->string('dreambot_client')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
