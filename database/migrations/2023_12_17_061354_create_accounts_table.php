@@ -19,6 +19,8 @@ return new class extends Migration
             $table->unsignedInteger('proxy_id')->nullable();
             $table->unsignedInteger('script_id');
             $table->unsignedInteger('account_group_id');
+            $table->string('status')->default('Stopped'); // ['Running', 'Stopped']
+            $table->boolean('is_banned')->default(false);
             $table->timestamps();
         });
     }

@@ -1,10 +1,14 @@
 <x-layout>
     <div class="mb-2 text-xl font-bold">Account Management</div>
     @if($errors->isNotEmpty())
-        <div>{{ $errors }}</div>
+        <div class="bg-red-500 p-2">
+            @foreach($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
     @endif
     @if (session('status'))
-        <div>{{ session('status') }}</div>
+        <div class="bg-green-500 p-2">{{ session('status') }}</div>
     @endif
 
     <div class="grid grid-cols-[1fr,auto] gap-2 py-2">
@@ -47,6 +51,7 @@
                 <th class="px-6 py-3">Group</th>
                 <th class="px-6 py-3">Proxy</th>
                 <th class="px-6 py-3">Script</th>
+                <th class="px-6 py-3">Status</th>
                 <th class="px-6 py-3"></th>
             </tr>
             </thead>
@@ -58,7 +63,19 @@
                     <td class="px-6 py-4">{{ $account->account_group?->name }}</td>
                     <td class="px-6 py-4">@if($account->proxy){{ $account->proxy->host }}:{{ $account->proxy->port }}@endif</td>
                     <td class="px-6 py-4">{{ $account->script->name }}</td>
-                    <td class="px-6 py-4 text-right">
+                    <td class="px-6 py-4">{{ $account->status }}</td>
+                    <td class="px-6 py-4 gap-2 flex">
+                        @if($account->status == 'Stopped')
+                            <form method="post" action="{{ route('account.start', $account->id) }}">
+                                @csrf
+                                <button type="submit" class="font-medium text-blue-600 hover:underline">Start</button>
+                            </form>
+                        @elseif($account->status == 'Running')
+                            <form method="post" action="{{ route('account.stop', $account->id) }}">
+                                @csrf
+                                <button type="submit" class="font-medium text-blue-600 hover:underline">Stop</button>
+                            </form>
+                        @endif
                         <a href="{{ route('account.show', $account->id) }}" class="font-medium text-blue-600 hover:underline">Edit</a>
                     </td>
                 </tr>

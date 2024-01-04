@@ -25,7 +25,7 @@ class AccountController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validate($request, [
-            'email' => 'required|email',
+            'email' => 'required',
             'password' => 'required',
             'account_group_id' => 'nullable',
             'proxy_id' => 'nullable',
@@ -47,7 +47,7 @@ class AccountController extends Controller
     public function update(Request $request, Account $account)
     {
         $validated = $this->validate($request, [
-            'email' => 'required|email',
+            'email' => 'required',
             'password' => 'required',
             'account_group_id' => 'nullable',
             'proxy_id' => 'nullable',
@@ -70,5 +70,45 @@ class AccountController extends Controller
         $account->delete();
 
         return redirect(route('account'))->with('status', 'Account deleted');
+    }
+
+    public function start(Account $account)
+    {
+        $started = app('socket')->send('startBot', [
+            'serverId' => 'dev-1',
+            'internalId' => $account->id,
+            'jarLocation' => 'C:\\Users\\lolwat\\DreamBot\\Bot\\Data\\client.jar', // bb account
+            'scriptName' => $account->script->name,
+            'clientName' => 'chocolatesoda', // dreambot
+            'clientPassword' => 'Kv$w@*DMzj@8Bsh', // dreambot
+            'accountUsername' => $account->email,
+            'accountPassword' => $account->password,
+        ]);
+
+        if (!$started) {
+            return redirect(route('account'))->withErrors(['status' => 'Failed to start account']);
+        }
+
+        $account->status = 'Running';
+        $account->save();
+
+        return redirect(route('account'))->with('status', 'Account started');
+    }
+
+    public function stop(Account $account)
+    {
+        $stopped = app('socket')->send('stopBot', [
+            'serverId' => 'dev-1',
+            'internalId' => $account->id,
+        ]);
+
+        if (!$stopped) {
+            return redirect(route('account'))->withErrors(['status' => 'Failed to stop account']);
+        }
+
+        $account->status = 'Stopped';
+        $account->save();
+
+        return redirect(route('account'))->with('status', 'Account stopped');
     }
 }
