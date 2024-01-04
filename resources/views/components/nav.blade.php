@@ -1,15 +1,64 @@
-<nav class="bg-black text-white md:bg-white md:text-black hidden md:block">
-    <ul class="mx-auto container p-2 pt-0 md:pt-2">
-        <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-        <li><a href="{{ route('account') }}">Account</a></li>
-        <li><a href="{{ route('proxy') }}">Proxy</a></li>
-        <li><a href="{{ route('script') }}">Script</a></li>
-        <li><a href="{{ route('settings') }}">Settings</a></li>
-        <li>
-            <form method="post" action="{{ route('logout') }}">
-                @csrf
-                <button>Logout</button>
-            </form>
-        </li>
-    </ul>
+<nav class="md:w-64 hidden md:block" aria-label="Sidebar">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-100">
+        <ul class="space-y-2 font-medium">
+            <li>
+                <a href="{{ route('dashboard') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-200 group">
+                    <svg class="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                        <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                        <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+                    </svg>
+                    <span class="ms-3">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('account') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-200 group">
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 19">
+                        <path d="M14.5 0A3.987 3.987 0 0 0 11 2.1a4.977 4.977 0 0 1 3.9 5.858A3.989 3.989 0 0 0 14.5 0ZM9 13h2a4 4 0 0 1 4 4v2H5v-2a4 4 0 0 1 4-4Z"/>
+                        <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z"/>
+                    </svg>
+                    <span class="flex-1 ms-3 whitespace-nowrap">Accounts</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('proxy') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-200 group">
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 22 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 10a28.076 28.076 0 0 1-1.091 9M6.231 2.37a8.994 8.994 0 0 1 12.88 3.73M1.958 13S2 12.577 2 10a8.949 8.949 0 0 1 1.735-5.307m12.84 3.088c.281.706.426 1.46.425 2.22a30 30 0 0 1-.464 6.231M5 10a6 6 0 0 1 9.352-4.974M3 19a5.964 5.964 0 0 1 1.01-3.328 5.15 5.15 0 0 0 .786-1.926m8.66 2.486a13.96 13.96 0 0 1-.962 2.683M6.5 17.336C8 15.092 8 12.846 8 10a3 3 0 1 1 6 0c0 .75 0 1.521-.031 2.311M11 10.001c0 3 0 6-2 9"/>
+                    </svg>
+                    <span class="flex-1 ms-3 whitespace-nowrap">Proxies</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('script') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-200 group">
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h12M8 5h5M8 9h5M1 13h12M1 5v4l3-2-3-2Z"/>
+                    </svg>
+
+                    <span class="flex-1 ms-3 whitespace-nowrap">Scripts</span>
+                </a>
+            </li>
+            <li>
+                <form class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-200 group" method="post" action="{{ route('logout') }}">
+                    @csrf
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
+                    </svg>
+                    <button class="ms-3 whitespace-nowrap">Logout</button>
+                </form>
+            </li>
+        </ul>
+        <div id="dropdown-cta" class="p-4 mt-2 rounded-lg bg-blue-200" role="alert">
+{{--            <div class="flex items-center mb-3">--}}
+{{--                <span class="bg-orange-200 text-orange-800 text-sm font-semibold me-2 px-2.5 py-0.5 rounded">Beta</span>--}}
+{{--                <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-blue-200 inline-flex justify-center items-center w-6 h-6 text-blue-900 rounded-lg focus:ring-2 focus:ring-blue-400 p-1 hover:bg-blue-200 h-6 w-6" data-dismiss-target="#dropdown-cta" aria-label="Close">--}}
+{{--                    <span class="sr-only">Close</span>--}}
+{{--                    <svg class="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">--}}
+{{--                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>--}}
+{{--                    </svg>--}}
+{{--                </button>--}}
+{{--            </div>--}}
+            <p class="text-sm text-blue-800">
+                Welcome to the BotBuddy beta! Please report any bugs or issues in the <a href="mailto:{{ config('mail.from.address') }}" class="text-blue-600 hover:underline">Discord server</a>
+            </p>
+        </div>
+    </div>
 </nav>
