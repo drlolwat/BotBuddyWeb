@@ -52,6 +52,7 @@ class AccountController extends Controller
             'account_group_id' => 'nullable',
             'proxy_id' => 'nullable',
             'script_id' => 'required',
+            'agent_id' => 'nullable',
         ]);
 
         $account->update([
@@ -60,6 +61,7 @@ class AccountController extends Controller
             'account_group_id' => $validated['account_group_id'] ?? null,
             'proxy_id' => $validated['proxy_id'],
             'script_id' => $validated['script_id'],
+            'agent_id' => $validated['agent_id'] ?? null,
         ]);
 
         return redirect(route('account.show', $account))->with('status', 'Account updated');

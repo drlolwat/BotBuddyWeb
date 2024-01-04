@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,6 +20,18 @@ class DatabaseSeeder extends Seeder
             'email' => 'demo@botbuddy.net',
             'password' => Hash::make('demo'),
             'email_verified_at' => now(),
+        ]);
+
+        $agent1 = $user->agents()->create([
+            'name' => 'Local machine',
+            'user_id' => $user->id,
+            'uuid' => Str::uuid()->toString(),
+        ]);
+
+        $agent2 = $user->agents()->create([
+            'name' => 'OVH box',
+            'user_id' => $user->id,
+            'uuid' => Str::uuid()->toString(),
         ]);
 
         $proxyGroup1 = $user->proxy_groups()->create([
@@ -81,6 +94,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => $user->id,
             'proxy_id' => $proxy1->id,
             'script_id' => $script3->id,
+            'agent_id' => $agent1->id,
         ]);
 
         $account2 = $accountGroup1->accounts()->create([
@@ -102,6 +116,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => $user->id,
             'proxy_id' => $proxy3->id,
             'script_id' => $script2->id,
+            'agent_id' => $agent2->id,
         ]);
     }
 }

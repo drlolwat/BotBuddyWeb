@@ -72,4 +72,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Proxy::class);
     }
+
+    public function agents()
+    {
+        return $this->hasMany(Agent::class);
+    }
 }

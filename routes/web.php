@@ -41,6 +41,15 @@ Route::group(['prefix' => 'proxy'], function () {
     Route::delete('/{proxy}', [App\Http\Controllers\ProxyController::class, 'destroy'])->name('proxy.destroy');
 });
 
+Route::group(['prefix' => 'agent'], function () {
+    Route::get('/', [App\Http\Controllers\AgentController::class, 'index'])->name('agent');
+    Route::post('/', [App\Http\Controllers\AgentController::class, 'store'])->name('agent.store');
+    Route::get('/create', [App\Http\Controllers\AgentController::class, 'create'])->name('agent.create');
+    Route::get('/{agent}', [App\Http\Controllers\AgentController::class, 'show'])->name('agent.show');
+    Route::put('/{agent}', [App\Http\Controllers\AgentController::class, 'update'])->name('agent.update');
+    Route::delete('/{agent}', [App\Http\Controllers\AgentController::class, 'destroy'])->name('agent.destroy');
+});
+
 Route::group(['prefix' => 'proxy/group'], function () {
     Route::get('/', [App\Http\Controllers\ProxyGroupController::class, 'index'])->name('proxy.group');
     Route::post('/', [App\Http\Controllers\ProxyGroupController::class, 'store'])->name('proxy.group.store');

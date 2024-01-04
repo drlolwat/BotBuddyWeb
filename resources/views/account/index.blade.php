@@ -1,14 +1,14 @@
 <x-layout>
     <div class="mb-2 text-xl font-bold">Account Management</div>
     @if($errors->isNotEmpty())
-        <div class="bg-red-500 p-2">
+        <div class="bg-red-500 p-2 text-white">
             @foreach($errors->all() as $error)
                 <div>{{ $error }}</div>
             @endforeach
         </div>
     @endif
     @if (session('status'))
-        <div class="bg-green-500 p-2">{{ session('status') }}</div>
+        <div class="bg-green-500 p-2 text-white">{{ session('status') }}</div>
     @endif
 
     <div class="grid grid-cols-[1fr,auto] gap-2 py-2">
@@ -49,6 +49,7 @@
                 <th class="px-6 py-3">Email</th>
                 <th class="px-6 py-3">Password</th>
                 <th class="px-6 py-3">Group</th>
+                <th class="px-6 py-3">Agent</th>
                 <th class="px-6 py-3">Proxy</th>
                 <th class="px-6 py-3">Script</th>
                 <th class="px-6 py-3">Status</th>
@@ -61,6 +62,7 @@
                     <td class="px-6 py-4">{{ $account->email }}</td>
                     <td class="px-6 py-4">{{ $account->password }}</td>
                     <td class="px-6 py-4">{{ $account->account_group?->name }}</td>
+                    <td class="px-6 py-4">{{ $account->agent?->name }}</td>
                     <td class="px-6 py-4">@if($account->proxy){{ $account->proxy->host }}:{{ $account->proxy->port }}@endif</td>
                     <td class="px-6 py-4">{{ $account->script->name }}</td>
                     <td class="px-6 py-4">{{ $account->status }}</td>

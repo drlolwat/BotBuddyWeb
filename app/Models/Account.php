@@ -9,7 +9,10 @@ class Account extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['email', 'password', 'user_id', 'proxy_id', 'script_id', 'account_group_id'];
+    protected $fillable = [
+        'email', 'password', 'user_id', 'proxy_id', 'script_id',
+        'account_group_id', 'agent_id', 'status', 'is_banned',
+    ];
 
     public function proxy()
     {
@@ -29,5 +32,10 @@ class Account extends Model
     public function account_group()
     {
         return $this->belongsTo(AccountGroup::class);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
     }
 }
