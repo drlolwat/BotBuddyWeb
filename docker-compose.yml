@@ -6,6 +6,8 @@ services:
             - "8888:8888"
         networks:
             - sail
+        volumes:
+            - './masterserver:/app'
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.2
