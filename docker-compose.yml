@@ -1,4 +1,11 @@
 services:
+    master:
+        build: ./masterserver
+        ports:
+            - "7888:7888"
+            - "8888:8888"
+        networks:
+            - sail
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.2
