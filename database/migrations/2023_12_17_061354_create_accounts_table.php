@@ -22,7 +22,6 @@ return new class extends Migration
             $table->unsignedInteger('agent_id')->nullable();
             $table->string('status')->default('Stopped'); // ['Running', 'Stopped']
             $table->boolean('is_banned')->default(false);
-            $table->string('script_params')->nullable();
             $table->timestamps();
         });
     }

@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('account_groups', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->unsignedInteger('user_id');
-            $table->timestamps();
+        Schema::table('account_groups', function(Blueprint $table) {
+            $table->unsignedInteger('script_id');
+            $table->string('script_params')->nullable();
         });
     }
 
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('account_groups');
+        //
     }
 };
