@@ -9,7 +9,7 @@ class AccountGroup extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'user_id', 'script_params'];
+    protected $fillable = ['name', 'user_id', 'script_id', 'script_params'];
 
     public function user()
     {
@@ -19,5 +19,10 @@ class AccountGroup extends Model
     public function accounts()
     {
         return $this->hasMany(Account::class);
+    }
+
+    public function script()
+    {
+        return $this->belongsTo(UserScript::class);
     }
 }

@@ -64,7 +64,7 @@
                     <td class="px-6 py-4">{{ $account->account_group?->name }}</td>
                     <td class="px-6 py-4">{{ $account->agent?->name }}</td>
                     <td class="px-6 py-4">@if($account->proxy){{ $account->proxy->host }}:{{ $account->proxy->port }}@endif</td>
-                    <td class="px-6 py-4">{{ $account->script->name }}</td>
+                    <td class="px-6 py-4">@if($account->script?->name) {{ $account->script->name }} @else {{ $account->account_group?->script->name }} @endif</td>
                     <td class="px-6 py-4">{{ $account->status }}</td>
                     <td class="px-6 py-4 gap-2 flex">
                         @if($account->status == 'Stopped')

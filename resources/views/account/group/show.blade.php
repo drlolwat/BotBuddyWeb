@@ -13,6 +13,12 @@
         <input type="hidden" name="_method" value="PUT">
         <div>Name</div>
         <input type="text" name="name" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" value="{{ $group->name }}" />
+        <div>Script</div>
+        <select name="script_id" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">
+            @foreach(auth()->user()->scripts as $script)
+                <option value="{{ $script->id }}" @if($group->script_id == $script->id) selected @endif >{{ $script->name }}</option>
+            @endforeach
+        </select>
         <div>Script Parameters</div>
         <input type="text" name="script_params" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" value="{{ $group->script_params }}" />
         <div class="flex gap-2">

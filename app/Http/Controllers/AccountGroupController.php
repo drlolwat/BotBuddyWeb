@@ -27,12 +27,14 @@ class AccountGroupController extends Controller
     {
         $validated = $this->validate($request, [
             'name' => 'required',
+            'script_id' => 'required',
             'script_params' => 'nullable',
         ]);
 
         $group = AccountGroup::create([
             'name' => $validated['name'],
             'user_id' => auth()->id(),
+            'script_id' => $validated['script_id'],
             'script_params' => $validated['script_params'] ?? null,
         ]);
 
@@ -43,11 +45,13 @@ class AccountGroupController extends Controller
     {
         $validated = $this->validate($request, [
             'name' => 'required',
+            'script_id' => 'required',
             'script_params' => 'nullable',
         ]);
 
         $group->update([
             'name' => $validated['name'],
+            'script_id' => $validated['script_id'],
             'script_params' => $validated['script_params'] ?? null,
         ]);
 

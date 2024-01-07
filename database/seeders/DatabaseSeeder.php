@@ -85,6 +85,7 @@ class DatabaseSeeder extends Seeder
 
         $accountGroup1 = $user->account_groups()->create([
             'name' => '99 Cooking',
+            'script_id' => $script3->id,
             'user_id' => $user->id,
         ]);
 
@@ -107,6 +108,7 @@ class DatabaseSeeder extends Seeder
 
         $accountGroup2 = $user->account_groups()->create([
             'name' => 'Freshies',
+            'script_id' => $script2->id,
             'user_id' => $user->id,
         ]);
 
