@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedInteger('user_id');
+            $table->string('script_params')->nullable();
             $table->timestamps();
         });
     }

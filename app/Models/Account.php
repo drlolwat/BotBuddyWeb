@@ -12,6 +12,7 @@ class Account extends Model
     protected $fillable = [
         'email', 'password', 'user_id', 'proxy_id', 'script_id',
         'account_group_id', 'agent_id', 'status', 'is_banned',
+        'script_params',
     ];
 
     public function proxy()

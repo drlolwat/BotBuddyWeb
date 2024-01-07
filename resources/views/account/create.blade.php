@@ -34,6 +34,8 @@
                 <option value="{{ $script->id }}">{{ $script->name }}</option>
             @endforeach
         </select>
+        <div>Script Parameters</div>
+        <input type="text" name="script_params" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" />
         <button type="submit" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Create</button>
     </form>
 </x-layout>

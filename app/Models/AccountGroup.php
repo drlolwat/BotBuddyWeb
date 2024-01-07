@@ -9,7 +9,7 @@ class AccountGroup extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'user_id'];
+    protected $fillable = ['name', 'user_id', 'script_params'];
 
     public function user()
     {

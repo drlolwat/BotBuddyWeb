@@ -27,11 +27,13 @@ class AccountGroupController extends Controller
     {
         $validated = $this->validate($request, [
             'name' => 'required',
+            'script_params' => 'nullable',
         ]);
 
         $group = AccountGroup::create([
             'name' => $validated['name'],
             'user_id' => auth()->id(),
+            'script_params' => $validated['script_params'] ?? null,
         ]);
 
         return redirect(route('account.group.show', $group))->with('status', 'Account group created');
@@ -41,10 +43,12 @@ class AccountGroupController extends Controller
     {
         $validated = $this->validate($request, [
             'name' => 'required',
+            'script_params' => 'nullable',
         ]);
 
         $group->update([
             'name' => $validated['name'],
+            'script_params' => $validated['script_params'] ?? null,
         ]);
 
         return redirect(route('account.group.show', $group))->with('status', 'Account group updated');

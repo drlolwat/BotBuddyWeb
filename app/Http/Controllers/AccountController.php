@@ -30,6 +30,7 @@ class AccountController extends Controller
             'account_group_id' => 'nullable',
             'proxy_id' => 'nullable',
             'script_id' => 'required',
+            'script_params' => 'nullable',
         ]);
 
         $account = Account::create([
@@ -38,6 +39,7 @@ class AccountController extends Controller
             'account_group_id' => $validated['account_group_id'] ?? null,
             'proxy_id' => $validated['proxy_id'],
             'script_id' => $validated['script_id'],
+            'script_params' => $validated['script_params'] ?? null,
             'user_id' => auth()->id(),
         ]);
 
@@ -52,6 +54,7 @@ class AccountController extends Controller
             'account_group_id' => 'nullable',
             'proxy_id' => 'nullable',
             'script_id' => 'required',
+            'script_params' => 'nullable',
             'agent_id' => 'nullable',
         ]);
 
@@ -62,6 +65,7 @@ class AccountController extends Controller
             'proxy_id' => $validated['proxy_id'],
             'script_id' => $validated['script_id'],
             'agent_id' => $validated['agent_id'] ?? null,
+            'script_params' => $validated['script_params'] ?? null,
         ]);
 
         return redirect(route('account.show', $account))->with('status', 'Account updated');
