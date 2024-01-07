@@ -87,12 +87,17 @@ class AccountController extends Controller
                 ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials and client.jar to start an account']);
         }
 
+        $scriptParams = strlen($account->script_params) > 0 ? $account->script_params : $account->account_group->script_params;
+        if (!$scriptParams) {
+            $scriptParams = "";
+        }
+
         $started = app('socket')->send('startBot', [
             'serverId' => $account->agent->uuid,
             'internalId' => $account->id,
             'jarLocation' => $user->dreambot_client,
             'scriptName' => $account->script->script ?? $account->account_group->script->script,
-            'scriptParams' => strlen($account->script_params) > 0 ? $account->script_params : $account->account_group->script_params,
+            'scriptParams' => $scriptParams,
             'clientName' => $user->dreambot_username,
             'clientPassword' => $user->dreambot_password,
             'accountUsername' => $account->email,
