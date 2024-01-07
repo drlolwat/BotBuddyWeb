@@ -76,25 +76,34 @@ class AccountController extends Controller
 
     public function start(Account $account)
     {
+        $user = auth()->user();
+
+        if (!$user->dreambot_username || !$user->dreambot_password || !$user->dreambot_client) {
+            return redirect(route('settings'))
+                ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials and client.jar to start an account']);
+        }
+
         $started = app('socket')->send('startBot', [
-            'serverId' => 'dev-1',
+            'serverId' => $account->agent->uuid,
             'internalId' => $account->id,
-            'jarLocation' => 'C:\\Users\\lolwat\\DreamBot\\Bot\\Data\\client.jar', // bb account
-            'scriptName' => $account->script->name,
-            'clientName' => 'chocolatesoda', // dreambot
-            'clientPassword' => 'Kv$w@*DMzj@8Bsh', // dreambot
+            'jarLocation' => $user->dreambot_client,
+            'scriptName' => $account->script->script,
+            'clientName' => $user->dreambot_username,
+            'clientPassword' => $user->dreambot_password,
             'accountUsername' => $account->email,
             'accountPassword' => $account->password,
         ]);
 
-        if (!$started) {
-            return redirect(route('account'))->withErrors(['status' => 'Failed to start account']);
-        }
+        // todo: receive response from master server determining if bot is being started or not
 
-        $account->status = 'Running';
-        $account->save();
+        //if (!$started) {
+        //    return redirect(route('account'))->withErrors(['status' => 'Failed to start account']);
+        //}
 
-        return redirect(route('account'))->with('status', 'Account started');
+        //$account->status = 'Running';
+        //$account->save();
+
+        return redirect(route('account'))->with('status', 'Account is being started');
     }
 
     public function stop(Account $account)
