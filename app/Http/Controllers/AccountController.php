@@ -99,7 +99,7 @@ class AccountController extends Controller
             'accountPassword' => $account->password,
         ]);
 
-        if (!$started) {
+        if ($started != "true") {
             return redirect(route('account'))->withErrors(['status' => 'Failed to start account']);
         }
 
