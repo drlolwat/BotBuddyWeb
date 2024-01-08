@@ -39,4 +39,9 @@ class Account extends Model
     {
         return $this->belongsTo(Agent::class);
     }
+
+    public function stats()
+    {
+        return $this->hasOne(AccountStat::class);
+    }
 }

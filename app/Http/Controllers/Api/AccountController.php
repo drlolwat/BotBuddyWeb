@@ -21,4 +21,34 @@ class AccountController extends Controller
 
         return ['success' => (bool) $account->save()];
     }
+
+    public function wrapper(Request $request)
+    {
+        $validated = $this->validate($request, [
+            '*.BB_GP' => 'filled|int',
+            '*.BB_TTL' => 'filled|int',
+            '*.BB_QP' => 'filled|int',
+            '*.BB_DISPLAYNAME' => 'filled|string',
+            '*.BB_STATS' => 'filled|array',
+            '*.BB_STATS.*' => 'required|int',
+        ]);
+
+        $updated = [];
+
+        foreach ($validated as $id => $stats) {
+            $account = Account::findOrFail($id);
+            if (!$account->stats) {
+                $account->stats()->create();
+                $account->unsetRelation('stats');
+            }
+            $account->stats->gp = $stats['BB_GP'];
+            $account->stats->ttl = $stats['BB_TTL'];
+            $account->stats->qp = $stats['BB_QP'];
+            // todo: normalize skills into separate table?
+            $account->stats->skills = collect($stats['BB_STATS'])->toJson();
+            $updated[$id] = (bool) $account->stats->save();
+        }
+
+        return $updated;
+    }
 }
