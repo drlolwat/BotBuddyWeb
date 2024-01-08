@@ -99,14 +99,12 @@ class AccountController extends Controller
             'accountPassword' => $account->password,
         ]);
 
-        // todo: receive response from master server determining if bot is being started or not
+        if (!$started) {
+            return redirect(route('account'))->withErrors(['status' => 'Failed to start account']);
+        }
 
-        //if (!$started) {
-        //    return redirect(route('account'))->withErrors(['status' => 'Failed to start account']);
-        //}
-
-        //$account->status = 'Running';
-        //$account->save();
+        $account->status = 'Starting';
+        $account->save();
 
         return redirect(route('account'))->with('status', 'Account is being started');
     }

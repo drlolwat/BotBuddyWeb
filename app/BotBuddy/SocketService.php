@@ -29,8 +29,13 @@ class SocketService
             return false;
         }
 
-        $response = socket_read($socket, 2048);
-        if (!$response) {
+        $response = "";
+
+        while ($out = socket_read($socket, 2048)) {
+            $response .= $out;
+        }
+
+        if ($response == "") {
             return false;
         }
 
