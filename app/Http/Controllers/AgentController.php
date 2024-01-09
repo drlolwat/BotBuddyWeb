@@ -11,6 +11,11 @@ use Illuminate\Support\Str;
 
 class AgentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified']);
+    }
+
     public function index()
     {
         return view('agent.index');

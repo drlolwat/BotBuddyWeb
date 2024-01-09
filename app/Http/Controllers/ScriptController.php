@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class ScriptController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified']);
+    }
+
     public function index()
     {
         return view('script.index');

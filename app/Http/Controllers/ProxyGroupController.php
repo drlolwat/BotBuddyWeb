@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class ProxyGroupController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified']);
+    }
+
     public function index()
     {
         return view('proxy.group.index');

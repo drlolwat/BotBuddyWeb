@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class AccountGroupController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified']);
+    }
+
     public function index()
     {
         return view('account.group.index');
