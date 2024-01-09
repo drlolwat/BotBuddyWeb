@@ -87,6 +87,10 @@ class AccountController extends Controller
 
     public function start(Account $account)
     {
+        if(!$account->agent) {
+            return back()->withErrors('Account is not assigned to an agent');
+        }
+
         $user = auth()->user();
 
         if (!$user->dreambot_username || !$user->dreambot_password || !$user->dreambot_client) {
@@ -107,17 +111,21 @@ class AccountController extends Controller
         ]);
 
         if ($started != "true") {
-            return redirect(route('account'))->withErrors(['status' => 'Failed to start account']);
+            return back()->withErrors(['status' => 'Failed to start account']);
         }
 
         $account->status = 'Starting';
         $account->save();
 
-        return redirect(route('account'))->with('status', 'Account is being started');
+        return back()->with('status', 'Account is being started');
     }
 
     public function stop(Account $account)
     {
+        if(!$account->agent) {
+            return back()->withErrors('Account is not assigned to an agent');
+        }
+
         $stopped = app('socket')->send('stopBot', [
             'serverId' => $account->agent->uuid,
             'internalId' => $account->id,
