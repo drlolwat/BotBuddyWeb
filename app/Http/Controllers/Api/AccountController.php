@@ -41,11 +41,19 @@ class AccountController extends Controller
                 $account->stats()->create();
                 $account->unsetRelation('stats');
             }
-            $account->stats->gp = $stats['BB_GP'];
-            $account->stats->ttl = $stats['BB_TTL'];
-            $account->stats->qp = $stats['BB_QP'];
+            if ($stats['BB_GP']) {
+                $account->stats->gp = $stats['BB_GP'];
+            }
+            if ($stats['BB_TTL']) {
+                $account->stats->ttl = $stats['BB_TTL'];
+            }
+            if ($stats['BB_QP']) {
+                $account->stats->qp = $stats['BB_QP'];
+            }
             // todo: normalize skills into separate table?
-            $account->stats->skills = collect($stats['BB_STATS'])->toJson();
+            if ($stats['BB_STATS']) {
+                $account->stats->skills = collect($stats['BB_STATS'])->toJson();
+            }
             $updated[$id] = (bool) $account->stats->save();
         }
 
