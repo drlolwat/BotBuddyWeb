@@ -21,11 +21,18 @@
                 <option value="{{ $group->id }}">{{ $group->name }}</option>
             @endforeach
         </select>
+        <div>Agent</div>
+        <select name="agent_id" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">
+            <option value="0">None</option>
+            @foreach(auth()->user()->agents as $agent)
+                <option value="{{ $agent->id }}">{{ $agent->name }}</option>
+            @endforeach
+        </select>
         <div>Proxy</div>
         <select name="proxy_id" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">
             <option value="0">None</option>
             @foreach(auth()->user()->proxies as $proxy)
-                <option value="{{ $proxy->id }}">{{ $proxy->host }}</option>
+                <option value="{{ $proxy->id }}">{{ $proxy->host }}:{{ $proxy->port }}</option>
             @endforeach
         </select>
         <div>Script</div>

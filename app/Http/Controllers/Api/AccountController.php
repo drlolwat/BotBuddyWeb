@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller

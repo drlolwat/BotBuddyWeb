@@ -31,6 +31,7 @@ class AccountController extends Controller
             'proxy_id' => 'nullable',
             'script_id' => 'required',
             'script_params' => 'nullable',
+            'agent_id' => 'nullable',
         ]);
 
         $account = Account::create([
@@ -40,6 +41,7 @@ class AccountController extends Controller
             'proxy_id' => $validated['proxy_id'],
             'script_id' => $validated['script_id'],
             'script_params' => $validated['script_params'] ?? null,
+            'agent_id' => $validated['agent_id'] ?? null,
             'user_id' => auth()->id(),
         ]);
 
