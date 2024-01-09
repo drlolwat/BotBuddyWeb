@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -41,17 +42,17 @@ class AccountController extends Controller
                 $account->stats()->create();
                 $account->unsetRelation('stats');
             }
-            if ($stats['BB_GP']) {
+            if (isset($stats['BB_GP'])) {
                 $account->stats->gp = $stats['BB_GP'];
             }
-            if ($stats['BB_TTL']) {
+            if (isset($stats['BB_TTL'])) {
                 $account->stats->ttl = $stats['BB_TTL'];
             }
-            if ($stats['BB_QP']) {
+            if (isset($stats['BB_QP'])) {
                 $account->stats->qp = $stats['BB_QP'];
             }
             // todo: normalize skills into separate table?
-            if ($stats['BB_STATS']) {
+            if (isset($stats['BB_STATS'])) {
                 $account->stats->skills = collect($stats['BB_STATS'])->toJson();
             }
             $updated[$id] = (bool) $account->stats->save();
