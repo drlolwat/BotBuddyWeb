@@ -112,15 +112,15 @@ class AccountController extends Controller
     public function stop(Account $account)
     {
         $stopped = app('socket')->send('stopBot', [
-            'serverId' => 'dev-1',
+            'serverId' => $account->agent->uuid,
             'internalId' => $account->id,
         ]);
 
-        if (!$stopped) {
+        if ($stopped != "true") {
             return redirect(route('account'))->withErrors(['status' => 'Failed to stop account']);
         }
 
-        $account->status = 'Stopped';
+        $account->status = 'Stopping';
         $account->save();
 
         return redirect(route('account'))->with('status', 'Account stopped');
