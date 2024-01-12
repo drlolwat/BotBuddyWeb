@@ -25,14 +25,14 @@ class AccountController extends Controller
     public function wrapper(Request $request)
     {
         $validated = $this->validate($request, [
-            '*.BB_GP' => 'filled|int',
-            '*.BB_TTL' => 'filled|int',
-            '*.BB_QP' => 'filled|int',
-            '*.BB_WORLD' => 'filled|int',
-            '*.BB_TYPE' => 'filled|string',
-            '*.BB_DISPLAYNAME' => 'filled|string',
-            '*.BB_STATS' => 'filled|array',
-            '*.BB_STATS.*' => 'required|int',
+            '*.BB_OUTPUT.BB_GP' => 'filled|int',
+            '*.BB_OUTPUT.BB_TTL' => 'filled|int',
+            '*.BB_OUTPUT.BB_QP' => 'filled|int',
+            '*.BB_OUTPUT.BB_WORLD' => 'filled|int',
+            '*.BB_OUTPUT.BB_TYPE' => 'filled|string',
+            '*.BB_OUTPUT.BB_DISPLAYNAME' => 'filled|string',
+            '*.BB_OUTPUT.BB_STATS' => 'filled|array',
+            '*.BB_OUTPUT.BB_STATS.*' => 'required|int',
         ]);
 
         $updated = [];
