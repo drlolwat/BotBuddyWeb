@@ -76,3 +76,7 @@ Route::group(['prefix' => 'script'], function () {
     Route::put('/{script}', [App\Http\Controllers\ScriptController::class, 'update'])->name('script.update');
     Route::delete('/{script}', [App\Http\Controllers\ScriptController::class, 'destroy'])->name('script.destroy');
 });
+
+Route::group(['prefix' => 'osiris', 'middleware' => 'auth'], function () {
+    Route::view('dashboard', 'osiris.dashboard');
+});
