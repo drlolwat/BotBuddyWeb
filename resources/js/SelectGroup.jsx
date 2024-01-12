@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import SelectElement from './SelectElement.jsx';
 
 const SelectGroup = ({data}) => {
-    const getInitialOptions = () => {
+    const getInitialOptions = useMemo(() => {
         return Object.keys(data.options).map(key => ({value: key, label: key, name: data.options[key].name}));
-    }
+    }, [data.options]);
 
     const getNextRef = (index) => {
         let ref = data.options;
@@ -89,14 +89,17 @@ const SelectGroup = ({data}) => {
         setSelectStates(newSelectStates);
     };
 
-    const [selectStates, setSelectStates] = useState([{
+    const initialSelectState = useMemo(() => ({
         value: '',
-        options: getInitialOptions(),
+        options: getInitialOptions,
         jsx: null,
         name: data.name,
         defaultText: data.defaultText,
         className: data.className,
-    }]);
+    }), [getInitialOptions, data.name, data.defaultText, data.className]);
+
+    const [selectStates, setSelectStates] = useState([initialSelectState]);
+
 
     return (
         <>
