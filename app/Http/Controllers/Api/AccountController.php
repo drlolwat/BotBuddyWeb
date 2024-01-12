@@ -28,6 +28,8 @@ class AccountController extends Controller
             '*.BB_GP' => 'filled|int',
             '*.BB_TTL' => 'filled|int',
             '*.BB_QP' => 'filled|int',
+            '*.BB_WORLD' => 'filled|int',
+            '*.BB_TYPE' => 'filled|string',
             '*.BB_DISPLAYNAME' => 'filled|string',
             '*.BB_STATS' => 'filled|array',
             '*.BB_STATS.*' => 'required|int',
@@ -49,6 +51,15 @@ class AccountController extends Controller
             }
             if (isset($stats['BB_QP'])) {
                 $account->stats->qp = $stats['BB_QP'];
+            }
+            if (isset($stats['BB_WORLD'])) {
+                $account->stats->world_id = $stats['BB_WORLD'];
+            }
+            if (isset($stats['BB_DISPLAYNAME'])) {
+                $account->stats->name = $stats['BB_DISPLAYNAME'];
+            }
+            if (isset($stats['BB_TYPE'])) {
+                $account->stats->name = $stats['BB_TYPE'];
             }
             // todo: normalize skills into separate table?
             if (isset($stats['BB_STATS'])) {
