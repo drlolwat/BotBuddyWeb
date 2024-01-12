@@ -38,6 +38,7 @@ class AccountController extends Controller
         $updated = [];
 
         foreach ($validated as $id => $stats) {
+            $stats = $stats['BB_OUTPUT'];
             $account = Account::findOrFail($id);
             if (!$account->stats) {
                 $account->stats()->create();
