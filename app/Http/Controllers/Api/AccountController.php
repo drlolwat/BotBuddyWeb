@@ -60,7 +60,7 @@ class AccountController extends Controller
                 $account->stats->name = $stats['BB_DISPLAYNAME'];
             }
             if (isset($stats['BB_TYPE'])) {
-                $account->stats->name = $stats['BB_TYPE'];
+                $account->stats->type = $stats['BB_TYPE'];
             }
             // todo: normalize skills into separate table?
             if (isset($stats['BB_STATS'])) {
