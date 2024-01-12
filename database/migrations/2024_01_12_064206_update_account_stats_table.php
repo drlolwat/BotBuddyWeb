@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('account_stats', function (Blueprint $table) {
-            $table->id();
             $table->string('name');
             $table->unsignedInteger('world_id');
             $table->string('type');
