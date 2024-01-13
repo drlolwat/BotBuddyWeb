@@ -2,17 +2,20 @@
 
 namespace App\BotBuddy\Rule;
 
+use App\BotBuddy\Rule\Actions\ChangeScript;
 use App\Models\Rule;
 use Illuminate\Database\Eloquent\Collection;
 
 class RuleService
 {
-    public array $actions = [];
+    public array $actions = [
+        'change_script' => ChangeScript::class,
+    ];
 
     public function handle(Rule $rule): void
     {
         foreach($rule->actions as $action) {
-            $runner = new $this->actions[$action->name]($rule);
+            $runner = app()->makeWith($this->actions[$action->name], ['rule' => $rule]);
             $runner->run($action->data);
         }
     }
