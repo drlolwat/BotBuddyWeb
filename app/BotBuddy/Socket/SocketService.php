@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BotBuddy;
+namespace App\BotBuddy\Socket;
 
 class SocketService
 {
@@ -43,5 +43,10 @@ class SocketService
         socket_close($socket);
 
         return $response;
+    }
+
+    public function dispatch($command): bool
+    {
+        return $this->send($command->header, $command->dispatchUsing());
     }
 }

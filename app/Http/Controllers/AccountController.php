@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\BotBuddy\Socket\Commands\StartBotCommand;
+use App\BotBuddy\Socket\Commands\StopBotCommand;
+use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use Illuminate\Http\Request;
 
@@ -85,7 +88,7 @@ class AccountController extends Controller
         return redirect(route('account'))->with('status', 'Account deleted');
     }
 
-    public function start(Account $account)
+    public function start(Account $account, SocketService $socket)
     {
         if(!$account->agent) {
             return back()->withErrors('Account is not assigned to an agent');
@@ -98,17 +101,7 @@ class AccountController extends Controller
                 ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials and client.jar to start an account']);
         }
 
-        $started = app('socket')->send('startBot', [
-            'serverId' => $account->agent->uuid,
-            'internalId' => $account->id,
-            'jarLocation' => $user->dreambot_client,
-            'scriptName' => $account->script->script ?? $account->account_group->script->script,
-            'scriptParams' => $account->script_params ?? $account->account_group->script_params ?? "",
-            'clientName' => $user->dreambot_username,
-            'clientPassword' => $user->dreambot_password,
-            'accountUsername' => $account->email,
-            'accountPassword' => $account->password,
-        ]);
+        $started = $socket->dispatch(new StartBotCommand($account));
 
         if ($started != "true") {
             return back()->withErrors(['status' => 'Failed to start account']);
@@ -120,16 +113,13 @@ class AccountController extends Controller
         return back()->with('status', 'Account is being started');
     }
 
-    public function stop(Account $account)
+    public function stop(Account $account, SocketService $socket)
     {
         if(!$account->agent) {
             return back()->withErrors('Account is not assigned to an agent');
         }
 
-        $stopped = app('socket')->send('stopBot', [
-            'serverId' => $account->agent->uuid,
-            'internalId' => $account->id,
-        ]);
+        $stopped = $socket->dispatch(new StopBotCommand($account));
 
         if ($stopped != "true") {
             return redirect(route('account'))->withErrors(['status' => 'Failed to stop account']);
