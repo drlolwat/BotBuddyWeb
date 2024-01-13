@@ -2,19 +2,29 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\BotBuddy\Rule\RuleService;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function updateBot(Request $request)
+    public function updateBot(Request $request, RuleService $ruleService)
     {
         // todo: improve validation (defined statuses, id exists etc.)
         $validated = $this->validate($request, [
             'Id' => 'required|numeric',
             'Status' => 'required|string'
         ]);
+
+        // todo: handle via event system
+        if ($validated['Status'] == 'Completed') {
+            $scriptId = Account::where('id', 1)->value('script_id');
+            $rules = $ruleService->getRules('account', $validated['Id'], 'script_complete', ['script_id' => $scriptId]);
+            foreach($rules as $rule) {
+                $ruleService->handle($rule);
+            }
+        }
 
         $account = Account::find($validated['Id']);
         $account->status = $validated['Status'];

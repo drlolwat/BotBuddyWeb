@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\BotBuddy\Rule\RuleService;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -14,8 +15,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('socket', function () {
+        $this->app->singleton(SocketService::class, function () {
             return new SocketService();
+        });
+
+        $this->app->singleton(RuleService::class, function () {
+            return new RuleService();
         });
 
         Relation::morphMap([
