@@ -82,7 +82,7 @@ Route::group(['prefix' => 'osiris', 'middleware' => 'auth'], function () {
     Route::view('dashboard', 'osiris.dashboard');
 });
 
-Route::view('rule', 'rule')->name('rule');
+Route::get('rule', [RuleController::class, 'index'])->name('rule');
 Route::post('rule/create', [RuleController::class, 'create'])->name('rule.create');
 
 Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {

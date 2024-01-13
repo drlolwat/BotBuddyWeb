@@ -9,6 +9,16 @@ use Illuminate\Support\Str;
 
 class RuleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function index()
+    {
+        return view('rule');
+    }
+
     public function create(Request $request)
     {
         // todo: ensure only contains valid columns
