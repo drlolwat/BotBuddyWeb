@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\BotBuddy\Socket\SocketService;
+use App\Models\Account;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,6 +17,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('socket', function () {
             return new SocketService();
         });
+
+        Relation::morphMap([
+            'account' => Account::class,
+        ]);
     }
 
     /**
