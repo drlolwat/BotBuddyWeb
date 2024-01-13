@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\RuleController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -79,4 +80,16 @@ Route::group(['prefix' => 'script'], function () {
 
 Route::group(['prefix' => 'osiris', 'middleware' => 'auth'], function () {
     Route::view('dashboard', 'osiris.dashboard');
+});
+
+Route::view('rule', 'rule')->name('rule');
+Route::post('rule/create', [RuleController::class, 'create'])->name('rule.create');
+
+Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {
+    Route::get('account', fn () => auth()->user()->accounts);
+    Route::get('account/group', fn () => auth()->user()->account_groups);
+    Route::get('proxy', fn () => auth()->user()->proxies);
+    Route::get('proxy/group', fn () => auth()->user()->proxy_groups);
+    Route::get('agent', fn () => auth()->user()->agents);
+    Route::get('script', fn () => auth()->user()->scripts);
 });
