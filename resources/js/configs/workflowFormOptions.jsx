@@ -1,12 +1,12 @@
 import DynamicSelectComponent from '../components/DynamicSelectComponent.jsx';
 import {fetchAccounts, fetchScripts, fetchAccountGroups} from '../utils/fetchUtils.js';
 import SelectComponent from '../components/SelectComponent.jsx';
-import CreateRuleButton from '../components/CreateRuleButton.jsx';
+import CreateWorkflowButton from '../components/CreateWorkflowButton.jsx';
 import {Fragment} from 'react';
 
 const className = "border-2 border-gray-300 rounded-lg mb-2 mr-2";
 
-const ruleFormOptions = {
+const workflowFormOptions = {
     modelTypeSelect: {
         name: "model_type",
         className,
@@ -16,7 +16,7 @@ const ruleFormOptions = {
             render: () => <Fragment key="account">
                 <DynamicSelectComponent
                     fetchOptions={() => fetchAccounts(() =>
-                        <SelectComponent {...ruleFormOptions.eventSelect} />)} {...ruleFormOptions.modelIdSelect} />
+                        <SelectComponent {...workflowFormOptions.eventSelect} />)} {...workflowFormOptions.modelIdSelect} />
             </Fragment>
         }, {
             label: "Account Group",
@@ -25,7 +25,7 @@ const ruleFormOptions = {
                 <Fragment key="account_group">
                     <DynamicSelectComponent
                         fetchOptions={() => fetchAccountGroups(() =>
-                            <SelectComponent {...ruleFormOptions.eventSelect} />)} {...ruleFormOptions.modelIdSelect} />
+                            <SelectComponent {...workflowFormOptions.eventSelect} />)} {...workflowFormOptions.modelIdSelect} />
                 </Fragment>
             )
         }],
@@ -46,7 +46,7 @@ const ruleFormOptions = {
                 render: () => <div>
                     <DynamicSelectComponent
                         fetchOptions={() => fetchScripts(() =>
-                            <SelectComponent {...ruleFormOptions.actionSelect} />)} {...ruleFormOptions.eventScriptSelect}
+                            <SelectComponent {...workflowFormOptions.actionSelect} />)} {...workflowFormOptions.eventScriptSelect}
                     />
                 </div>
             },
@@ -71,7 +71,7 @@ const ruleFormOptions = {
                     <Fragment key="change_script">
                         <DynamicSelectComponent
                             fetchOptions={() => fetchScripts(() =>
-                                <CreateRuleButton/>)} {...ruleFormOptions.actionScriptSelect} />
+                                <CreateWorkflowButton/>)} {...workflowFormOptions.actionScriptSelect} />
                     </Fragment>
                 )
             },
@@ -82,19 +82,19 @@ const ruleFormOptions = {
                     <Fragment key="change_account_group">
                         <DynamicSelectComponent
                             fetchOptions={() => fetchAccountGroups(() =>
-                                <CreateRuleButton/>)} {...ruleFormOptions.actionAccountGroupSelect} />
+                                <CreateWorkflowButton/>)} {...workflowFormOptions.actionAccountGroupSelect} />
                     </Fragment>
                 )
             },
             {
                 label: "Stop bot",
                 value: "stop_bot",
-                render: () => <CreateRuleButton/>,
+                render: () => <CreateWorkflowButton/>,
             },
             {
                 label: "Restart bot",
                 value: "restart_bot",
-                render: () => <CreateRuleButton/>,
+                render: () => <CreateWorkflowButton/>,
             },
             {
                 label: "Restart bot with script params",
@@ -103,7 +103,7 @@ const ruleFormOptions = {
                     <>
                         <input type="text" name="action_script_params"
                                className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. --test=123"/>
-                        <CreateRuleButton/>
+                        <CreateWorkflowButton/>
                     </>
                 ),
             },
@@ -125,4 +125,4 @@ const ruleFormOptions = {
     },
 };
 
-export default ruleFormOptions;
+export default workflowFormOptions;

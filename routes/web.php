@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\RuleController;
+use App\Http\Controllers\WorkflowController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -84,8 +84,8 @@ Route::group(['prefix' => 'osiris', 'middleware' => 'auth'], function () {
     Route::view('dashboard', 'osiris.dashboard');
 });
 
-Route::get('rule', [RuleController::class, 'index'])->name('rule');
-Route::post('rule/create', [RuleController::class, 'create'])->name('rule.create');
+Route::get('workflow', [WorkflowController::class, 'index'])->name('workflow');
+Route::post('workflow/create', [WorkflowController::class, 'create'])->name('workflow.create');
 
 Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {
     Route::get('account', fn () => auth()->user()->accounts);

@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class RuleAction extends Model
+class WorkflowAction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['rule_id', 'name', 'data', 'order'];
+    protected $fillable = ['workflow_id', 'name', 'data', 'order'];
 
     protected $casts = ['data' => 'array'];
 
     public function rule(): BelongsTo
     {
-        $this->belongsTo(Rule::class);
+        $this->belongsTo(Workflow::class);
     }
 }

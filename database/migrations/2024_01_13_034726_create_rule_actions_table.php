@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rule_actions', function (Blueprint $table) {
+        Schema::create('workflow_actions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('rule_id');
+            $table->unsignedInteger('workflow_id');
             $table->string('name');
             $table->json('data')->nullable();
             $table->unsignedInteger('order');

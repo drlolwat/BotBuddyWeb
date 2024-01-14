@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\BotBuddy\Rule\RuleService;
+use App\BotBuddy\Workflow\WorkflowService;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function updateBot(Request $request, RuleService $ruleService)
+    public function updateBot(Request $request, WorkflowService $workflowService)
     {
         // todo: improve validation (defined statuses, id exists etc.)
         $validated = $this->validate($request, [
@@ -22,15 +22,15 @@ class AccountController extends Controller
             $account = Account::find($validated['Id']);
             if ($account) {
                 // handle for specific account
-                $rules = $ruleService->getRules('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
-                foreach($rules as $rule) {
-                    $ruleService->handle($account, $rule);
+                $workflows = $workflowService->getWorkflows('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
+                foreach($workflows as $workflow) {
+                    $workflowService->handle($account, $workflow);
                 }
-                if ($rules->count() == 0) {
-                    // handle for account groups instead
-                    $rules = $ruleService->getRules('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
-                    foreach($rules as $rule) {
-                        $ruleService->handle($account, $rule);
+                // handle for account groups instead if they are not defined for the account
+                if ($workflows->count() == 0) {
+                    $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
+                    foreach($workflows as $workflow) {
+                        $workflowService->handle($account, $workflow);
                     }
                 }
             }

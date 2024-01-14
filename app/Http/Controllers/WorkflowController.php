@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rule;
+use App\Models\Workflow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-class RuleController extends Controller
+class WorkflowController extends Controller
 {
     public function __construct()
     {
@@ -16,13 +16,13 @@ class RuleController extends Controller
 
     public function index()
     {
-        return view('rule');
+        return view('workflow');
     }
 
     public function create(Request $request)
     {
         // todo: ensure only contains valid columns
-        $ruleData = Arr::where($request->all(), function ($value, $key) {
+        $workflowData = Arr::where($request->all(), function ($value, $key) {
             return !Str::startsWith($key, 'event_') && !Str::startsWith($key, 'action_') && $key != '_token';
         });
 
@@ -38,22 +38,22 @@ class RuleController extends Controller
             return [Str::replaceFirst('action_', '', $key) => $value];
         });
 
-        // todo: check rules are valid e.g. moving script to same script
+        // todo: check workflow is valid e.g. moving script to same script
 
-        $rule = Rule::create([
+        $workflow = Workflow::create([
             'user_id' => auth()->user()->id,
-            ...$ruleData,
+            ...$workflowData,
             'data' => $eventData,
         ]);
 
         // todo: support multiple actions
 
-        $action = $rule->actions()->create([
-            'name' => $ruleData['action'],
+        $action = $workflow->actions()->create([
+            'name' => $workflowData['action'],
             'data' => $actionData,
             'order' => 1,
         ]);
 
-        return back()->with('status','Rule created');
+        return back()->with('status','Workflow created');
     }
 }

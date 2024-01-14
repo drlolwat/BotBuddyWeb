@@ -1,24 +1,29 @@
 <?php
 
-namespace App\BotBuddy\Rule\Actions;
+namespace App\BotBuddy\Workflow\Actions;
 
 use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
-use App\Models\Rule;
+use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
 
-class StopBot extends Action
+class ChangeAccountGroup extends Action
 {
-    public function __construct(Rule $rule, public SocketService $socket)
+    public function __construct(Workflow $workflow, public SocketService $socket)
     {
-        parent::__construct($rule);
+        parent::__construct($workflow);
     }
 
     /** @var Account $model */
     public function run(Model $model, array $data): void
     {
         $this->socket->dispatch(new StopBotCommand($model));
+
+        $model->account_group_id = $data['account_group_id'];
+        $model->save();
+
+        $this->socket->dispatch(new StartBotCommand($model));
     }
 }

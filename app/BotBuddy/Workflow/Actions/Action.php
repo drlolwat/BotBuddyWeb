@@ -1,13 +1,13 @@
 <?php
 
-namespace App\BotBuddy\Rule\Actions;
+namespace App\BotBuddy\Workflow\Actions;
 
-use App\Models\Rule;
+use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
 
 class Action
 {
-    public function __construct(public Rule $rule)
+    public function __construct(public Workflow $workflow)
     {
         //
     }

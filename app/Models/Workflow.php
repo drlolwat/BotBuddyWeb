@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Rule extends Model
+class Workflow extends Model
 {
     use HasFactory;
 
@@ -22,6 +22,6 @@ class Rule extends Model
 
     public function actions(): HasMany
     {
-        return $this->hasMany(RuleAction::class);
+        return $this->hasMany(WorkflowAction::class);
     }
 }

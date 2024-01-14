@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\BotBuddy\Rule\RuleService;
+use App\BotBuddy\Workflow\WorkflowService;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use App\Models\AccountGroup;
@@ -20,8 +20,8 @@ class AppServiceProvider extends ServiceProvider
             return new SocketService();
         });
 
-        $this->app->singleton(RuleService::class, function () {
-            return new RuleService();
+        $this->app->singleton(WorkflowService::class, function () {
+            return new WorkflowService();
         });
 
         Relation::morphMap([

@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="mb-2 text-xl font-bold">Rule Management</div>
+    <div class="mb-2 text-xl font-bold">Workflow Management</div>
     @if($errors->isNotEmpty())
         <div>{{ $errors }}</div>
     @endif
@@ -7,14 +7,14 @@
         <div>{{ session('status') }}</div>
     @endif
 
-    <div class="py-2 font-bold">Create Rule</div>
+    <div class="py-2 font-bold">Create Workflow</div>
 
-    <form method="post" action="{{ route('rule.create') }}">
+    <form method="post" action="{{ route('workflow.create') }}">
         @csrf
         <div id="app"></div>
     </form>
 
-    <div class="py-2 font-bold">Rules</div>
+    <div class="py-2 font-bold">Workflows</div>
 
     <div class="relative overflow-x-auto">
         <table class="w-full text-sm text-left text-gray-500">
@@ -26,11 +26,11 @@
             </tr>
             </thead>
             <tbody>
-            @foreach(auth()->user()->rules as $rule)
+            @foreach(auth()->user()->workflows as $workflow)
                 <tr class="bg-white border hover:bg-gray-50">
-                    <td class="px-6 py-4">{{ $rule->model_type }}:{{ $rule->model_id }}</td>
-                    <td class="px-6 py-4">{{ $rule->event }}:{{ json_encode($rule->data) }}</td>
-                    <td class="px-6 py-4">{{ $rule->actions()->first()->name }}:{{ json_encode($rule->actions()->first()->data) }}</td>
+                    <td class="px-6 py-4">{{ $workflow->model_type }}:{{ $workflow->model_id }}</td>
+                    <td class="px-6 py-4">{{ $workflow->event }}:{{ json_encode($workflow->data) }}</td>
+                    <td class="px-6 py-4">{{ $workflow->actions()->first()->name }}:{{ json_encode($workflow->actions()->first()->data) }}</td>
                 </tr>
             @endforeach
             </tbody>

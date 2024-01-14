@@ -78,8 +78,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Agent::class);
     }
 
-    public function rules()
+    public function workflows()
     {
-        return $this->hasMany(Rule::class);
+        return $this->hasMany(Workflow::class);
     }
 }

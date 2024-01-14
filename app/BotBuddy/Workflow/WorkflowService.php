@@ -1,16 +1,16 @@
 <?php
 
-namespace App\BotBuddy\Rule;
+namespace App\BotBuddy\Workflow;
 
-use App\BotBuddy\Rule\Actions\ChangeAccountGroup;
-use App\BotBuddy\Rule\Actions\ChangeScript;
-use App\BotBuddy\Rule\Actions\RestartBot;
-use App\BotBuddy\Rule\Actions\StopBot;
-use App\Models\Rule;
+use App\BotBuddy\Workflow\Actions\ChangeAccountGroup;
+use App\BotBuddy\Workflow\Actions\ChangeScript;
+use App\BotBuddy\Workflow\Actions\RestartBot;
+use App\BotBuddy\Workflow\Actions\StopBot;
+use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class RuleService
+class WorkflowService
 {
     public array $actions = [
         'change_script' => ChangeScript::class,
@@ -20,17 +20,17 @@ class RuleService
         'change_account_group' => ChangeAccountGroup::class,
     ];
 
-    public function handle(Model $model, Rule $rule): void
+    public function handle(Model $model, Workflow $workflow): void
     {
-        foreach($rule->actions as $action) {
-            $runner = app()->makeWith($this->actions[$action->name], ['rule' => $rule]);
+        foreach($workflow->actions as $action) {
+            $runner = app()->makeWith($this->actions[$action->name], ['rule' => $workflow]);
             $runner->run($model, $action->data);
         }
     }
 
-    public function getRules($modelType, $modelId, $event, $eventData): Collection
+    public function getWorkflows($modelType, $modelId, $event, $eventData): Collection
     {
-        return Rule::query()
+        return Workflow::query()
             ->with('model', 'actions')
             ->where('model_type', $modelType)
             ->where('model_id', $modelId)
