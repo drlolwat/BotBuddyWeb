@@ -68,9 +68,22 @@ const ruleFormOptions = {
                 label: "Change script",
                 value: "change_script",
                 render: () => (
-                    <DynamicSelectComponent
-                        fetchOptions={() => fetchScripts(() =>
-                            <CreateRuleButton/>)} {...ruleFormOptions.actionScriptSelect} />
+                    <Fragment key="change_script">
+                        <DynamicSelectComponent
+                            fetchOptions={() => fetchScripts(() =>
+                                <CreateRuleButton/>)} {...ruleFormOptions.actionScriptSelect} />
+                    </Fragment>
+                )
+            },
+            {
+                label: "Change account group",
+                value: "change_account_group",
+                render: () => (
+                    <Fragment key="change_account_group">
+                        <DynamicSelectComponent
+                            fetchOptions={() => fetchAccountGroups(() =>
+                                <CreateRuleButton/>)} {...ruleFormOptions.actionAccountGroupSelect} />
+                    </Fragment>
                 )
             },
             {
@@ -101,6 +114,13 @@ const ruleFormOptions = {
         className,
         options: [
             {label: "Select a script"},
+        ],
+    },
+    actionAccountGroupSelect: {
+        name: "action_account_group_id",
+        className,
+        options: [
+            {label: "Select an account group"},
         ],
     },
 };

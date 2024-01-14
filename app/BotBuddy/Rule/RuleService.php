@@ -2,6 +2,7 @@
 
 namespace App\BotBuddy\Rule;
 
+use App\BotBuddy\Rule\Actions\ChangeAccountGroup;
 use App\BotBuddy\Rule\Actions\ChangeScript;
 use App\BotBuddy\Rule\Actions\RestartBot;
 use App\BotBuddy\Rule\Actions\StopBot;
@@ -15,6 +16,7 @@ class RuleService
         'stop_bot' => StopBot::class,
         'restart_bot' => RestartBot::class,
         'restart_bot_with_script_params' => RestartBot::class,
+        'change_account_group' => ChangeAccountGroup::class,
     ];
 
     public function handle(Rule $rule): void
