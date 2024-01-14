@@ -70,6 +70,16 @@ const ruleFormOptions = {
                 value: "restart_bot",
                 render: () => <CreateRuleButton />,
             },
+            {
+                label: "Restart bot with script params",
+                value: "restart_bot_with_script_params",
+                render: () => (
+                    <>
+                        <input type="text" name="action_script_params" className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. --test=123" />
+                        <CreateRuleButton />
+                    </>
+                ),
+            },
         ],
     },
     actionScriptSelect: {

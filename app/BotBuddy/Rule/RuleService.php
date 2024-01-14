@@ -14,6 +14,7 @@ class RuleService
         'change_script' => ChangeScript::class,
         'stop_bot' => StopBot::class,
         'restart_bot' => RestartBot::class,
+        'restart_bot_with_script_params' => RestartBot::class,
     ];
 
     public function handle(Rule $rule): void
