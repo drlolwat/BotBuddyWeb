@@ -43,12 +43,12 @@ const workflowFormOptions = {
             {
                 label: "Completes script",
                 value: "script_complete",
-                render: () => <div>
+                render: () => <Fragment key="script_complete">
                     <DynamicSelectComponent
                         fetchOptions={() => fetchScripts(() =>
-                            <SelectComponent {...workflowFormOptions.actionSelect} />)} {...workflowFormOptions.eventScriptSelect}
+                            <div><SelectComponent {...workflowFormOptions.actionSelect} /></div>)} {...workflowFormOptions.eventScriptSelect}
                     />
-                </div>
+                </Fragment>
             },
         ],
     },
@@ -73,7 +73,7 @@ const workflowFormOptions = {
                             fetchOptions={() => fetchScripts(() =>
                                 <>
                                     <input type="text" name="action_script_params"
-                                         className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. --test=123"/>
+                                         className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. param1 param2"/>
                                     <CreateWorkflowButton/>
                                 </>)} {...workflowFormOptions.actionScriptSelect} />
                     </Fragment>
@@ -106,7 +106,7 @@ const workflowFormOptions = {
                 render: () => (
                     <>
                         <input type="text" name="action_script_params"
-                               className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. --test=123"/>
+                               className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. param1 param2"/>
                         <CreateWorkflowButton/>
                     </>
                 ),
