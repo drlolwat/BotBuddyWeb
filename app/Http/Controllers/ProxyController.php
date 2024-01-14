@@ -33,14 +33,16 @@ class ProxyController extends Controller
         $validated = $this->validate($request, [
             'host' => 'required',
             'port' => 'required|int',
-            'password' => 'required',
+            'username' => 'nullable',
+            'password' => 'nullable',
             'proxy_group_id' => 'nullable',
         ]);
 
         $account = Proxy::create([
             'host' => $validated['host'],
             'port' => $validated['port'],
-            'password' => $validated['password'],
+            'username' => $validated['username'] ?? null,
+            'password' => $validated['password'] ?? null,
             'proxy_group_id' => $validated['proxy_group_id'] ?? null,
             'user_id' => auth()->id(),
         ]);
@@ -53,14 +55,16 @@ class ProxyController extends Controller
         $validated = $this->validate($request, [
             'host' => 'required',
             'port' => 'required|int',
-            'password' => 'required',
+            'username' => 'nullable',
+            'password' => 'nullable',
             'proxy_group_id' => 'nullable',
         ]);
 
         $proxy->update([
             'host' => $validated['host'],
             'port' => $validated['port'],
-            'password' => $validated['password'],
+            'username' => $validated['username'] ?? null,
+            'password' => $validated['password'] ?? null,
             'proxy_group_id' => $validated['proxy_group_id'] ?? null,
         ]);
 

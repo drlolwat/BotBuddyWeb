@@ -22,6 +22,10 @@ class StartBotCommand
             'clientPassword' => $this->account->user->dreambot_password,
             'accountUsername' => $this->account->email,
             'accountPassword' => $this->account->password,
+            'proxyHost' => $this->account->proxy?->host ?? '',
+            'proxyPort' => $this->account->proxy?->port ?? 0,
+            'proxyUsername' => $this->account->proxy?->username ?? '',
+            'proxyPassword' => $this->account->proxy?->password ?? '',
         ];
     }
 }

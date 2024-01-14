@@ -14,7 +14,9 @@
         <input type="text" name="host" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" />
         <div>Port</div>
         <input type="text" name="port" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" />
-        <div>Password</div>
+        <div>Username (Optional)</div>
+        <input type="text" name="username" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" />
+        <div>Password (Optional)</div>
         <input type="text" name="password" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" />
         <div>Group</div>
         <select name="proxy_group_id" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">

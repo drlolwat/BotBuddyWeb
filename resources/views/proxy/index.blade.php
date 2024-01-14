@@ -44,7 +44,7 @@
             <tr>
                 <th class="px-6 py-3">Host</th>
                 <th class="px-6 py-3">Port</th>
-                <th class="px-6 py-3">Password</th>
+                <th class="px-6 py-3">Auth</th>
                 <th class="px-6 py-3">Group</th>
                 <th class="px-6 py-3"></th>
             </tr>
@@ -54,7 +54,7 @@
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $proxy->host }}</td>
                     <td class="px-6 py-4">{{ $proxy->port }}</td>
-                    <td class="px-6 py-4">{{ $proxy->password }}</td>
+                    <td class="px-6 py-4">{{ $proxy->username && $proxy->password ? $proxy->username.":".$proxy->password : "N/A" }}</td>
                     <td class="px-6 py-4">
                         @if($proxy->proxy_group)
                             <a href="{{ route('proxy.group.show', $proxy->proxy_group_id) }}" class="text-blue-600 hover:text-blue-500">{{ $proxy->proxy_group->name }}</a>
