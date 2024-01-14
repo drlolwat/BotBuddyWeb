@@ -2,6 +2,7 @@ import DynamicSelectComponent from '../components/DynamicSelectComponent.jsx';
 import {fetchAccounts, fetchScripts} from '../utils/fetchUtils.js';
 import SelectComponent from '../components/SelectComponent.jsx';
 import createRuleButton from '../components/CreateRuleButton.jsx';
+import CreateRuleButton from "../components/CreateRuleButton.jsx";
 
 const className ="border-2 border-gray-300 rounded-lg mb-2 mr-2";
 
@@ -56,8 +57,18 @@ const ruleFormOptions = {
                 value: "change_script",
                 render: () => (
                     <DynamicSelectComponent
-                        fetchOptions={() => fetchScripts(createRuleButton)} {...ruleFormOptions.actionScriptSelect} />
+                        fetchOptions={() => fetchScripts(() => <CreateRuleButton />)} {...ruleFormOptions.actionScriptSelect} />
                 )
+            },
+            {
+                label: "Stop bot",
+                value: "stop_bot",
+                render: () => <CreateRuleButton />,
+            },
+            {
+                label: "Restart bot",
+                value: "restart_bot",
+                render: () => <CreateRuleButton />,
             },
         ],
     },
