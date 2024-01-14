@@ -23,6 +23,8 @@ Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
 Route::group(['prefix' => 'account'], function () {
+    Route::get('/import', [App\Http\Controllers\AccountController::class, 'import'])->name('account.import');
+    Route::post('/import', [App\Http\Controllers\AccountController::class, 'importStore'])->name('account.import.store');
     Route::get('/', [App\Http\Controllers\AccountController::class, 'index'])->name('account');
     Route::post('/', [App\Http\Controllers\AccountController::class, 'store'])->name('account.store');
     Route::get('/create', [App\Http\Controllers\AccountController::class, 'create'])->name('account.create');

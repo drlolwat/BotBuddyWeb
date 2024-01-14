@@ -6,6 +6,7 @@ use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
+use App\Models\Proxy;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -129,5 +130,125 @@ class AccountController extends Controller
         $account->save();
 
         return redirect(route('account'))->with('status', 'Account stopped');
+    }
+
+    public function import()
+    {
+        return view('account.import');
+    }
+
+    public function importStore(Request $request)
+    {
+        $validated = $this->validate($request, [
+            'account_file' => 'nullable|file|mimes:txt',
+            'account_textarea' => 'nullable|string',
+            'account_group_id' => 'nullable',
+            'proxy_id' => 'nullable',
+            'script_id' => 'required',
+            'script_params' => 'nullable',
+            'agent_id' => 'nullable',
+        ]);
+
+        $linesFile = [];
+        $linesTextarea = [];
+
+        if (isset($validated['account_file'])) {
+            $linesFile = explode("\n", file_get_contents($validated['account_file']));
+        }
+        if (isset($validated['account_textarea'])) {
+            $linesTextarea = explode("\n", $validated['account_textarea']);
+        }
+
+        $lines = array_merge($linesFile, $linesTextarea);
+
+        $accounts = [];
+
+        foreach($lines as $line) {
+            $line = trim($line);
+
+            if(empty($line)) {
+                continue;
+            }
+
+            $parts = explode(":", $line);
+
+            if (count($parts) == 2) {
+                $accounts[] = [
+                    'account_email' => $parts[0],
+                    'account_password' => $parts[1],
+                ];
+            }
+
+            if (count($parts) == 3) {
+                $accounts[] = [
+                    'account_email' => $parts[0],
+                    'account_password' => $parts[1],
+                    'account_2fa_password' => $parts[2],
+                ];
+            }
+
+            if (count($parts) == 6) {
+                $accounts[] = [
+                    'account_email' => $parts[0],
+                    'account_password' => $parts[1],
+                    'proxy_host' => $parts[2],
+                    'proxy_port' => $parts[3],
+                    'proxy_username' => $parts[4],
+                    'proxy_password' => $parts[5],
+                ];
+            }
+
+            if (count($parts) == 7) {
+                $accounts[] = [
+                    'account_email' => $parts[0],
+                    'account_password' => $parts[1],
+                    'account_2fa_password' => $parts[2],
+                    'proxy_host' => $parts[3],
+                    'proxy_port' => $parts[4],
+                    'proxy_username' => $parts[5],
+                    'proxy_password' => $parts[6],
+                ];
+            }
+        }
+
+        foreach ($accounts as $account) {
+
+            $newProxy = null;
+
+            if (count($account) > 3) {
+
+                $newProxy = Proxy::select('id')
+                    ->where('user_id', auth()->id())
+                    ->where('host', $account['proxy_host'])
+                    ->where('port', $account['proxy_port'])
+                    ->where('username', $account['proxy_username'])
+                    ->where('password', $account['proxy_password'])
+                    ->value('id');
+
+                if (!$newProxy) {
+                    $newProxy = Proxy::create([
+                        'user_id' => auth()->id(),
+                        'host' => $account['proxy_host'],
+                        'port' => $account['proxy_port'],
+                        'username' => $account['proxy_username'],
+                        'password' => $account['proxy_password'],
+                    ]);
+                }
+            }
+
+            Account::create([
+                'user_id' => auth()->id(),
+                'email' => $account['account_email'],
+                'password' => $account['account_password'],
+                'password_2fa' => $account['account_2fa_password'] ?? null,
+                'account_group_id' => $request->get('account_group_id'),
+                'agent_id' => $request->get('agent_id'),
+                'proxy_id' => $newProxy?->id ?? $request->get('proxy_id'),
+                'script_id' => $request->get('script_id'),
+                'script_params' => $request->get('script_params'),
+            ]);
+        }
+
+        return redirect(route('account'))->with('status', 'Accounts imported');
     }
 }

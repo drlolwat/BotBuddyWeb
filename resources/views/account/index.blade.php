@@ -39,7 +39,10 @@
 
     <div class="grid grid-cols-[1fr,auto] gap-2 py-2">
         <div class="py-2 font-bold">Accounts</div>
-        <div class="py-2"><a href="{{ route('account.create') }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Create</a></div>
+        <div class="py-2 grid grid-cols-2 gap-2">
+            <a href="{{ route('account.create') }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Create</a>
+            <a href="{{ route('account.import') }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Import</a>
+        </div>
     </div>
 
     <div class="relative overflow-x-auto">
