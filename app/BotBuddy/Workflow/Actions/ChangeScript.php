@@ -22,6 +22,7 @@ class ChangeScript extends Action
         $this->socket->dispatch(new StopBotCommand($model));
 
         $model->script_id = $data['script_id'];
+        $model->script_params = $data['script_params'] ?? $model->script_params;
         $model->save();
 
         $this->socket->dispatch(new StartBotCommand($model));

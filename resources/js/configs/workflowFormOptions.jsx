@@ -71,7 +71,11 @@ const workflowFormOptions = {
                     <Fragment key="change_script">
                         <DynamicSelectComponent
                             fetchOptions={() => fetchScripts(() =>
-                                <CreateWorkflowButton/>)} {...workflowFormOptions.actionScriptSelect} />
+                                <>
+                                    <input type="text" name="action_script_params"
+                                         className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. --test=123"/>
+                                    <CreateWorkflowButton/>
+                                </>)} {...workflowFormOptions.actionScriptSelect} />
                     </Fragment>
                 )
             },
