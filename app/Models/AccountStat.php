@@ -10,7 +10,7 @@ class AccountStat extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['account_id', 'gp', 'ttl', 'qp', 'skills'];
+    protected $fillable = ['account_id', 'gp', 'ttl', 'qp', 'skills', 'name', 'world_id', 'type'];
 
     public function account(): BelongsTo
     {
