@@ -5,7 +5,9 @@ namespace App\BotBuddy\Rule\Actions;
 use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
+use App\Models\Account;
 use App\Models\Rule;
+use Illuminate\Database\Eloquent\Model;
 
 class ChangeAccountGroup extends Action
 {
@@ -14,13 +16,14 @@ class ChangeAccountGroup extends Action
         parent::__construct($rule);
     }
 
-    public function run(array $data): void
+    /** @var Account $model */
+    public function run(Model $model, array $data): void
     {
-        $this->socket->dispatch(new StopBotCommand($this->rule->model));
+        $this->socket->dispatch(new StopBotCommand($model));
 
-        $this->rule->model->account_group_id = $data['account_group_id'];
-        $this->rule->model->save();
+        $model->account_group_id = $data['account_group_id'];
+        $model->save();
 
-        $this->socket->dispatch(new StartBotCommand($this->rule->model));
+        $this->socket->dispatch(new StartBotCommand($model));
     }
 }

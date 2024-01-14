@@ -5,7 +5,9 @@ namespace App\BotBuddy\Rule\Actions;
 use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
+use App\Models\Account;
 use App\Models\Rule;
+use Illuminate\Database\Eloquent\Model;
 
 class RestartBot extends Action
 {
@@ -14,9 +16,10 @@ class RestartBot extends Action
         parent::__construct($rule);
     }
 
-    public function run(array $data): void
+    /** @var Account $model */
+    public function run(Model $model, array $data): void
     {
-        $this->socket->dispatch(new StopBotCommand($this->rule->model));
-        $this->socket->dispatch(new StartBotCommand($this->rule->model));
+        $this->socket->dispatch(new StopBotCommand($model));
+        $this->socket->dispatch(new StartBotCommand($model));
     }
 }

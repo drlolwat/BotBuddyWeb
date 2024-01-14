@@ -3,6 +3,7 @@
 namespace App\BotBuddy\Rule\Actions;
 
 use App\Models\Rule;
+use Illuminate\Database\Eloquent\Model;
 
 class Action
 {
@@ -11,7 +12,7 @@ class Action
         //
     }
 
-    public function run(array $data): void
+    public function run(Model $model, array $data): void
     {
         //
     }

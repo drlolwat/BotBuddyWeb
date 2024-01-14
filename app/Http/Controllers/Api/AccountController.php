@@ -24,13 +24,13 @@ class AccountController extends Controller
                 // handle for specific account
                 $rules = $ruleService->getRules('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
                 foreach($rules as $rule) {
-                    $ruleService->handle($rule);
+                    $ruleService->handle($account, $rule);
                 }
                 if ($rules->count() == 0) {
                     // handle for account groups instead
                     $rules = $ruleService->getRules('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
                     foreach($rules as $rule) {
-                        $ruleService->handle($rule);
+                        $ruleService->handle($account, $rule);
                     }
                 }
             }

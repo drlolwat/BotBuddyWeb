@@ -8,6 +8,7 @@ use App\BotBuddy\Rule\Actions\RestartBot;
 use App\BotBuddy\Rule\Actions\StopBot;
 use App\Models\Rule;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class RuleService
 {
@@ -19,11 +20,11 @@ class RuleService
         'change_account_group' => ChangeAccountGroup::class,
     ];
 
-    public function handle(Rule $rule): void
+    public function handle(Model $model, Rule $rule): void
     {
         foreach($rule->actions as $action) {
             $runner = app()->makeWith($this->actions[$action->name], ['rule' => $rule]);
-            $runner->run($action->data);
+            $runner->run($model, $action->data);
         }
     }
 
