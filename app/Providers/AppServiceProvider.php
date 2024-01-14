@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\BotBuddy\Rule\RuleService;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
+use App\Models\AccountGroup;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::morphMap([
             'account' => Account::class,
+            'account_group' => AccountGroup::class,
         ]);
     }
 

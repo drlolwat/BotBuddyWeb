@@ -4,7 +4,7 @@ export const fetchScripts = async (render) => {
     return scripts.map(script => ({
         label: script.name,
         value: script.id,
-        render: () => render(script)
+        render: () => render(script),
     }));
 };
 
@@ -14,6 +14,16 @@ export const fetchAccounts = async (render) => {
     return accounts.map(account => ({
         label: account.email,
         value: account.id,
-        render: () => render(account)
+        render: () => render(account),
+    }));
+};
+
+export const fetchAccountGroups = async (render) => {
+    const res = await fetch('/api/user/account/group');
+    const groups = await res.json();
+    return groups.map(group => ({
+        label: group.name,
+        value: group.id,
+        render: () => render(group),
     }));
 };

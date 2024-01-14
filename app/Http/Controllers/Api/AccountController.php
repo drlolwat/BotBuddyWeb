@@ -19,17 +19,27 @@ class AccountController extends Controller
 
         // todo: handle via event system
         if ($validated['Status'] == 'Completed') {
-            $scriptId = Account::where('id', 1)->value('script_id');
-            $rules = $ruleService->getRules('account', $validated['Id'], 'script_complete', ['script_id' => $scriptId]);
-            foreach($rules as $rule) {
-                $ruleService->handle($rule);
+            $account = Account::find($validated['Id']);
+            if ($account) {
+                // handle for specific account
+                $rules = $ruleService->getRules('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
+                foreach($rules as $rule) {
+                    $ruleService->handle($rule);
+                }
+                if ($rules->count() == 0) {
+                    // handle for account groups instead
+                    $rules = $ruleService->getRules('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
+                    foreach($rules as $rule) {
+                        $ruleService->handle($rule);
+                    }
+                }
             }
         }
 
         $account = Account::find($validated['Id']);
         $account->status = $validated['Status'];
 
-        return ['success' => (bool) $account->save()];
+        return ['success' => $account->save()];
     }
 
     public function wrapper(Request $request)
