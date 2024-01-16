@@ -14,10 +14,15 @@ class AgentController extends Controller
             'uuid' => 'required|string',
         ]);
 
-        return Agent::query()
+        $agent = Agent::query()
             ->select('agent_key')
             ->where('uuid', $validated['uuid'])
-            ->first()
-            ->value('agent_key') ?? "";
+            ->first();
+
+        if (!$agent) {
+            return "";
+        }
+
+        return $agent->agent_key;
     }
 }
