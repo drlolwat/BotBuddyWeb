@@ -6,8 +6,6 @@ services:
             - "8888:8888"
         networks:
             - sail
-        volumes:
-            - './masterserver:/app'
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.2
@@ -15,10 +13,7 @@ services:
             args:
                 WWWGROUP: '${WWWGROUP}'
         image: sail-8.2/app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
         ports:
-            - '${APP_PORT:-80}:80'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
             WWWUSER: '${WWWUSER}'
@@ -30,6 +25,7 @@ services:
             - '.:/var/www/html'
         networks:
             - sail
+            - proxy
         depends_on:
             - mysql
             - redis
@@ -119,6 +115,8 @@ services:
 networks:
     sail:
         driver: bridge
+    proxy:
+        external: true
 volumes:
     sail-mysql:
         driver: local
