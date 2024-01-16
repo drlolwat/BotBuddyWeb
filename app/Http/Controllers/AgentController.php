@@ -41,6 +41,8 @@ class AgentController extends Controller
             'name' => $validated['name'],
             'user_id' => auth()->id(),
             'uuid' => Str::uuid()->toString(),
+            'agent_key' => trim(bin2hex(random_bytes(32))),
+            'server_key' => trim(bin2hex(random_bytes(32))),
         ]);
 
         return redirect(route('agent.show', $agent))->with('status', 'Agent created');

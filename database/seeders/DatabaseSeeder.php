@@ -26,12 +26,16 @@ class DatabaseSeeder extends Seeder
             'name' => 'Local machine',
             'user_id' => $user->id,
             'uuid' => Str::uuid()->toString(),
+            'agent_key' => trim(bin2hex(random_bytes(32))),
+            'server_key' => trim(bin2hex(random_bytes(32))),
         ]);
 
         $agent2 = $user->agents()->create([
             'name' => 'OVH box',
             'user_id' => $user->id,
             'uuid' => Str::uuid()->toString(),
+            'agent_key' => trim(bin2hex(random_bytes(32))),
+            'server_key' => trim(bin2hex(random_bytes(32))),
         ]);
 
         $proxyGroup1 = $user->proxy_groups()->create([
