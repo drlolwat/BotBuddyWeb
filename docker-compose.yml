@@ -36,6 +36,13 @@ services:
             - meilisearch
             - mailpit
             - selenium
+    cron:
+        build:
+            context: ./build/cron
+        networks:
+            - sail
+        volumes:
+            - ./:/var/www/html
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
