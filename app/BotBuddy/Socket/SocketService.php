@@ -45,7 +45,7 @@ class SocketService
         return $response;
     }
 
-    public function dispatch($command): bool
+    public function dispatch($command): string
     {
         return $this->send($command->header, $command->dispatchUsing());
     }

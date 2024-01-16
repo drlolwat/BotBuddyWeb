@@ -94,4 +94,7 @@ Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {
     Route::get('proxy/group', fn () => auth()->user()->proxy_groups);
     Route::get('agent', fn () => auth()->user()->agents);
     Route::get('script', fn () => auth()->user()->scripts);
+    Route::get('getRunningBotsByClient', function(\App\BotBuddy\Socket\SocketService $socket) {
+        echo $socket->dispatch(new \App\BotBuddy\Socket\Commands\GetRunningBotsByClient(auth()->user()));
+    });
 });
