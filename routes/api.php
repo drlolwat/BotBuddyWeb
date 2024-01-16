@@ -21,3 +21,4 @@ use Illuminate\Support\Facades\Route;
 Route::post('updateBot', [\App\Http\Controllers\Api\AccountController::class, 'updateBot']);
 Route::post('wrapper', [\App\Http\Controllers\Api\AccountController::class, 'wrapper']);
 Route::post('agentKey', [\App\Http\Controllers\Api\AgentController::class, 'agentKey']);
+Route::post('agentData', [\App\Http\Controllers\Api\AgentController::class, 'agentData']);

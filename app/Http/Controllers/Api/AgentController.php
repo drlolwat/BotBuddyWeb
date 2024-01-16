@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Agent;
 use Illuminate\Http\Request;
 
@@ -24,5 +25,39 @@ class AgentController extends Controller
         }
 
         return $agent->agent_key;
+    }
+
+    public function agentData(Request $request)
+    {
+        // heartbeat stuff
+        // todo: state that agent is online or offline based on its available in the array
+
+        foreach ($request->all() as $agentUUid => $accounts) {
+            $agent = Agent::query()
+                ->where('uuid', $agentUUid)
+                ->first();
+
+            $accountIds = array_keys($accounts);
+
+            $deadAccounts = Account::query()
+                ->with('agent')
+                ->whereNotIn('id', $accountIds)
+                ->where('status', 'Running')
+                ->where('agent_id', $agent->id)
+                ->get();
+
+            foreach ($deadAccounts as $deadAccount) {
+                $deadAccount->status = 'Stopped';
+                $deadAccount->save();
+            }
+
+            foreach ($accounts as $accountId => $accountStatus) {
+                $account = Account::find($accountId);
+                if ($account->status != $accountStatus) {
+                    $account->status = $accountStatus;
+                    $account->save();
+                }
+            }
+        }
     }
 }
