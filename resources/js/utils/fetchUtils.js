@@ -1,29 +1,26 @@
-export const fetchScripts = async (render) => {
+export const fetchScripts = async () => {
     const res = await fetch('/api/user/script');
     const scripts = await res.json();
     return scripts.map(script => ({
-        label: script.name,
-        value: script.id,
-        render: () => render(script),
+        label: String(script.name),
+        value: String(script.id),
     }));
 };
 
-export const fetchAccounts = async (render) => {
+export const fetchAccounts = async () => {
     const res = await fetch('/api/user/account');
     const accounts = await res.json();
     return accounts.map(account => ({
-        label: account.email,
-        value: account.id,
-        render: () => render(account),
+        label: String(account.email),
+        value: String(account.id),
     }));
 };
 
-export const fetchAccountGroups = async (render) => {
+export const fetchAccountGroups = async () => {
     const res = await fetch('/api/user/account/group');
     const groups = await res.json();
     return groups.map(group => ({
-        label: group.name,
-        value: group.id,
-        render: () => render(group),
+        label: String(group.name),
+        value: String(group.id),
     }));
 };

@@ -22,7 +22,7 @@
             <tr>
                 <th class="px-6 py-3">Model</th>
                 <th class="px-6 py-3">Event</th>
-                <th class="px-6 py-3">Action</th>
+                <th class="px-6 py-3">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -30,7 +30,10 @@
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $workflow->model_type }}:{{ $workflow->model_id }}</td>
                     <td class="px-6 py-4">{{ $workflow->event }}:{{ json_encode($workflow->data) }}</td>
-                    <td class="px-6 py-4">{{ $workflow->actions()->first()->name }}:{{ json_encode($workflow->actions()->first()->data) }}</td>
+                    <td class="px-6 py-4">
+                        {{-- todo: clean up this nasty shit --}}
+                        {{ json_encode(array_map(function ($x) { $y=['name'=>$x['name']];if($x['data']){$y['data']=$x['data'];}return $y;}, $workflow->actions()->get()->toArray())) }}
+                    </td>
                 </tr>
             @endforeach
             </tbody>

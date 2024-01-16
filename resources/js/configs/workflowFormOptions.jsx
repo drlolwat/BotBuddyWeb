@@ -1,6 +1,6 @@
-import DynamicSelectComponent from '../components/DynamicSelectComponent.jsx';
+import DynamicSelect from '../components/DynamicSelect.jsx';
 import {fetchAccounts, fetchScripts, fetchAccountGroups} from '../utils/fetchUtils.js';
-import SelectComponent from '../components/SelectComponent.jsx';
+import Select from '../components/Select.jsx';
 import CreateWorkflowButton from '../components/CreateWorkflowButton.jsx';
 import {Fragment} from 'react';
 
@@ -13,27 +13,61 @@ const workflowFormOptions = {
         options: [{label: "Select a model type"}, {
             label: "Account",
             value: "account",
-            render: () => <Fragment key="account">
-                <DynamicSelectComponent
-                    fetchOptions={() => fetchAccounts(() =>
-                        <SelectComponent {...workflowFormOptions.eventSelect} />)} {...workflowFormOptions.modelIdSelect} />
-            </Fragment>
+            render: (parent,callback) => {
+                return <DynamicSelect
+                    parent={parent} callback={callback}
+                    {...workflowFormOptions.accountIdSelect}
+                />
+            }
         }, {
             label: "Account Group",
             value: "account_group",
-            render: () => (
+            render: (parent,callback) => (
                 <Fragment key="account_group">
-                    <DynamicSelectComponent
-                        fetchOptions={() => fetchAccountGroups(() =>
-                            <SelectComponent {...workflowFormOptions.eventSelect} />)} {...workflowFormOptions.modelIdSelect} />
+                    <DynamicSelect
+                        parent={parent} callback={callback}
+                        {...workflowFormOptions.accountGroupIdSelect}
+                    />
                 </Fragment>
             )
         }],
     },
-    modelIdSelect: {
+    accountIdSelect: {
         name: "model_id",
         className,
         options: [{label: "Select a model"}],
+        optionsCallback: async () => {
+            const accounts = await fetchAccounts();
+            return accounts.map(script => {
+                return {
+                    label: script.label,
+                    value: script.value,
+                    render: (parent,callback) => {
+                        return <Select
+                            parent={parent} callback={callback}
+                            {...workflowFormOptions.eventSelect}
+                        />
+                    }
+                }
+            });
+        }
+    },
+    accountGroupIdSelect: {
+        name: "model_id",
+        className,
+        options: [{label: "Select a model"}],
+        optionsCallback: async () => {
+            const accountGroups = await fetchAccountGroups();
+            return accountGroups.map(script => {
+                return {
+                    label: script.label,
+                    value: script.value,
+                    render: (parent,callback) => {
+                        return <Select parent={parent} callback={callback} {...workflowFormOptions.eventSelect} />
+                    }
+                }
+            });
+        }
     },
     eventSelect: {
         name: "event",
@@ -43,12 +77,12 @@ const workflowFormOptions = {
             {
                 label: "Completes script",
                 value: "script_complete",
-                render: () => <Fragment key="script_complete">
-                    <DynamicSelectComponent
-                        fetchOptions={() => fetchScripts(() =>
-                            <div><SelectComponent {...workflowFormOptions.actionSelect} /></div>)} {...workflowFormOptions.eventScriptSelect}
+                render: (parent,callback) => <Fragment key="script_complete">
+                    <DynamicSelect
+                        parent={parent} callback={callback}
+                        {...workflowFormOptions.eventScriptSelect}
                     />
-                </Fragment>
+                </Fragment>,
             },
         ],
     },
@@ -58,61 +92,73 @@ const workflowFormOptions = {
         options: [
             {label: "Select a script"},
         ],
+        optionsCallback: async () => {
+            const scripts = await fetchScripts();
+            return scripts.map(script => {
+                return {
+                    ...script, render: (parent,callback) => {
+                        return null;
+                    }
+                }
+            });
+        }
     },
-    actionSelect: {
-        name: "action",
-        className,
-        options: [
-            {label: "Select an action"},
-            {
-                label: "Change script",
-                value: "change_script",
-                render: () => (
-                    <Fragment key="change_script">
-                        <DynamicSelectComponent
-                            fetchOptions={() => fetchScripts(() =>
-                                <>
-                                    <input type="text" name="action_script_params"
-                                         className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. param1 param2"/>
-                                    <CreateWorkflowButton/>
-                                </>)} {...workflowFormOptions.actionScriptSelect} />
-                    </Fragment>
-                )
-            },
-            {
-                label: "Change account group",
-                value: "change_account_group",
-                render: () => (
-                    <Fragment key="change_account_group">
-                        <DynamicSelectComponent
-                            fetchOptions={() => fetchAccountGroups(() =>
-                                <CreateWorkflowButton/>)} {...workflowFormOptions.actionAccountGroupSelect} />
-                    </Fragment>
-                )
-            },
-            {
-                label: "Stop bot",
-                value: "stop_bot",
-                render: () => <CreateWorkflowButton/>,
-            },
-            {
-                label: "Restart bot",
-                value: "restart_bot",
-                render: () => <CreateWorkflowButton/>,
-            },
-            {
-                label: "Restart bot with script params",
-                value: "restart_bot_with_script_params",
-                render: () => (
-                    <>
-                        <input type="text" name="action_script_params"
-                               className="border-2 border-gray-300 rounded-lg mb-2 mr-2" placeholder="e.g. param1 param2"/>
-                        <CreateWorkflowButton/>
-                    </>
-                ),
-            },
-        ],
-    },
+    // actionSelect: {
+    //     name: "action",
+    //     className,
+    //     options: [
+    //         {label: "Select an action"},
+    //         {
+    //             label: "Change script",
+    //             value: "change_script",
+    //             // render: (props) => (
+    //             //     <Fragment key="change_script">
+    //             //         <DynamicSelectComponent parent={parent} callback={callback}
+    //             //                                 fetchOptions={() => fetchScripts(() =>
+    //             //                                     <>
+    //             //                                         <input type="text" name="action_script_params"
+    //             //                                                className="border-2 border-gray-300 rounded-lg mb-2 mr-2"
+    //             //                                                placeholder="e.g. param1 param2"/>
+    //             //                                         <CreateWorkflowButton/>
+    //             //                                     </>)} {...workflowFormOptions.actionScriptSelect} />
+    //             //     </Fragment>
+    //             // )
+    //         },
+    //         {
+    //             label: "Change account group",
+    //             value: "change_account_group",
+    //             // render: (parent,callback) => (
+    //             //     <Fragment key="change_account_group">
+    //             //         <DynamicSelectComponent parent={parent} callback={callback}
+    //             //                                 fetchOptions={() => fetchAccountGroups(() =>
+    //             //                                     <CreateWorkflowButton/>)} {...workflowFormOptions.actionAccountGroupSelect} />
+    //             //     </Fragment>
+    //             // )
+    //         },
+    //         {
+    //             label: "Stop bot",
+    //             value: "stop_bot",
+    //             render: (parent,callback) => <CreateWorkflowButton/>,
+    //         },
+    //         {
+    //             label: "Restart bot",
+    //             value: "restart_bot",
+    //             render: (parent,callback) => <CreateWorkflowButton/>,
+    //         },
+    //         {
+    //             label: "Restart bot with script params",
+    //             value: "restart_bot_with_script_params",
+    //             render: (parent,callback) => (
+    //                 <>
+    //                     <input type="text" name="action_script_params"
+    //                            className="border-2 border-gray-300 rounded-lg mb-2 mr-2"
+    //                            placeholder="e.g. param1 param2"/>
+    //                     <CreateWorkflowButton/>
+    //                 </>
+    //             ),
+    //         },
+    //     ],
+    // },
     actionScriptSelect: {
         name: "action_script_id",
         className,
@@ -121,11 +167,23 @@ const workflowFormOptions = {
         ],
     },
     actionAccountGroupSelect: {
-        name: "action_account_group_id",
+        name: "change_account_group[account_group_id]",
         className,
         options: [
             {label: "Select an account group"},
         ],
+        optionsCallback: async () => {
+            const accountGroups = await fetchAccountGroups();
+            return accountGroups.map(script => {
+                return {
+                    label: script.label,
+                    value: script.value,
+                    render: (parent,callback) => {
+                        return null;
+                    }
+                }
+            });
+        }
     },
 };
 

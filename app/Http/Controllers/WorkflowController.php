@@ -21,24 +21,33 @@ class WorkflowController extends Controller
 
     public function create(Request $request)
     {
+        $this->validate($request, [
+            'model_type' => 'required|string',
+            'model_id' => 'required|integer',
+            'event' => 'required|string',
+            'action' => 'required|array',
+        ]);
+
+        // todo: validate action names exist as fields, validate event_* field(s) exist
+        $validated = $request->all();
+
+        // todo: validate each action, action classes need to be able to define their own validation rules
+        $actions = collect($validated['action'])
+            ->mapWithKeys(fn ($action) => [$action => $validated[$action] ?? null])
+            ->toArray();
+
         // todo: ensure only contains valid columns
-        $workflowData = Arr::where($request->all(), function ($value, $key) {
-            return !Str::startsWith($key, 'event_') && !Str::startsWith($key, 'action_') && $key != '_token';
+        $workflowData = Arr::where($validated, function ($value, $key) use ($actions) {
+            return !Str::startsWith($key, 'event_')
+                && !Str::startsWith($key, 'action')
+                && $key != '_token' && !array_key_exists($key, $actions);
         });
 
-        $eventData = Arr::mapWithKeys(Arr::where($request->all(), function ($value, $key) {
+        $eventData = Arr::mapWithKeys(Arr::where($validated, function ($value, $key) {
             return Str::startsWith($key, 'event_');
         }), function ($value, $key) {
             return [Str::replaceFirst('event_', '', $key) => $value];
         });
-
-        $actionData = Arr::mapWithKeys(Arr::where($request->all(), function ($value, $key) {
-            return Str::startsWith($key, 'action_');
-        }), function ($value, $key) {
-            return [Str::replaceFirst('action_', '', $key) => $value];
-        });
-
-        // todo: check workflow is valid e.g. moving script to same script
 
         $workflow = Workflow::create([
             'user_id' => auth()->user()->id,
@@ -46,13 +55,15 @@ class WorkflowController extends Controller
             'data' => $eventData,
         ]);
 
-        // todo: support multiple actions
-
-        $action = $workflow->actions()->create([
-            'name' => $workflowData['action'],
-            'data' => $actionData,
-            'order' => 1,
-        ]);
+        $i = 1;
+        foreach ($actions as $action => $data) {
+            $workflow->actions()->create([
+                'name' => $action,
+                'data' => $data ? array_filter($data, fn ($value) => !is_null($value)) : null,
+                'order' => $i,
+            ]);
+            $i++;
+        }
 
         return back()->with('status','Workflow created');
     }
