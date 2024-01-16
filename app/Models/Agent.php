@@ -9,5 +9,5 @@ class Agent extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'user_id', 'uuid'];
+    protected $fillable = ['name', 'user_id', 'uuid', 'server_key', 'agent_key'];
 }
