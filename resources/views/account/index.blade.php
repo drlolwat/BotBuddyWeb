@@ -60,7 +60,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach(auth()->user()->accounts as $account)
+            @foreach($accounts as $account)
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $account->email }}</td>
                     <td class="px-6 py-4">{{ $account->password }}</td>

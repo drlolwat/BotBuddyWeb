@@ -18,7 +18,12 @@ class AccountController extends Controller
 
     public function index()
     {
-        return view('account.index');
+        $accounts = auth()->user()
+            ->accounts()
+            ->with('account_group', 'account_group.script', 'proxy', 'script', 'agent')
+            ->get();
+
+        return view('account.index', compact('accounts'));
     }
 
     public function show(Account $account)
