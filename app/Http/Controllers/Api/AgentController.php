@@ -29,8 +29,12 @@ class AgentController extends Controller
 
     public function agentData(Request $request)
     {
-        // heartbeat stuff
-        // todo: state that agent is online or offline based on its available in the array
+        $uuids = array_keys($request->all());
+        Account::query()
+            ->whereIn('status', ['Running', 'Starting', 'Stopping'])
+            ->whereHas('agent', function ($query) use ($uuids) {
+                $query->whereNotIn('uuid', $uuids);
+            })->update(['status' => 'Stopped']);
 
         foreach ($request->all() as $agentUUid => $accounts) {
             $agent = Agent::query()
