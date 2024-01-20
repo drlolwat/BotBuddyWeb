@@ -5,6 +5,7 @@ namespace App\BotBuddy\Workflow;
 use App\BotBuddy\Workflow\Actions\ChangeAccountGroup;
 use App\BotBuddy\Workflow\Actions\ChangeScript;
 use App\BotBuddy\Workflow\Actions\RestartBot;
+use App\BotBuddy\Workflow\Actions\StopAndReplenishFrom;
 use App\BotBuddy\Workflow\Actions\StopBot;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Collection;
@@ -18,6 +19,7 @@ class WorkflowService
         'restart_bot' => RestartBot::class,
         'restart_bot_with_script_params' => RestartBot::class,
         'change_account_group' => ChangeAccountGroup::class,
+        'stop_and_replenish_with' => StopAndReplenishFrom::class,
     ];
 
     public function handle(Model $model, Workflow $workflow): void
