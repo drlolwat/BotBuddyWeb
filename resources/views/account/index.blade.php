@@ -71,8 +71,10 @@
                     @if($account->status == 'Banned')
                         @if($account->perm_banned_at)
                             <td class="px-6 py-4 text-[red]">Banned&nbsp;(Permanent)</td>
-                        @else
+                        @else($account->temp_banned_at)
                             <td class="px-6 py-4 text-[red]">Banned&nbsp;(Temporary)</td>
+                        @else
+                            <td class="px-6 py-4 text-[red]">Banned</td>
                         @endif
                     @else
                         <td class="px-6 py-4">{{ $account->status }}</td>
