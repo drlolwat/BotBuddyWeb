@@ -12,6 +12,20 @@ const Workflow = () => {
     const {event, updateEvent} = useContext(EventContext);
 
     const actions = {
+        testScript: {
+            jsx: () => <Action
+                name="Stop and replenish with"
+                className="border-b border-gray-300"
+                content={() => (
+                    <>
+                        <input type="hidden" name="action[]" value="stop_and_replenish_with"/>
+                        <DynamicSelect
+                            {...workflowFormOptions.actionReplenishWithAccountGroupSelect}
+                        />
+                    </>
+                )}/>,
+            events: ["script_complete"],
+        },
         changeScript: {
             jsx: () => <ChangeScriptAction/>,
             events: ["script_complete"],

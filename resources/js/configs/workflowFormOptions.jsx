@@ -206,6 +206,25 @@ const workflowFormOptions = {
             });
         }
     },
+    actionReplenishWithAccountGroupSelect: {
+        name: "stop_and_replenish_with[account_group_id]",
+        className,
+        options: [
+            {label: "Select an account group"},
+        ],
+        optionsCallback: async () => {
+            const accountGroups = await fetchAccountGroups();
+            return accountGroups.map(script => {
+                return {
+                    label: script.label,
+                    value: script.value,
+                    render: (parent, callback) => {
+                        return <><span className="mr-2">Random proxy?</span><input name="stop_and_replenish_with[random_proxy]" type="checkbox" /></>;
+                    }
+                }
+            });
+        }
+    },
 };
 
 export default workflowFormOptions;
