@@ -26,13 +26,13 @@
             </tr>
             </thead>
             <tbody>
-            @foreach(auth()->user()->workflows as $workflow)
+            @foreach($workflows as $workflow)
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $workflow->model_type }}:{{ $workflow->model_id }}</td>
                     <td class="px-6 py-4">{{ $workflow->event }}@if($workflow->data):{{ json_encode($workflow->data) }}@endif</td>
                     <td class="px-6 py-4">
                         {{-- todo: clean up this nasty shit --}}
-                        {{ json_encode(array_map(function ($x) { $y=['name'=>$x['name']];if($x['data']){$y['data']=$x['data'];}return $y;}, $workflow->actions()->get()->toArray())) }}
+                        {{ json_encode(array_map(function ($x) { $y=['name'=>$x['name']];if($x['data']){$y['data']=$x['data'];}return $y;}, $workflow->actions->toArray())) }}
                     </td>
                 </tr>
             @endforeach

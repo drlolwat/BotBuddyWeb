@@ -16,7 +16,12 @@ class WorkflowController extends Controller
 
     public function index()
     {
-        return view('workflow');
+        $workflows = Workflow::query()
+            ->with('actions')
+            ->where('user_id', auth()->id())
+            ->get();
+
+        return view('workflow', compact('workflows'));
     }
 
     public function create(Request $request)
