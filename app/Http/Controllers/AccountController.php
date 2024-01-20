@@ -41,6 +41,7 @@ class AccountController extends Controller
         $validated = $this->validate($request, [
             'email' => 'required',
             'password' => 'required',
+            'password_2fa' => 'nullable',
             'account_group_id' => 'nullable',
             'proxy_id' => 'nullable',
             'script_id' => 'required',
@@ -51,6 +52,7 @@ class AccountController extends Controller
         $account = Account::create([
             'email' => $validated['email'],
             'password' => $validated['password'],
+            'password_2fa' => $validated['password_2fa'] ?? null,
             'account_group_id' => $validated['account_group_id'] ?? null,
             'proxy_id' => $validated['proxy_id'],
             'script_id' => $validated['script_id'],
@@ -67,6 +69,7 @@ class AccountController extends Controller
         $validated = $this->validate($request, [
             'email' => 'required',
             'password' => 'required',
+            'password_2fa' => 'nullable',
             'account_group_id' => 'nullable',
             'proxy_id' => 'nullable',
             'script_id' => 'required',
@@ -77,6 +80,7 @@ class AccountController extends Controller
         $account->update([
             'email' => $validated['email'],
             'password' => $validated['password'],
+            'password_2fa' => $validated['password_2fa'] ?? null,
             'account_group_id' => $validated['account_group_id'] ?? null,
             'proxy_id' => $validated['proxy_id'],
             'script_id' => $validated['script_id'],

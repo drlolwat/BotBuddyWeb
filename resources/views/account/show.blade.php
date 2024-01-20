@@ -15,6 +15,8 @@
         <input type="text" name="email" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" value="{{ $account->email }}" />
         <div>Password</div>
         <input type="text" name="password" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" value="{{ $account->password }}" />
+        <div>OTP Code (optional)</div>
+        <input type="text" name="password_2fa" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full" value="{{ $account->password_2fa }}" />
         <div>Group</div>
         <select name="account_group_id" class="border-2 border-gray-300 rounded-lg p-2 mb-2 w-full">
             <option value="0">None</option>
