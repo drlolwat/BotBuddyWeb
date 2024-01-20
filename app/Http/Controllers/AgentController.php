@@ -35,6 +35,8 @@ class AgentController extends Controller
     {
         $validated = $this->validate($request, [
             'name' => 'required',
+            'dreambot_client_path' => '',
+            'dreambot_scripts_path' => '',
         ]);
 
         $agent = Agent::create([
@@ -42,6 +44,9 @@ class AgentController extends Controller
             'user_id' => auth()->id(),
             'uuid' => Str::uuid()->toString(),
             'agent_key' => trim(bin2hex(random_bytes(32))),
+            'client_type' => 'DreamBot',
+            'dreambot_client_path' => $validated['dreambot_client_path'] ?? null,
+            'dreambot_scripts_path' => $validated['dreambot_scripts_path'] ?? null,
         ]);
 
         return redirect(route('agent.show', $agent))->with('status', 'Agent created');
@@ -51,10 +56,15 @@ class AgentController extends Controller
     {
         $validated = $this->validate($request, [
             'name' => 'required',
+            'dreambot_client_path' => '',
+            'dreambot_scripts_path' => '',
         ]);
 
         $agent->update([
             'name' => $validated['name'],
+            'client_type' => 'DreamBot',
+            'dreambot_client_path' => $validated['dreambot_client_path'] ?? $agent->dreambot_client_path,
+            'dreambot_scripts_path' => $validated['dreambot_scripts_path'] ?? $agent->dreambot_scripts_path,
         ]);
 
         return redirect(route('agent.show', $agent))->with('status', 'Agent updated');

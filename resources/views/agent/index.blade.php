@@ -18,6 +18,7 @@
             <thead class="text-xs text-white bg-gray-500">
             <tr>
                 <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3">Client Type</th>
                 <th class="px-6 py-3">UUID</th>
                 <th class="px-6 py-3"></th>
             </tr>
@@ -26,6 +27,7 @@
             @foreach(auth()->user()->agents as $agent)
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $agent->name }}</td>
+                    <td class="px-6 py-4">{{ $agent->client_type }}</td>
                     <td class="px-6 py-4">{{ $agent->uuid }}</td>
                     <td class="px-6 py-4 text-right">
                         <a href="{{ route('agent.show', $agent->id) }}" class="font-medium text-blue-600 hover:underline">Edit</a>

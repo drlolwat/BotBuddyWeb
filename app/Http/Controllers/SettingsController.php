@@ -21,7 +21,6 @@ class SettingsController extends Controller
         $validated = $this->validate($request, [
             'dreambot_username' => '',
             'dreambot_password' => '',
-            'dreambot_client' => '',
         ]);
 
         $user = auth()->user();
@@ -32,10 +31,6 @@ class SettingsController extends Controller
 
         if (strlen($validated['dreambot_password']) > 0 && $validated['dreambot_password'] != $user->dreambot_password) {
             $user->dreambot_password = $validated['dreambot_password'];
-        }
-
-        if ($validated['dreambot_client'] != $user->dreambot_client) {
-            $user->dreambot_client = $validated['dreambot_client'];
         }
 
         $user->save();

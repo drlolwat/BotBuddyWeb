@@ -25,7 +25,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'dreambot_username',
         'dreambot_password',
-        'dreambot_client',
     ];
 
     /**

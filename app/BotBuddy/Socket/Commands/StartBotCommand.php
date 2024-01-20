@@ -15,7 +15,8 @@ class StartBotCommand
         return [
             'serverId' => $this->account->agent->uuid,
             'internalId' => $this->account->id,
-            'jarLocation' => $this->account->user->dreambot_client,
+            'jarLocation' => $this->account->agent->dreambot_client_path,
+            //'scriptsLocation' => $this->account->agent->dreambot_scripts_path, // todo: add when supported
             'scriptName' => $this->account->script->script ?? $this->account->account_group->script->script,
             'scriptParams' => $this->account->script_params ?? $this->account->account_group->script_params ?? "",
             'clientName' => $this->account->user->dreambot_username,

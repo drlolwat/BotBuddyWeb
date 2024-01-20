@@ -100,9 +100,21 @@ class AccountController extends Controller
             return back()->withErrors('Account is not assigned to an agent');
         }
 
+        if ($account->agent->client_type != 'DreamBot') {
+            return back()->withErrors('Only DreamBot clients are allowed at this stage');
+        }
+
+        if (!$account->agent->dreambot_client_path) {
+            return back()->withErrors('Please configure the agent DreamBot client.jar path');
+        }
+
+        if (!$account->agent->dreambot_scripts_path) {
+            return back()->withErrors('Please configure the agent DreamBot scripts path');
+        }
+
         $user = auth()->user();
 
-        if (!$user->dreambot_username || !$user->dreambot_password || !$user->dreambot_client) {
+        if (!$user->dreambot_username || !$user->dreambot_password) {
             return redirect(route('settings'))
                 ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials and client.jar to start an account']);
         }
