@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "ext-sockets": "*",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/fortify": "^1.19",
@@ -15,6 +15,7 @@
         "sentry/sentry-laravel": "^4.1"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.9",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
