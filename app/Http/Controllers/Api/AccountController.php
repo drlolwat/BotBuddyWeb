@@ -39,17 +39,17 @@ class AccountController extends Controller
 
         if ($validated['Status'] == 'Banned') {
             $account = Account::find($validated['Id']);
-            if ($account) {
+            if ($account && $account->stats?->name) {
                 // check if account is temp banned or perm banned via hiscores
                 $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
                     'player' => $account->stats->name
                 ]);
                 if ($res->status() == 404) {
                     $account->perm_banned_at = now();
-                    $event = 'temp_banned';
+                    $event = 'perm_banned';
                 } else {
                     $account->temp_banned_at = now();
-                    $event = 'perm_banned';
+                    $event = 'temp_banned';
                 }
 
                 // handle for specific account
