@@ -27,6 +27,7 @@ class StartBotCommand
             'proxyPort' => $this->account->proxy?->port ?? 0,
             'proxyUsername' => $this->account->proxy?->username ?? '',
             'proxyPassword' => $this->account->proxy?->password ?? '',
+            'accountTotp' => $this->account->password_2fa,
         ];
     }
 }
