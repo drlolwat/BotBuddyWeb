@@ -68,7 +68,15 @@
                     <td class="px-6 py-4">{{ $account->agent?->name }}</td>
                     <td class="px-6 py-4">@if($account->proxy){{ $account->proxy->host }}:{{ $account->proxy->port }}@endif</td>
                     <td class="px-6 py-4">@if($account->script?->name) {{ $account->script->name }} @else {{ $account->account_group?->script->name }} @endif</td>
-                    <td class="px-6 py-4">{{ $account->status }}</td>
+                    @if($account->status == 'Banned')
+                        @if($account->perm_banned_at)
+                            <td class="px-6 py-4 text-[red]">Banned&nbsp;(Permanent)</td>
+                        @else
+                            <td class="px-6 py-4 text-[red]">Banned&nbsp;(Temporary)</td>
+                        @endif
+                    @else
+                        <td class="px-6 py-4">{{ $account->status }}</td>
+                    @endif
                     <td class="px-6 py-4 gap-2 flex">
                         @if($account->status == 'Stopped')
                             <form method="post" action="{{ route('account.start', $account->id) }}">

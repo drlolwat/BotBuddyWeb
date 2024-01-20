@@ -52,7 +52,7 @@ class WorkflowController extends Controller
         $workflow = Workflow::create([
             'user_id' => auth()->user()->id,
             ...$workflowData,
-            'data' => $eventData,
+            'data' => count($eventData) > 0 ? $eventData : null,
         ]);
 
         $i = 1;

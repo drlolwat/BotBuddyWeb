@@ -9,7 +9,7 @@ import DynamicSelect from "./DynamicSelect.jsx";
 import {fetchAccountGroups} from "../utils/fetchUtils.js";
 
 const Workflow = () => {
-    const {event,updateEvent} = useContext(EventContext);
+    const {event, updateEvent} = useContext(EventContext);
 
     const actions = {
         changeScript: {
@@ -63,16 +63,24 @@ const Workflow = () => {
     };
 
     const hasSelected = (obj, name, value, selectedValue, defaultValue) => {
+        console.log(obj, name, value, selectedValue, defaultValue);
         if (!obj) return false;
-        if (obj.parentName === name && obj.parentSelectedValue === value && selectedValue === defaultValue) return false;
-        if (obj.parentName === name && obj.parentSelectedValue === value && !(selectedValue === defaultValue)) return true;
-        if (obj.parentName === name && !(obj.parentSelectedValue === value)) return false;
-
+        if (selectedValue && defaultValue) {
+            if (obj.parentName === name && obj.parentSelectedValue === value && selectedValue === defaultValue) return false;
+            if (obj.parentName === name && obj.parentSelectedValue === value && !(selectedValue === defaultValue)) return true;
+            if (obj.parentName === name && !(obj.parentSelectedValue === value)) return false;
+        } else {
+            if (obj.parentName === name && obj.parentSelectedValue === value) return true;
+        }
         return hasSelected(obj.parent, name, value);
     }
 
+    // todo: make this configurable
     const callback = (parent, selectedValue, defaultValue) => {
-        if (hasSelected(parent, "event", "script_complete", selectedValue, defaultValue)) {
+        if (hasSelected(parent, "event", "script_complete", selectedValue, defaultValue)
+            || hasSelected(parent, "event", "temp_banned")
+            || hasSelected(parent, "event", "perm_banned")
+        ) {
             updateEvent("script_complete");
         } else {
             updateEvent(null);
@@ -81,7 +89,7 @@ const Workflow = () => {
 
     return (
         <>
-            <Select {...workflowFormOptions.modelTypeSelect} callback={callback} />
+            <Select {...workflowFormOptions.modelTypeSelect} callback={callback}/>
             <div className="py-2 font-bold">Actions</div>
             {!event && <div>Select an event to see the possible actions</div>}
             <div className="grid gap-2">

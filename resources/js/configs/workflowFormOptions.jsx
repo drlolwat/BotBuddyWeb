@@ -3,6 +3,7 @@ import {fetchAccounts, fetchScripts, fetchAccountGroups} from '../utils/fetchUti
 import Select from '../components/Select.jsx';
 import CreateWorkflowButton from '../components/CreateWorkflowButton.jsx';
 import {Fragment} from 'react';
+import CallbackRunner from "../components/CallbackRunner.jsx";
 
 const className = "border-2 border-gray-300 rounded-lg mb-2 mr-2";
 
@@ -13,7 +14,7 @@ const workflowFormOptions = {
         options: [{label: "Select a model type"}, {
             label: "Account",
             value: "account",
-            render: (parent,callback) => {
+            render: (parent, callback) => {
                 return <DynamicSelect
                     parent={parent} callback={callback}
                     {...workflowFormOptions.accountIdSelect}
@@ -22,7 +23,7 @@ const workflowFormOptions = {
         }, {
             label: "Account Group",
             value: "account_group",
-            render: (parent,callback) => (
+            render: (parent, callback) => (
                 <Fragment key="account_group">
                     <DynamicSelect
                         parent={parent} callback={callback}
@@ -42,7 +43,7 @@ const workflowFormOptions = {
                 return {
                     label: script.label,
                     value: script.value,
-                    render: (parent,callback) => {
+                    render: (parent, callback) => {
                         return <Select
                             parent={parent} callback={callback}
                             {...workflowFormOptions.eventSelect}
@@ -62,7 +63,7 @@ const workflowFormOptions = {
                 return {
                     label: script.label,
                     value: script.value,
-                    render: (parent,callback) => {
+                    render: (parent, callback) => {
                         return <Select parent={parent} callback={callback} {...workflowFormOptions.eventSelect} />
                     }
                 }
@@ -77,12 +78,32 @@ const workflowFormOptions = {
             {
                 label: "Completes script",
                 value: "script_complete",
-                render: (parent,callback) => <Fragment key="script_complete">
+                render: (parent, callback) => <Fragment key="script_complete">
                     <DynamicSelect
                         parent={parent} callback={callback}
                         {...workflowFormOptions.eventScriptSelect}
                     />
                 </Fragment>,
+            },
+            {
+                label: "Is temp banned",
+                value: "temp_banned",
+                render: (parent, callback) => <CallbackRunner
+                    parent={parent}
+                    callback={callback}
+                    name="event"
+                    value="temp_banned"
+                 />,
+            },
+            {
+                label: "Is perm banned",
+                value: "perm_banned",
+                render: (parent, callback) => <CallbackRunner
+                    parent={parent}
+                    callback={callback}
+                    name="event"
+                    value="perm_banned"
+                />,
             },
         ],
     },
@@ -96,7 +117,7 @@ const workflowFormOptions = {
             const scripts = await fetchScripts();
             return scripts.map(script => {
                 return {
-                    ...script, render: (parent,callback) => {
+                    ...script, render: (parent, callback) => {
                         return null;
                     }
                 }
@@ -178,7 +199,7 @@ const workflowFormOptions = {
                 return {
                     label: script.label,
                     value: script.value,
-                    render: (parent,callback) => {
+                    render: (parent, callback) => {
                         return null;
                     }
                 }
