@@ -98,3 +98,6 @@ Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {
         echo $socket->dispatch(new \App\BotBuddy\Socket\Commands\GetRunningBotsByClient(auth()->user()));
     });
 });
+
+Route::get('store', [\App\Http\Controllers\StoreController::class, 'index'])->name('store');
+Route::get('store/{product}', [\App\Http\Controllers\StoreController::class, 'checkout'])->name('store.checkout');
