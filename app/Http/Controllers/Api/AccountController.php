@@ -18,56 +18,56 @@ class AccountController extends Controller
             'Status' => 'required|string'
         ]);
 
+        $account = Account::find($validated['Id']);
+
+        if (!$account) {
+            return ['success' => false];
+        }
+
         // todo: handle via event system
         if ($validated['Status'] == 'Completed') {
-            $account = Account::find($validated['Id']);
-            if ($account) {
-                // handle for specific account
-                $workflows = $workflowService->getWorkflows('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
+            // handle for specific account
+            $workflows = $workflowService->getWorkflows('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
+            foreach($workflows as $workflow) {
+                $workflowService->handle($account, $workflow);
+            }
+            // handle for account groups instead if they are not defined for the account
+            if ($workflows->count() == 0) {
+                $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
                 foreach($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
-                }
-                // handle for account groups instead if they are not defined for the account
-                if ($workflows->count() == 0) {
-                    $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
-                    foreach($workflows as $workflow) {
-                        $workflowService->handle($account, $workflow);
-                    }
                 }
             }
         }
 
         if ($validated['Status'] == 'Banned') {
-            $account = Account::find($validated['Id']);
-            if ($account) {
-                if ($account->stats?->name) {
-                    // check if account is temp banned or perm banned via hiscores
-                    $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
-                        'player' => $account->stats->name
-                    ]);
-                    if ($res->status() == 404) {
-                        $account->perm_banned_at = now();
-                        $event = 'perm_banned';
-                    } else {
-                        $account->temp_banned_at = now();
-                        $event = 'temp_banned';
-                    }
-                } else {
+            if ($account->stats?->name) {
+                // check if account is temp banned or perm banned via hiscores
+                $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
+                    'player' => $account->stats->name
+                ]);
+                if ($res->status() == 404) {
                     $account->perm_banned_at = now();
                     $event = 'perm_banned';
+                } else {
+                    $account->temp_banned_at = now();
+                    $event = 'temp_banned';
                 }
+            } else {
+                $account->perm_banned_at = now();
+                $event = 'perm_banned';
+            }
 
-                // handle for specific account
-                $workflows = $workflowService->getWorkflows('account', $account->id, $event, ['script_id' => $account->script_id]);
+            // handle for specific account
+            $workflows = $workflowService->getWorkflows('account', $account->id, $event, ['script_id' => $account->script_id]);
+            foreach($workflows as $workflow) {
+                $workflowService->handle($account, $workflow);
+            }
+            // handle for account groups instead if they are not defined for the account
+            if ($workflows->count() == 0) {
+                $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, $event, ['script_id' => $account->script_id]);
                 foreach($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
-                }
-                // handle for account groups instead if they are not defined for the account
-                if ($workflows->count() == 0) {
-                    $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, $event, ['script_id' => $account->script_id]);
-                    foreach($workflows as $workflow) {
-                        $workflowService->handle($account, $workflow);
-                    }
                 }
             }
         }
