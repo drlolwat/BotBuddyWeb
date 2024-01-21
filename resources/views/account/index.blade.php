@@ -80,12 +80,12 @@
                         <td class="px-6 py-4">{{ $account->status }}</td>
                     @endif
                     <td class="px-6 py-4 gap-2 flex">
-                        @if($account->status == 'Stopped')
+                        @if($account->status == 'Stopped' || $account->status == 'Stopping' || $account->status == 'Banned')
                             <form method="post" action="{{ route('account.start', $account->id) }}">
                                 @csrf
                                 <button type="submit" class="font-medium text-blue-600 hover:underline">Start</button>
                             </form>
-                        @elseif($account->status == 'Running')
+                        @elseif($account->status == 'Running' || $account->status == 'Starting')
                             <form method="post" action="{{ route('account.stop', $account->id) }}">
                                 @csrf
                                 <button type="submit" class="font-medium text-blue-600 hover:underline">Stop</button>
