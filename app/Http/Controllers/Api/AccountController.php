@@ -72,9 +72,11 @@ class AccountController extends Controller
             }
         }
 
-        if ((!$validated['Status'] == 'Stopped' && $account->status = 'Banned')) {
-            $account->status = $validated['Status'];
+        if ($validated['Status'] == 'Stopped' && $account->status == 'Banned') {
+            return ['success' => false];
         }
+
+        $account->status = $validated['Status'];
 
         return ['success' => $account->save()];
     }
