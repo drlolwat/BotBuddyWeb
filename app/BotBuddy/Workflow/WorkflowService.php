@@ -32,12 +32,16 @@ class WorkflowService
 
     public function getWorkflows($modelType, $modelId, $event, $eventData): Collection
     {
-        return Workflow::query()
+        $query = Workflow::query()
             ->with('model', 'actions')
             ->where('model_type', $modelType)
             ->where('model_id', $modelId)
-            ->where('event', $event)
-            ->whereRaw('data = CAST(? AS JSON)', [json_encode($eventData)])
-            ->get();
+            ->where('event', $event);
+
+        if ($eventData) {
+            $query = $query->whereRaw('data = CAST(? AS JSON)', [json_encode($eventData)]);
+        }
+
+        return $query->get();
     }
 }

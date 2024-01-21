@@ -59,13 +59,13 @@ class AccountController extends Controller
             }
 
             // handle for specific account
-            $workflows = $workflowService->getWorkflows('account', $account->id, $event, ['script_id' => $account->script_id]);
+            $workflows = $workflowService->getWorkflows('account', $account->id, $event, null);
             foreach($workflows as $workflow) {
                 $workflowService->handle($account, $workflow);
             }
             // handle for account groups instead if they are not defined for the account
             if ($workflows->count() == 0) {
-                $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, $event, ['script_id' => $account->script_id]);
+                $workflows = $workflowService->getWorkflows('account_group', 8, $event, null);
                 foreach($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
                 }
