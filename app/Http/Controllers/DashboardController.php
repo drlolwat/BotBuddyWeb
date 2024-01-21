@@ -13,6 +13,18 @@ class DashboardController extends Controller
 
     public function index()
     {
-        return view('dashboard');
+        $yesterday = now()->subDay();
+
+        $online = auth()->user()->accounts()->where('status', 'Running')->count();
+        $offline = auth()->user()->accounts()->where('status', '!=', 'Running')->count();
+
+        $bannedLast24h = auth()->user()->accounts()
+            ->where(function ($query) use ($yesterday) {
+                $query->where('perm_banned_at', '>=', $yesterday)
+                    ->orWhere('temp_banned_at', '>=', $yesterday);
+            })
+            ->count();
+
+        return view('dashboard', compact('online', 'offline', 'bannedLast24h'));
     }
 }
