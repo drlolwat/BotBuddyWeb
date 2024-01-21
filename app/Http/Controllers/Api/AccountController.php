@@ -72,7 +72,6 @@ class AccountController extends Controller
             }
         }
 
-        $account = Account::find($validated['Id']);
         $account->status = $validated['Status'];
 
         return ['success' => $account->save()];
