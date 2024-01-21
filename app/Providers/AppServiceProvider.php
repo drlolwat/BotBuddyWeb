@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\BotBuddy\Sellix\SellixService;
 use App\BotBuddy\Workflow\WorkflowService;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
@@ -28,6 +29,15 @@ class AppServiceProvider extends ServiceProvider
             'account' => Account::class,
             'account_group' => AccountGroup::class,
         ]);
+
+        $this->app->singleton(SellixService::class, function () {
+            return new SellixService(
+                config('sellix.api_key'),
+                config('sellix.shop_name'),
+            );
+        });
+
+        $this->app->bind('sellix', SellixService::class);
     }
 
     /**

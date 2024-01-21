@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7a395c41cb2f0dca1f0e073b504355a",
+    "content-hash": "ce081111e3ebddbf84224ffbf45973cf",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -3607,6 +3607,43 @@
                 }
             ],
             "time": "2023-11-08T05:53:05+00:00"
+        },
+        {
+            "name": "sellix/php-sdk",
+            "version": "1.0.18",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sellix/php-sdk.git",
+                "reference": "7d46100643fb564edacef75f987c8c8472b3d355"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sellix/php-sdk/zipball/7d46100643fb564edacef75f987c8c8472b3d355",
+                "reference": "7d46100643fb564edacef75f987c8c8472b3d355",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sellix\\PhpSdk\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniele Servadei",
+                    "email": "daniele@sellix.io"
+                }
+            ],
+            "description": "Sellix PHP SDK",
+            "support": {
+                "issues": "https://github.com/Sellix/php-sdk/issues",
+                "source": "https://github.com/Sellix/php-sdk/tree/1.0.18"
+            },
+            "time": "2023-11-11T11:50:33+00:00"
         },
         {
             "name": "sentry/sentry",
