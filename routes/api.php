@@ -22,3 +22,4 @@ Route::post('updateBot', [\App\Http\Controllers\Api\AccountController::class, 'u
 Route::post('wrapper', [\App\Http\Controllers\Api\AccountController::class, 'wrapper']);
 Route::post('agentKey', [\App\Http\Controllers\Api\AgentController::class, 'agentKey']);
 Route::post('agentData', [\App\Http\Controllers\Api\AgentController::class, 'agentData']);
+Route::post('allowedClients', [\App\Http\Controllers\Api\AccountController::class, 'allowedClients']);

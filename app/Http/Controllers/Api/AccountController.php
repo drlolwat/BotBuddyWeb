@@ -134,4 +134,9 @@ class AccountController extends Controller
 
         return $updated;
     }
+
+    public function allowedClients()
+    {
+        return 3;
+    }
 }
