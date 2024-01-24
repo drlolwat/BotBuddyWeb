@@ -24,4 +24,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN apk add --update nodejs npm
 
+RUN mkdir /.npm && chown -R 1000:1000 /.npm && chmod -R 775 /.npm
+
 USER 1000:1000
