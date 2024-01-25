@@ -10,7 +10,7 @@ class AccountGroup extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'user_id', 'script_id', 'script_params'];
+    protected $fillable = ['name', 'user_id', 'script_id', 'script_params', 'world', 'fps'];
 
     public function user()
     {

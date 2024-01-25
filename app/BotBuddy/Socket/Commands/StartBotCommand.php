@@ -28,6 +28,8 @@ class StartBotCommand
             'proxyUsername' => $this->account->proxy?->username ?? '',
             'proxyPassword' => $this->account->proxy?->password ?? '',
             'accountTotp' => $this->account->password_2fa,
+            'fps' => $this->account->fps,
+            'world' => $this->account->world,
         ];
     }
 }

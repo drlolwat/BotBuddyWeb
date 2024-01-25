@@ -47,7 +47,13 @@ class AccountController extends Controller
             'script_id' => 'required',
             'script_params' => 'nullable',
             'agent_id' => 'nullable',
+            'fps' => 'required|int',
+            'world' => 'required',
         ]);
+
+        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || is_int($validated['world']))) {
+            return back()->withErrors('Invalid world provided');
+        }
 
         $account = Account::create([
             'email' => $validated['email'],
@@ -59,6 +65,8 @@ class AccountController extends Controller
             'script_params' => $validated['script_params'] ?? null,
             'agent_id' => $validated['agent_id'] ?? null,
             'user_id' => auth()->id(),
+            'fps' => $validated['fps'],
+            'world' => $validated['world'],
         ]);
 
         return redirect(route('account.show', $account))->with('status', 'Account created');
@@ -75,7 +83,13 @@ class AccountController extends Controller
             'script_id' => 'required',
             'script_params' => 'nullable',
             'agent_id' => 'nullable',
+            'fps' => 'required|int',
+            'world' => 'required',
         ]);
+
+        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || is_int($validated['world']))) {
+            return back()->withErrors('Invalid world provided');
+        }
 
         $account->update([
             'email' => $validated['email'],
@@ -86,6 +100,8 @@ class AccountController extends Controller
             'script_id' => $validated['script_id'],
             'agent_id' => $validated['agent_id'] ?? null,
             'script_params' => $validated['script_params'] ?? null,
+            'fps' => $validated['fps'],
+            'world' => $validated['world'],
         ]);
 
         return redirect(route('account.show', $account))->with('status', 'Account updated');
