@@ -15,7 +15,12 @@ class ProxyController extends Controller
 
     public function index()
     {
-        return view('proxy.index');
+        $proxies = auth()->user()
+            ->proxies()
+            ->with('proxy_group')
+            ->get();
+
+        return view('proxy.index', compact('proxies'));
     }
 
     public function show(Proxy $proxy)
