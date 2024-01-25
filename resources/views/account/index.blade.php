@@ -54,7 +54,6 @@
             <thead class="text-xs text-white bg-gray-500">
             <tr>
                 <th class="px-6 py-3">Email</th>
-                <th class="px-6 py-3">Password</th>
                 <th class="px-6 py-3">Group</th>
                 <th class="px-6 py-3">Agent</th>
                 <th class="px-6 py-3">Proxy</th>
@@ -69,7 +68,6 @@
             @foreach($accounts as $account)
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $account->email }}</td>
-                    <td class="px-6 py-4">{{ $account->password }}</td>
                     <td class="px-6 py-4">{{ $account->account_group?->name }}</td>
                     <td class="px-6 py-4">{{ $account->agent?->name }}</td>
                     <td class="px-6 py-4">@if($account->proxy){{ $account->proxy->host }}:{{ $account->proxy->port }}@endif</td>
