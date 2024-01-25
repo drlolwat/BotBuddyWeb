@@ -6,6 +6,7 @@ use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
+use App\Models\AccountGroup;
 use App\Models\Proxy;
 use Illuminate\Http\Request;
 
@@ -179,17 +180,15 @@ class AccountController extends Controller
         $validated = $this->validate($request, [
             'account_file' => 'nullable|file|mimes:txt',
             'account_textarea' => 'nullable|string',
-            'account_group_id' => 'nullable',
+            'account_group_id' => 'required',
             'proxy_id' => 'nullable',
-            'script_id' => 'required',
-            'script_params' => 'nullable',
             'agent_id' => 'nullable',
-            'fps' => 'required|int',
-            'world' => 'required',
         ]);
 
-        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || is_int($validated['world']))) {
-            return back()->withErrors('Invalid world provided');
+        $accountGroup = AccountGroup::find($validated['account_group_id']);
+
+        if (!$accountGroup) {
+            return back()->withErrors('Account group does not exist');
         }
 
         $linesFile = [];
@@ -287,10 +286,10 @@ class AccountController extends Controller
                 'account_group_id' => $request->get('account_group_id'),
                 'agent_id' => $request->get('agent_id'),
                 'proxy_id' => $newProxy?->id ?? $request->get('proxy_id'),
-                'script_id' => $request->get('script_id'),
-                'script_params' => $request->get('script_params'),
-                'fps' => $request->get('fps'),
-                'world' => $request->get('world'),
+                'script_id' => $accountGroup->script_id,
+                'script_params' => $accountGroup->script_params,
+                'fps' => $accountGroup->fps,
+                'world' => $accountGroup->world,
             ]);
         }
 
