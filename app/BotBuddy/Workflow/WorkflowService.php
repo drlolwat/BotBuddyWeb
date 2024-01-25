@@ -3,6 +3,7 @@
 namespace App\BotBuddy\Workflow;
 
 use App\BotBuddy\Workflow\Actions\ChangeAccountGroup;
+use App\BotBuddy\Workflow\Actions\ChangeProxy;
 use App\BotBuddy\Workflow\Actions\ChangeScript;
 use App\BotBuddy\Workflow\Actions\RestartBot;
 use App\BotBuddy\Workflow\Actions\StopAndReplenishFrom;
@@ -20,6 +21,7 @@ class WorkflowService
         'restart_bot_with_script_params' => RestartBot::class,
         'change_account_group' => ChangeAccountGroup::class,
         'stop_and_replenish_with' => StopAndReplenishFrom::class,
+        'change_proxy' => ChangeProxy::class,
     ];
 
     public function handle(Model $model, Workflow $workflow): void
