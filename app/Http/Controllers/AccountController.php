@@ -184,7 +184,13 @@ class AccountController extends Controller
             'script_id' => 'required',
             'script_params' => 'nullable',
             'agent_id' => 'nullable',
+            'fps' => 'required|int',
+            'world' => 'required',
         ]);
+
+        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || is_int($validated['world']))) {
+            return back()->withErrors('Invalid world provided');
+        }
 
         $linesFile = [];
         $linesTextarea = [];
@@ -283,6 +289,8 @@ class AccountController extends Controller
                 'proxy_id' => $newProxy?->id ?? $request->get('proxy_id'),
                 'script_id' => $request->get('script_id'),
                 'script_params' => $request->get('script_params'),
+                'fps' => $request->get('fps'),
+                'world' => $request->get('world'),
             ]);
         }
 
