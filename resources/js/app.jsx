@@ -29,3 +29,25 @@ if (app) {
         </EventProvider>
     );
 }
+
+if (newLayout) {
+    document.addEventListener('DOMContentLoaded', function() {
+        const navToggle = document.querySelectorAll('[data-drawer-toggle="drawer-navigation"]');
+        navToggle.forEach(function(toggle) {
+            toggle.addEventListener('click', function() {
+                const target = document.getElementById(this.dataset.drawerTarget);
+                target.classList.toggle('translate-x-0');
+                target.classList.toggle('-translate-x-full');
+            });
+        });
+
+        const subNavToggles = document.querySelectorAll('[data-collapse-toggle]');
+        subNavToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function() {
+                const targetId = this.dataset.collapseToggle;
+                const target = document.getElementById(targetId);
+                target.classList.toggle('hidden');
+            });
+        });
+    });
+}
