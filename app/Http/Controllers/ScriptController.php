@@ -15,7 +15,8 @@ class ScriptController extends Controller
 
     public function index()
     {
-        return view('script.index');
+        $scripts = UserScript::where('user_id', auth()->id())->paginate(10);
+        return view('v1.script.index', compact('scripts'));
     }
 
     public function show(UserScript $script)
