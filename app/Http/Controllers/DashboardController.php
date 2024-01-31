@@ -25,6 +25,6 @@ class DashboardController extends Controller
             })
             ->count();
 
-        return view('dashboard', compact('online', 'offline', 'bannedLast24h'));
+        return view('v1.dashboard', compact('online', 'offline', 'bannedLast24h'));
     }
 }
