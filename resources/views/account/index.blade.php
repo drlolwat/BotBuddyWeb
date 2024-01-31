@@ -21,6 +21,8 @@
             <thead class="text-xs text-white bg-gray-500">
             <tr>
                 <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3">World</th>
+                <th class="px-6 py-3">FPS</th>
                 <th class="px-6 py-3"></th>
             </tr>
             </thead>
@@ -28,6 +30,8 @@
             @foreach(auth()->user()->account_groups as $group)
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $group->name }}</td>
+                    <td class="px-6 py-4">{{ $group->world }}</td>
+                    <td class="px-6 py-4">{{ $group->fps }}</td>
                     <td class="px-6 py-4 text-right">
                         <a href="{{ route('account.group.show', $group->id) }}" class="font-medium text-blue-600 hover:underline">Edit</a>
                     </td>
@@ -50,11 +54,12 @@
             <thead class="text-xs text-white bg-gray-500">
             <tr>
                 <th class="px-6 py-3">Email</th>
-                <th class="px-6 py-3">Password</th>
                 <th class="px-6 py-3">Group</th>
                 <th class="px-6 py-3">Agent</th>
                 <th class="px-6 py-3">Proxy</th>
                 <th class="px-6 py-3">Script</th>
+                <th class="px-6 py-3">World</th>
+                <th class="px-6 py-3">FPS</th>
                 <th class="px-6 py-3">Status</th>
                 <th class="px-6 py-3"></th>
             </tr>
@@ -63,11 +68,12 @@
             @foreach($accounts as $account)
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $account->email }}</td>
-                    <td class="px-6 py-4">{{ $account->password }}</td>
                     <td class="px-6 py-4">{{ $account->account_group?->name }}</td>
                     <td class="px-6 py-4">{{ $account->agent?->name }}</td>
                     <td class="px-6 py-4">@if($account->proxy){{ $account->proxy->host }}:{{ $account->proxy->port }}@endif</td>
                     <td class="px-6 py-4">@if($account->script?->name) {{ $account->script->name }} @else {{ $account->account_group?->script->name }} @endif</td>
+                    <td class="px-6 py-4">{{ $account->world }}</td>
+                    <td class="px-6 py-4">{{ $account->fps }}</td>
                     @if($account->status == 'Banned')
                         @if($account->perm_banned_at)
                             <td class="px-6 py-4 text-[red]">Banned&nbsp;(Permanent)</td>

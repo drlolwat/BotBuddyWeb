@@ -50,7 +50,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach(auth()->user()->proxies as $proxy)
+            @foreach($proxies as $proxy)
                 <tr class="bg-white border hover:bg-gray-50">
                     <td class="px-6 py-4">{{ $proxy->host }}</td>
                     <td class="px-6 py-4">{{ $proxy->port }}</td>

@@ -86,6 +86,16 @@ const workflowFormOptions = {
                 </Fragment>,
             },
             {
+                label: "Proxy is blocked",
+                value: "proxy_blocked",
+                render: (parent, callback) => <CallbackRunner
+                    parent={parent}
+                    callback={callback}
+                    name="event"
+                    value="proxy_blocked"
+                />,
+            },
+            {
                 label: "Is temp banned",
                 value: "temp_banned",
                 render: (parent, callback) => <CallbackRunner

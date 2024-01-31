@@ -73,6 +73,20 @@ const Workflow = () => {
                                    </>
                                )}/>,
             events: ["script_complete"],
+        },
+        changeProxy: {
+            jsx: () => <Action name="Change proxy" className="border-b border-gray-300"
+                               content={() => (
+                                   <>
+                                       <input type="hidden" name="action[]" value="change_proxy"/>
+                                       <select name="change_proxy[type]" className="border-2 border-gray-300 rounded-lg mb-2 mr-2">
+                                           <option value="random">Random proxy from account group</option>
+                                           <option value="random_unused">Random unused proxy from account group</option>
+                                       </select>
+                                       <div>Note: The account will not be restarted if there are no other proxies available.</div>
+                                   </>
+                               )}/>,
+            events: ["script_complete"],
         }
     };
 
@@ -94,6 +108,7 @@ const Workflow = () => {
         if (hasSelected(parent, "event", "script_complete", selectedValue, defaultValue)
             || hasSelected(parent, "event", "temp_banned")
             || hasSelected(parent, "event", "perm_banned")
+            || hasSelected(parent, "event", "proxy_blocked")
         ) {
             updateEvent("script_complete");
         } else {

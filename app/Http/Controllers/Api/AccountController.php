@@ -32,7 +32,7 @@ class AccountController extends Controller
                 $workflowService->handle($account, $workflow);
             }
             // handle for account groups instead if they are not defined for the account
-            if ($workflows->count() == 0) {
+            if ($workflows->count() == 0 && $account->account_group_id) {
                 $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
                 foreach($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
@@ -64,8 +64,8 @@ class AccountController extends Controller
                 $workflowService->handle($account, $workflow);
             }
             // handle for account groups instead if they are not defined for the account
-            if ($workflows->count() == 0) {
-                $workflows = $workflowService->getWorkflows('account_group', 8, $event, null);
+            if ($workflows->count() == 0 && $account->account_group_id) {
+                $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, $event, null);
                 foreach($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
                 }
@@ -76,7 +76,24 @@ class AccountController extends Controller
             return ['success' => false];
         }
 
-        $account->status = $validated['Status'];
+        if ($validated['Status'] == 'ProxyBlocked') {
+            // handle for specific account
+            $workflows = $workflowService->getWorkflows('account', $account->id, 'proxy_blocked', null);
+            foreach($workflows as $workflow) {
+                $workflowService->handle($account, $workflow);
+            }
+            // handle for account groups instead if they are not defined for the account
+            if ($workflows->count() == 0 && $account->account_group_id) {
+                $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'proxy_blocked', null);
+                foreach($workflows as $workflow) {
+                    $workflowService->handle($account, $workflow);
+                }
+            }
+        }
+
+        if ($validated['Status'] != 'ProxyBlocked') {
+            $account->status = $validated['Status'];
+        }
 
         return ['success' => $account->save()];
     }
@@ -133,5 +150,10 @@ class AccountController extends Controller
         }
 
         return $updated;
+    }
+
+    public function allowedClients()
+    {
+        return 3;
     }
 }
