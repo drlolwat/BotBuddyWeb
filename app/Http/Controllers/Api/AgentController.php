@@ -64,4 +64,22 @@ class AgentController extends Controller
             }
         }
     }
+
+    public function customerId(Request $request)
+    {
+        $validated = $this->validate($request, [
+            'uuid' => 'required|string',
+        ]);
+
+        $agent = Agent::query()
+            ->select('user_id')
+            ->where('uuid', $validated['uuid'])
+            ->first();
+
+        if (!$agent) {
+            return "";
+        }
+
+        return $agent->user_id;
+    }
 }
