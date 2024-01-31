@@ -74,7 +74,7 @@ class AgentController extends Controller
     {
         $agentInUse = Account::where('agent_id', $agent->id)->count();
 
-        if ($agent > 0) {
+        if ($agentInUse > 0) {
             return redirect(route('agent.show', $agent))->withErrors(['Cannot delete agent as it is in use']);
         }
 
