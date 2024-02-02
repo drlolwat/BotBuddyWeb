@@ -21,12 +21,12 @@ class ScriptController extends Controller
 
     public function show(UserScript $script)
     {
-        return view('script.show', compact('script'));
+        return view('v1.script.show', compact('script'));
     }
 
     public function create()
     {
-        return view('script.create');
+        return view('v1.script.create');
     }
 
     public function store(Request $request)
@@ -65,7 +65,7 @@ class ScriptController extends Controller
         $groupInUse = Account::where('script_id', $script->id)->count();
 
         if ($groupInUse > 0) {
-            return redirect(route('script.show', $script))->withErrors(['Cannot delete script as it is in use']);
+            return back()->withErrors(['Cannot delete script as it is in use']);
         }
 
         $script->delete();

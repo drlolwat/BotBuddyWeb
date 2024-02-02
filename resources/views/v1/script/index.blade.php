@@ -1,4 +1,4 @@
-<x-v1.layout>
+<x-v1.layout page="Scripts">
     <section>
         <div class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Script Management</div>
     </section>
@@ -45,11 +45,15 @@
                                 <div id="script-{{ $script->id }}-dropdown" class="mt-[8.5rem] mr-[-1rem] hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
                                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="script-{{ $script->id }}-dropdown-button">
                                         <li>
-                                            <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                            <a href="{{ route('script.show', $script->id) }}" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
                                         </li>
                                     </ul>
                                     <div class="py-1">
-                                        <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+                                        <form method="post" action="{{ route('script.destroy', $script->id) }}">
+                                            @csrf
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <button href="#" class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>
