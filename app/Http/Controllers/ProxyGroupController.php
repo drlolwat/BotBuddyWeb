@@ -15,17 +15,21 @@ class ProxyGroupController extends Controller
 
     public function index()
     {
-        return view('proxy.group.index');
+        $proxyGroups = auth()->user()
+            ->proxy_groups()
+            ->paginate(10);
+
+        return view('v1.proxy.group.index', compact('proxyGroups'));
     }
 
     public function show(ProxyGroup $group)
     {
-        return view('proxy.group.show', compact('group'));
+        return view('v1.proxy.group.show', compact('group'));
     }
 
     public function create()
     {
-        return view('proxy.group.create');
+        return view('v1.proxy.group.create');
     }
 
     public function store(Request $request)
@@ -60,11 +64,11 @@ class ProxyGroupController extends Controller
         $groupInUse = Proxy::where('proxy_group_id', $group->id)->count();
 
         if ($groupInUse > 0) {
-            return redirect(route('proxy.group.show', $group))->withErrors(['Cannot delete proxy group as it is in use']);
+            return back()->withErrors(['Cannot delete proxy group as it is in use']);
         }
 
         $group->delete();
 
-        return redirect(route('proxy'))->with('status', 'Proxy group deleted');
+        return redirect(route('proxy.group'))->with('status', 'Proxy group deleted');
     }
 }

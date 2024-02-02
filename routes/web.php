@@ -35,6 +35,15 @@ Route::group(['prefix' => 'account'], function () {
     Route::post('/stop/{account}', [App\Http\Controllers\AccountController::class, 'stop'])->name('account.stop');
 });
 
+Route::group(['prefix' => 'proxy/group'], function () {
+    Route::get('/', [App\Http\Controllers\ProxyGroupController::class, 'index'])->name('proxy.group');
+    Route::post('/', [App\Http\Controllers\ProxyGroupController::class, 'store'])->name('proxy.group.store');
+    Route::get('/create', [App\Http\Controllers\ProxyGroupController::class, 'create'])->name('proxy.group.create');
+    Route::get('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'show'])->name('proxy.group.show');
+    Route::put('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'update'])->name('proxy.group.update');
+    Route::delete('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'destroy'])->name('proxy.group.destroy');
+});
+
 Route::group(['prefix' => 'proxy'], function () {
     Route::get('/', [App\Http\Controllers\ProxyController::class, 'index'])->name('proxy');
     Route::post('/', [App\Http\Controllers\ProxyController::class, 'store'])->name('proxy.store');
@@ -51,15 +60,6 @@ Route::group(['prefix' => 'agent'], function () {
     Route::get('/{agent}', [App\Http\Controllers\AgentController::class, 'show'])->name('agent.show');
     Route::put('/{agent}', [App\Http\Controllers\AgentController::class, 'update'])->name('agent.update');
     Route::delete('/{agent}', [App\Http\Controllers\AgentController::class, 'destroy'])->name('agent.destroy');
-});
-
-Route::group(['prefix' => 'proxy/group'], function () {
-    Route::get('/', [App\Http\Controllers\ProxyGroupController::class, 'index'])->name('proxy.group');
-    Route::post('/', [App\Http\Controllers\ProxyGroupController::class, 'store'])->name('proxy.group.store');
-    Route::get('/create', [App\Http\Controllers\ProxyGroupController::class, 'create'])->name('proxy.group.create');
-    Route::get('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'show'])->name('proxy.group.show');
-    Route::put('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'update'])->name('proxy.group.update');
-    Route::delete('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'destroy'])->name('proxy.group.destroy');
 });
 
 Route::group(['prefix' => 'account/group'], function () {

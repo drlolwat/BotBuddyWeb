@@ -18,19 +18,19 @@ class ProxyController extends Controller
         $proxies = auth()->user()
             ->proxies()
             ->with('proxy_group')
-            ->get();
+            ->paginate(10);
 
-        return view('proxy.index', compact('proxies'));
+        return view('v1.proxy.index', compact('proxies'));
     }
 
     public function show(Proxy $proxy)
     {
-        return view('proxy.show', compact('proxy'));
+        return view('v1.proxy.show', compact('proxy'));
     }
 
     public function create()
     {
-        return view('proxy.create');
+        return view('v1.proxy.create');
     }
 
     public function store(Request $request)
