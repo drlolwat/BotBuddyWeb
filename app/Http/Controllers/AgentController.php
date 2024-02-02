@@ -18,17 +18,18 @@ class AgentController extends Controller
 
     public function index()
     {
-        return view('agent.index');
+        $agents = Agent::where('user_id', auth()->id())->paginate(10);
+        return view('v1.agent.index', compact('agents'));
     }
 
     public function show(Agent $agent)
     {
-        return view('agent.show', compact('agent'));
+        return view('v1.agent.show', compact('agent'));
     }
 
     public function create()
     {
-        return view('agent.create');
+        return view('v1.agent.create');
     }
 
     public function store(Request $request)
@@ -75,11 +76,11 @@ class AgentController extends Controller
         $agentInUse = Account::where('agent_id', $agent->id)->count();
 
         if ($agentInUse > 0) {
-            return redirect(route('agent.show', $agent))->withErrors(['Cannot delete agent as it is in use']);
+            return back()->withErrors(['Cannot delete agent as it is in use']);
         }
 
         $agent->delete();
 
-        return redirect(route('proxy'))->with('status', 'Agent deleted');
+        return redirect(route('agent'))->with('status', 'Agent deleted');
     }
 }
