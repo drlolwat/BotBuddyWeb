@@ -110,6 +110,10 @@ class AccountController extends Controller
 
     public function destroy(Account $account)
     {
+        if ($account->status == 'Starting' || $account->status == 'Running' || $account->status == 'Stopping') {
+            return back()->withErrors('Account is currently running');
+        }
+
         $account->delete();
 
         return redirect(route('account'))->with('status', 'Account deleted');
