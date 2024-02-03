@@ -22,7 +22,7 @@
                     <select name="account_group_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <option value="0">None</option>
                         @foreach(auth()->user()->account_groups as $group)
-                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                            <option value="{{ $group->id }}" @if($account->account_group_id == $group->id) selected @endif >{{ $group->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -31,7 +31,7 @@
                     <select name="agent_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <option value="0">None</option>
                         @foreach(auth()->user()->agents as $agent)
-                            <option value="{{ $agent->id }}" @if($group->agent_id == $agent->id) selected @endif >{{ $agent->name }}</option>
+                            <option value="{{ $agent->id }}" @if($account->agent_id == $agent->id) selected @endif >{{ $agent->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -40,7 +40,7 @@
                     <select name="proxy_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <option value="0">None</option>
                         @foreach(auth()->user()->proxies as $proxy)
-                            <option value="{{ $proxy->id }}" @if($group->proxy_id == $proxy->id) selected @endif >{{ $proxy->host }}:{{ $proxy->port }}</option>
+                            <option value="{{ $proxy->id }}" @if($account->proxy_id == $proxy->id) selected @endif >{{ $proxy->host }}:{{ $proxy->port }}</option>
                         @endforeach
                     </select>
                 </div>
