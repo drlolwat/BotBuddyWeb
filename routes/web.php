@@ -22,6 +22,15 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
+Route::group(['prefix' => 'account/group'], function () {
+    Route::get('/', [App\Http\Controllers\AccountGroupController::class, 'index'])->name('account.group');
+    Route::post('/', [App\Http\Controllers\AccountGroupController::class, 'store'])->name('account.group.store');
+    Route::get('/create', [App\Http\Controllers\AccountGroupController::class, 'create'])->name('account.group.create');
+    Route::get('/{group}', [App\Http\Controllers\AccountGroupController::class, 'show'])->name('account.group.show');
+    Route::put('/{group}', [App\Http\Controllers\AccountGroupController::class, 'update'])->name('account.group.update');
+    Route::delete('/{group}', [App\Http\Controllers\AccountGroupController::class, 'destroy'])->name('account.group.destroy');
+});
+
 Route::group(['prefix' => 'account'], function () {
     Route::get('/import', [App\Http\Controllers\AccountController::class, 'import'])->name('account.import');
     Route::post('/import', [App\Http\Controllers\AccountController::class, 'importStore'])->name('account.import.store');
@@ -60,15 +69,6 @@ Route::group(['prefix' => 'agent'], function () {
     Route::get('/{agent}', [App\Http\Controllers\AgentController::class, 'show'])->name('agent.show');
     Route::put('/{agent}', [App\Http\Controllers\AgentController::class, 'update'])->name('agent.update');
     Route::delete('/{agent}', [App\Http\Controllers\AgentController::class, 'destroy'])->name('agent.destroy');
-});
-
-Route::group(['prefix' => 'account/group'], function () {
-    Route::get('/', [App\Http\Controllers\AccountGroupController::class, 'index'])->name('account.group');
-    Route::post('/', [App\Http\Controllers\AccountGroupController::class, 'store'])->name('account.group.store');
-    Route::get('/create', [App\Http\Controllers\AccountGroupController::class, 'create'])->name('account.group.create');
-    Route::get('/{group}', [App\Http\Controllers\AccountGroupController::class, 'show'])->name('account.group.show');
-    Route::put('/{group}', [App\Http\Controllers\AccountGroupController::class, 'update'])->name('account.group.update');
-    Route::delete('/{group}', [App\Http\Controllers\AccountGroupController::class, 'destroy'])->name('account.group.destroy');
 });
 
 Route::group(['prefix' => 'script'], function () {

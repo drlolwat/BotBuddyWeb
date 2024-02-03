@@ -29,12 +29,12 @@ class AccountController extends Controller
 
     public function show(Account $account)
     {
-        return view('account.show', compact('account'));
+        return view('v1.account.show', compact('account'));
     }
 
     public function create()
     {
-        return view('account.create');
+        return view('v1.account.create');
     }
 
     public function store(Request $request)
@@ -172,7 +172,7 @@ class AccountController extends Controller
 
     public function import()
     {
-        return view('account.import');
+        return view('v1.account.import');
     }
 
     public function importStore(Request $request)

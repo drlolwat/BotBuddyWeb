@@ -15,17 +15,18 @@ class AccountGroupController extends Controller
 
     public function index()
     {
-        return view('account.group.index');
+        $accountGroups = AccountGroup::where('user_id', auth()->id())->paginate(10);
+        return view('v1.account.group.index', compact('accountGroups'));
     }
 
     public function show(AccountGroup $group)
     {
-        return view('account.group.show', compact('group'));
+        return view('v1.account.group.show', compact('group'));
     }
 
     public function create()
     {
-        return view('account.group.create');
+        return view('v1.account.group.create');
     }
 
     public function store(Request $request)
