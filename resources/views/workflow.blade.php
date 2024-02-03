@@ -9,7 +9,7 @@
 
     <div class="py-2 font-bold">Create Workflow</div>
 
-    <form method="post" action="{{ route('workflow.create') }}">
+    <form method="post" action="{{ route('workflow.store') }}">
         @csrf
         <div id="app"></div>
     </form>

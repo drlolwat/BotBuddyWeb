@@ -7,6 +7,12 @@ import Select from "./Select.jsx";
 import workflowFormOptions from "../configs/workflowFormOptions.jsx";
 import DynamicSelect from "./DynamicSelect.jsx";
 import {fetchAccountGroups} from "../utils/fetchUtils.js";
+import Alert from "./Alert.jsx";
+
+// const className = "border-b border-gray-300";
+const textClassNames = "text-gray-900 dark:text-white";
+const className = `border-b border-gray-200 dark:border-gray-600 ${textClassNames}`;
+const selectClassNames = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 min-w-[200px] mb-2 mr-2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500";
 
 const Workflow = () => {
     const {event, updateEvent} = useContext(EventContext);
@@ -15,7 +21,7 @@ const Workflow = () => {
         testScript: {
             jsx: () => <Action
                 name="Stop and replenish with"
-                className="border-b border-gray-300"
+                className={className}
                 content={() => (
                     <>
                         <input type="hidden" name="action[]" value="stop_and_replenish_with"/>
@@ -27,43 +33,43 @@ const Workflow = () => {
             events: ["script_complete"],
         },
         changeScript: {
-            jsx: () => <ChangeScriptAction/>,
+            jsx: () => <ChangeScriptAction className={className} />,
             events: ["script_complete"],
         },
         stopBot: {
-            jsx: () => <Action name="Stop bot" className="border-b border-gray-300"
+            jsx: () => <Action name="Stop bot" className={className}
                                content={() => (
                                    <>
                                        <input type="hidden" name="action[]" value="stop_bot"/>
-                                       <div>The bot will be stopped</div>
+                                       <Alert message={"The bot will be stopped"}/>
                                    </>
                                )}/>,
             events: ["script_complete"],
         },
         restartBot: {
-            jsx: () => <Action name="Restart bot" className="border-b border-gray-300"
+            jsx: () => <Action name="Restart bot" className={className}
                                content={() => (
                                    <>
                                        <input type="hidden" name="action[]" value="restart_bot"/>
-                                       <div>The bot will be restarted</div>
+                                        <Alert message={"The bot will be restarted"}/>
                                    </>
                                )}/>,
             events: ["script_complete"],
         },
         restartBotWithScriptParams: {
-            jsx: () => <Action name="Restart bot with script params" className="border-b border-gray-300"
+            jsx: () => <Action name="Restart bot with script params" className={className}
                                content={() => (
                                    <>
                                        <input type="hidden" name="action[]" value="restart_bot_with_script_params"/>
                                        <input type="text" name="restart_bot_with_script_params[script_params]"
-                                              className="border-2 border-gray-300 rounded-lg mb-2 mr-2"
+                                              className={selectClassNames}
                                               placeholder="e.g. param1 param2"/>
                                    </>
                                )}/>,
             events: ["script_complete"],
         },
         changeAccountGroup: {
-            jsx: () => <Action name="Change account group" className="border-b border-gray-300"
+            jsx: () => <Action name="Change account group" className={className}
                                content={() => (
                                    <>
                                        <input type="hidden" name="action[]" value="change_account_group"/>
@@ -75,15 +81,15 @@ const Workflow = () => {
             events: ["script_complete"],
         },
         changeProxy: {
-            jsx: () => <Action name="Change proxy" className="border-b border-gray-300"
+            jsx: () => <Action name="Change proxy" className={className}
                                content={() => (
                                    <>
                                        <input type="hidden" name="action[]" value="change_proxy"/>
-                                       <select name="change_proxy[type]" className="border-2 border-gray-300 rounded-lg mb-2 mr-2">
+                                       <select name="change_proxy[type]" className={selectClassNames}>
                                            <option value="random">Random proxy from account group</option>
                                            <option value="random_unused">Random unused proxy from account group</option>
                                        </select>
-                                       <div>Note: The account will not be restarted if there are no other proxies available.</div>
+                                       <Alert message={"Note: The account will not be restarted if there are no other proxies available."}/>
                                    </>
                                )}/>,
             events: ["script_complete"],
@@ -91,7 +97,6 @@ const Workflow = () => {
     };
 
     const hasSelected = (obj, name, value, selectedValue, defaultValue) => {
-        console.log(obj, name, value, selectedValue, defaultValue);
         if (!obj) return false;
         if (selectedValue && defaultValue) {
             if (obj.parentName === name && obj.parentSelectedValue === value && selectedValue === defaultValue) return false;
@@ -119,8 +124,8 @@ const Workflow = () => {
     return (
         <>
             <Select {...workflowFormOptions.modelTypeSelect} callback={callback}/>
-            <div className="py-2 font-bold">Actions</div>
-            {!event && <div>Select an event to see the possible actions</div>}
+            <div className={`py-2 font-bold ${textClassNames}`}>Actions</div>
+            {!event && <div className={textClassNames}>Select an event to see the possible actions</div>}
             <div className="grid gap-2">
                 {Object.entries(actions).map(([key, action]) => {
                     if (action.events.includes(event)) {

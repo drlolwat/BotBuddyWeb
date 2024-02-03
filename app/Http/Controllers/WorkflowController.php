@@ -19,12 +19,17 @@ class WorkflowController extends Controller
         $workflows = Workflow::query()
             ->with('actions')
             ->where('user_id', auth()->id())
-            ->get();
+            ->paginate(5);
 
-        return view('workflow', compact('workflows'));
+        return view('v1.workflow.index', compact('workflows'));
     }
 
-    public function create(Request $request)
+    public function create()
+    {
+        return view('v1.workflow.create');
+    }
+
+    public function store(Request $request)
     {
         $this->validate($request, [
             'model_type' => 'required|string',
@@ -70,6 +75,12 @@ class WorkflowController extends Controller
             $i++;
         }
 
-        return back()->with('status','Workflow created');
+        return redirect(route('workflow'))->with('status','Workflow created');
+    }
+
+    public function destroy(Workflow $workflow)
+    {
+        $workflow->delete();
+        return redirect(route('workflow'))->with('status','Workflow deleted');
     }
 }

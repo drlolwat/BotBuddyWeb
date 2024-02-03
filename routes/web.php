@@ -84,8 +84,14 @@ Route::group(['prefix' => 'osiris', 'middleware' => 'auth'], function () {
     Route::view('dashboard', 'osiris.dashboard');
 });
 
-Route::get('workflow', [WorkflowController::class, 'index'])->name('workflow');
-Route::post('workflow/create', [WorkflowController::class, 'create'])->name('workflow.create');
+Route::group(['prefix' => 'workflow', 'middleware' => 'auth'], function () {
+    Route::get('/', [WorkflowController::class, 'index'])->name('workflow');
+    Route::post('/', [WorkflowController::class, 'store'])->name('workflow.store');
+    Route::get('/create', [WorkflowController::class, 'create'])->name('workflow.create');
+    //Route::get('/{workflow}', [WorkflowController::class, 'show'])->name('workflow.show');
+    //Route::put('/{workflow}', [WorkflowController::class, 'update'])->name('workflow.update');
+    Route::delete('/{workflow}', [WorkflowController::class, 'destroy'])->name('workflow.destroy');
+});
 
 Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {
     Route::get('account', fn () => auth()->user()->accounts);

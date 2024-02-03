@@ -3,11 +3,11 @@ import DynamicSelectComponent from "../DynamicSelect.jsx";
 import {fetchScripts} from "../../utils/fetchUtils.js";
 import {Fragment} from "react";
 
-const className = "border-2 border-gray-300 rounded-lg mb-2 mr-2";
+const selectClassNames = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 min-w-[200px] mb-2 mr-2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500";
 
 const scriptSelect = {
     name: "change_script[script_id]",
-    className,
+    className: selectClassNames,
     options: [
         {label: "Select a script"},
     ],
@@ -21,7 +21,7 @@ const scriptSelect = {
                         <input
                             type="text"
                             name="change_script[script_params]"
-                            className="border-2 border-gray-300 rounded-lg mb-2 mr-2"
+                            className={selectClassNames}
                             placeholder="e.g. param1 param2"
                         />
                     </Fragment>
@@ -31,13 +31,11 @@ const scriptSelect = {
     }
 };
 
-const ChangeScriptAction = () => {
+const ChangeScriptAction = ({ className }) => {
     return <Action
         name="Change script"
-        open={() => <button>Open</button>}
-        close={() => <button>Close</button>}
-        content={() => <DynamicSelectComponent {...scriptSelect} />}
-        className="border-b border-gray-300"
+        content={() => <DynamicSelectComponent className={selectClassNames} {...scriptSelect} />}
+        className={className}
     />
 }
 
