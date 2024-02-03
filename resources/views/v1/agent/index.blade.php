@@ -1,4 +1,4 @@
-<x-v1.layout page="Agents">
+ <x-v1.layout page="Agents">
     <section>
         <div class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Agent Management</div>
     </section>
@@ -129,20 +129,22 @@
     <script>
         const dropdownToggles = document.querySelectorAll('[data-dropdown-toggle]');
 
-        dropdownToggles.forEach(function(toggle) {
-            toggle.addEventListener('click', function() {
-                const dropdownMenuId = toggle.getAttribute('data-dropdown-toggle');
-                const dropdownMenu = document.getElementById(dropdownMenuId);
-                if (dropdownMenu) {
-                    if (dropdownMenu.classList.contains('hidden')) {
-                        dropdownMenu.classList.remove('hidden');
-                        dropdownMenu.classList.add('absolute');
-                    } else {
-                        dropdownMenu.classList.add('hidden');
-                        dropdownMenu.classList.remove('absolute');
+        if (dropdownToggles) {
+            dropdownToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function() {
+                    const dropdownMenuId = toggle.getAttribute('data-dropdown-toggle');
+                    const dropdownMenu = document.getElementById(dropdownMenuId);
+                    if (dropdownMenu) {
+                        if (dropdownMenu.classList.contains('hidden')) {
+                            dropdownMenu.classList.remove('hidden');
+                            dropdownMenu.classList.add('absolute');
+                        } else {
+                            dropdownMenu.classList.add('hidden');
+                            dropdownMenu.classList.remove('absolute');
+                        }
                     }
-                }
+                });
             });
-        });
+        }
     </script>
 </x-v1.layout>

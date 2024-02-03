@@ -22,9 +22,9 @@ class AccountController extends Controller
         $accounts = auth()->user()
             ->accounts()
             ->with('account_group', 'account_group.script', 'proxy', 'script', 'agent')
-            ->get();
+            ->paginate(25);
 
-        return view('account.index', compact('accounts'));
+        return view('v1.account.index', compact('accounts'));
     }
 
     public function show(Account $account)
