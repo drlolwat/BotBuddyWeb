@@ -43,12 +43,12 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
 
-        Fortify::loginView(fn () => view('login'));
-        Fortify::registerView(fn () => view('register'));
-        Fortify::requestPasswordResetLinkView(fn () => view('password-forgot'));
-        Fortify::resetPasswordView(fn () => view('password-reset'));
-        Fortify::confirmPasswordView(fn () => view('password-confirm'));
-        Fortify::twoFactorChallengeView(fn() => view('two-factor-challenge'));
-        Fortify::verifyEmailView(fn () => view('email-verify'));
+        Fortify::loginView(fn () => view('v1.login'));
+        Fortify::registerView(fn () => view('v1.register'));
+        Fortify::requestPasswordResetLinkView(fn () => view('v1.password-forgot'));
+        Fortify::resetPasswordView(fn () => view('v1.password-reset'));
+        Fortify::confirmPasswordView(fn () => view('v1.password-confirm'));
+        Fortify::twoFactorChallengeView(fn() => view('v1.two-factor-challenge'));
+        Fortify::verifyEmailView(fn () => view('v1.email-verify'));
     }
 }
