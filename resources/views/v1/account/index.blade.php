@@ -31,6 +31,7 @@
                             <th scope="col" class="px-4 py-3">Name</th>
                             <th scope="col" class="px-4 py-3">Group</th>
                             <th scope="col" class="px-4 py-3">Agent</th>
+                            <th scope="col" class="px-4 py-3">Script</th>
                             <th scope="col" class="px-4 py-3">Status</th>
                             <th scope="col" class="px-4 py-3">
                                 <span class="sr-only">Actions</span>
@@ -49,16 +50,23 @@
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     <a href="{{ route('account.show', $account->id) }}">{{ $account->email }}</a>
                                 </th>
-                                <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
                                     @if($account->account_group)
-                                        <a href="{{ route('account.group.show', $account->account_group_id) }}">{{ $account->account_group->name }}</a>
+                                        <a class="font-medium" href="{{ route('account.group.show', $account->account_group_id) }}">{{ $account->account_group->name }}</a>
                                     @else
                                         <span>-</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
                                     @if($account->agent)
-                                        <a href="{{ route('agent.show', $account->agent_id) }}">{{ $account->agent->name }}</a>
+                                        <a class="font-medium" href="{{ route('agent.show', $account->agent_id) }}">{{ $account->agent->name }}</a>
+                                    @else
+                                        <span>-</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
+                                    @if($account->script)
+                                        <a class="font-medium" href="{{ route('script.show', $account->script_id) }}">{{ $account->script->name }}</a>
                                     @else
                                         <span>-</span>
                                     @endif

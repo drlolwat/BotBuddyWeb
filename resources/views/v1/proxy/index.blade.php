@@ -37,9 +37,9 @@
                                     <a href="{{ route('proxy.show', $proxy->id) }}">{{ $proxy->host }}:{{ $proxy->port }}</a>
                                 </th>
                                 <td class="px-4 py-3">{{ $proxy->username && $proxy->password ? $proxy->username.":".$proxy->password : "-" }}</td>
-                                <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
                                     @if($proxy->proxy_group)
-                                        <a href="{{ route('proxy.group.show', $proxy->proxy_group_id) }}">{{ $proxy->proxy_group->name }}</a>
+                                        <a class="font-medium" href="{{ route('proxy.group.show', $proxy->proxy_group_id) }}">{{ $proxy->proxy_group->name }}</a>
                                     @else
                                         -
                                     @endif

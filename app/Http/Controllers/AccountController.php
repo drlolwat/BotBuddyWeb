@@ -125,6 +125,10 @@ class AccountController extends Controller
             return back()->withErrors('Account is not assigned to an agent');
         }
 
+        if(!$account->script) {
+            return back()->withErrors('Select a script for the account');
+        }
+
         if ($account->agent->client_type != 'DreamBot') {
             return back()->withErrors('Only DreamBot clients are allowed at this stage');
         }
