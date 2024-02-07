@@ -19,11 +19,7 @@ class ChangeAccountGroup extends Action
     /** @var Account $model */
     public function run(Model $model, array $data): void
     {
-        $this->socket->dispatch(new StopBotCommand($model));
-
         $model->account_group_id = $data['account_group_id'];
         $model->save();
-
-        $this->socket->dispatch(new StartBotCommand($model));
     }
 }

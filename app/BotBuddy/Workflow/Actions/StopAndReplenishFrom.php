@@ -20,6 +20,7 @@ class StopAndReplenishFrom extends Action
     public function run(Model $model, array $data): void
     {
         $this->socket->dispatch(new StopBotCommand($model));
+        sleep(3);
 
         $group = $model->user->account_groups()
             ->where('id', $data['account_group_id'])

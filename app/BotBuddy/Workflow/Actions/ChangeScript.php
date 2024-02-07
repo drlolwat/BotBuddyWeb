@@ -19,12 +19,8 @@ class ChangeScript extends Action
     /** @var Account $model */
     public function run(Model $model, array $data): void
     {
-        $this->socket->dispatch(new StopBotCommand($model));
-
         $model->script_id = $data['script_id'];
         $model->script_params = $data['script_params'] ?? $model->script_params;
         $model->save();
-
-        $this->socket->dispatch(new StartBotCommand($model));
     }
 }

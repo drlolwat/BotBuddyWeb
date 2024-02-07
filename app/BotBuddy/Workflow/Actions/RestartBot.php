@@ -20,6 +20,8 @@ class RestartBot extends Action
     public function run(Model $model, array $data): void
     {
         $this->socket->dispatch(new StopBotCommand($model));
+        sleep(3);
+
         $this->socket->dispatch(new StartBotCommand($model));
     }
 }

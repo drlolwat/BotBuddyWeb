@@ -19,8 +19,6 @@ class ChangeProxy extends Action
     /** @var Account $model */
     public function run(Model $model, array $data): void
     {
-        $this->socket->dispatch(new StopBotCommand($model));
-
         $query = $model->account_group->proxies();
 
         switch($data['type']) {
@@ -40,8 +38,6 @@ class ChangeProxy extends Action
         if ($proxy) {
             $model->proxy_id = $proxy->id;
             $model->save();
-
-            $this->socket->dispatch(new StartBotCommand($model));
         }
 
         // todo: log when proxy is not available
