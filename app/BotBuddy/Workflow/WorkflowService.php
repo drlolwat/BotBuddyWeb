@@ -27,8 +27,8 @@ class WorkflowService
     public function handle(Model $model, Workflow $workflow): void
     {
         foreach($workflow->actions as $action) {
-            $runner = app()->makeWith($this->actions[$action->name], ['rule' => $workflow]);
-            $runner->run($model, $action->data);
+            $runner = app()->makeWith($this->actions[$action->name], ['workflow' => $workflow]);
+            $runner->run($model, $action->data ?? []);
         }
     }
 
