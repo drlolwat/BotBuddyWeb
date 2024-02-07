@@ -57,7 +57,7 @@ class AgentController extends Controller
 
             foreach ($accounts as $accountId => $accountStatus) {
                 $account = Account::find($accountId);
-                if ($account->status != $accountStatus) {
+                if ($account && $account->status != $accountStatus) {
                     $account->status = $accountStatus;
                     $account->save();
                 }
