@@ -41,7 +41,9 @@ class WorkflowService
             ->where('event', $event);
 
         if ($eventData) {
-            $query = $query->whereRaw('data = CAST(? AS JSON)', [json_encode($eventData)]);
+            foreach ($eventData as $key => $value) {
+                $query = $query->whereRaw("data->>'$." . $key . "' = ?", [$value]);
+            }
         }
 
         return $query->get();
