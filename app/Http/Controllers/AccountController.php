@@ -27,6 +27,96 @@ class AccountController extends Controller
         return view('v1.account.index', compact('accounts'));
     }
 
+    public function bulkAction(SocketService $socket)
+    {
+        $validated = request()->validate([
+            'action' => 'required',
+            'accounts' => 'required|array',
+        ]);
+
+        $accounts = Account::whereIn('id', array_keys($validated['accounts']))->get();
+
+        if ($validated['action'] == 'start') {
+
+            $user = auth()->user();
+
+            if (!$user->dreambot_username || !$user->dreambot_password) {
+                return redirect(route('settings'))
+                    ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
+            }
+
+            $response = back();
+            $errors = [];
+            $started_count = 0;
+
+            foreach ($accounts as $account) {
+                if(!$account->agent) {
+                    $errors[] = "$account->email is not assigned to an agent";
+                    continue;
+                }
+
+                if(!$account->script) {
+                    $errors[] = "$account->email does not have a script assigned";
+                    continue;
+                }
+
+                if ($account->agent->client_type != 'DreamBot') {
+                    $errors[] = "Agent \"{$account->agent->name}\" is not using DreamBot client";
+                    continue;
+                }
+
+                if (!$account->agent->dreambot_client_path) {
+                    $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot client.jar path configured";
+                    continue;
+                }
+
+                if (!$account->agent->dreambot_scripts_path) {
+                    $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot scripts path configured";
+                    continue;
+                }
+
+                $started = $socket->dispatch(new StartBotCommand($account));
+
+                if ($started != "true") {
+                    $errors[] = "Failed to start $account->email";
+                    continue;
+                }
+
+                $account->status = 'Starting';
+                $account->save();
+
+                $started_count++;
+            }
+
+            if ($started_count == 1) {
+                $response = $response->with('status', '1 account is being started');
+            }
+
+            if ($started_count > 1) {
+                $response = $response->with('status', "$started_count accounts are being started");
+            }
+
+            return $response->withErrors($errors);
+        }
+
+        if ($validated['action'] == 'stop') {
+            foreach ($accounts as $account) {
+                $stopped = $socket->dispatch(new StopBotCommand($account));
+
+                if ($stopped != "true") {
+                    continue;
+                }
+
+                $account->status = 'Stopping';
+                $account->save();
+            }
+
+            return back()->with('status', 'Accounts are being stopped');
+        }
+
+        return back()->withErrors('Invalid action');
+    }
+
     public function show(Account $account)
     {
         return view('v1.account.show', compact('account'));
@@ -145,7 +235,7 @@ class AccountController extends Controller
 
         if (!$user->dreambot_username || !$user->dreambot_password) {
             return redirect(route('settings'))
-                ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials and client.jar to start an account']);
+                ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
         }
 
         $started = $socket->dispatch(new StartBotCommand($account));

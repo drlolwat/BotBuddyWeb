@@ -42,6 +42,7 @@ Route::group(['prefix' => 'account'], function () {
     Route::delete('/{account}', [App\Http\Controllers\AccountController::class, 'destroy'])->name('account.destroy');
     Route::post('/start/{account}', [App\Http\Controllers\AccountController::class, 'start'])->name('account.start');
     Route::post('/stop/{account}', [App\Http\Controllers\AccountController::class, 'stop'])->name('account.stop');
+    Route::post('/bulkAction', [App\Http\Controllers\AccountController::class, 'bulkAction'])->name('account.bulkAction');
 });
 
 Route::group(['prefix' => 'proxy/group'], function () {

@@ -2,6 +2,37 @@
     <section>
         <div class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Account Management</div>
     </section>
+    <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
+        <div>
+            <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                <span class="sr-only">Action button</span>
+                Action
+                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+            <div id="dropdownAction" class="mt-2 z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
+                    <li><form id="bulk_start" method="post" action="{{ route('account.bulkAction') }}">@csrf<input type="hidden" name="action" value="start" /><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Start</button></form></li>
+                    <li><form id="bulk_stop" method="post" action="{{ route('account.bulkAction') }}">@csrf<input type="hidden" name="action" value="stop" /><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Stop</button></form></li>
+{{--                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update proxy</a></li>--}}
+{{--                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update agent</a></li>--}}
+                </ul>
+{{--                <div class="py-1">--}}
+{{--                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>--}}
+{{--                </div>--}}
+            </div>
+        </div>
+        <label for="table-search" class="sr-only">Search</label>
+        <div class="relative">
+            <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                </svg>
+            </div>
+            <input type="text" id="table-search-users" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for accounts">
+        </div>
+    </div>
     <section class="bg-gray-50 dark:bg-gray-900">
         <div class="mx-auto">
             <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
@@ -22,12 +53,12 @@
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-{{--                            <th scope="col" class="p-4">--}}
-{{--                                <div class="flex items-center">--}}
-{{--                                    <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">--}}
-{{--                                    <label for="checkbox-all-search" class="sr-only">checkbox</label>--}}
-{{--                                </div>--}}
-{{--                            </th>--}}
+                            <th scope="col" class="p-4">
+                                <div class="flex items-center">
+                                    <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                                </div>
+                            </th>
                             <th scope="col" class="px-4 py-3">Name</th>
                             <th scope="col" class="px-4 py-3">Group</th>
                             <th scope="col" class="px-4 py-3">Agent</th>
@@ -41,12 +72,12 @@
                         <tbody>
                         @foreach($accounts as $account)
                             <tr class="border-b dark:border-gray-700">
-{{--                                <td class="w-4 p-4">--}}
-{{--                                    <div class="flex items-center">--}}
-{{--                                        <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">--}}
-{{--                                        <label for="checkbox-table-search-1" class="sr-only">checkbox</label>--}}
-{{--                                    </div>--}}
-{{--                                </td>--}}
+                                <td class="w-4 p-4">
+                                    <div class="flex items-center">
+                                        <input form="bulk" name="accounts[{{ $account->id }}]" id="checkbox-table-search-{{ $account->id }}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="checkbox-table-search-{{ $account->id }}" class="sr-only">checkbox</label>
+                                    </div>
+                                </td>
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     <a href="{{ route('account.show', $account->id) }}">{{ $account->email }}</a>
                                 </th>
@@ -224,6 +255,66 @@
                 });
             });
         }
+
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="accounts["]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const formIds = ['bulk_start', 'bulk_stop'];
+
+                formIds.forEach(function(formId) {
+                    const form = document.getElementById(formId);
+                    if (!form) {
+                        return;
+                    }
+                    const hiddenInputId = formId + '-' + checkbox.name.replace(/[\[\]]/g, '');
+
+                    if (checkbox.checked) {
+                        let hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = checkbox.name;
+                        hiddenInput.value = checkbox.value;
+                        hiddenInput.id = hiddenInputId;
+                        form.appendChild(hiddenInput);
+                    } else {
+                        const hiddenInput = document.getElementById(hiddenInputId);
+                        if (hiddenInput) {
+                            form.removeChild(hiddenInput);
+                        }
+                    }
+                });
+            });
+        });
+
+        const checkboxAll = document.getElementById('checkbox-all-search');
+        checkboxAll.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="accounts["]');
+            const formIds = ['bulk_start', 'bulk_stop'];
+
+            checkboxes.forEach(checkbox => {
+                formIds.forEach(formId => {
+                    const form = document.getElementById(formId);
+                    if (!form) {
+                        return;
+                    }
+                    const hiddenInputId = formId + '-' + checkbox.name.replace(/[\[\]]/g, '');
+
+                    if (checkboxAll.checked) {
+                        let hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = checkbox.name;
+                        hiddenInput.value = checkbox.value;
+                        hiddenInput.id = hiddenInputId;
+                        form.appendChild(hiddenInput);
+                    } else {
+                        const hiddenInput = document.getElementById(hiddenInputId);
+                        if (hiddenInput) {
+                            form.removeChild(hiddenInput);
+                        }
+                    }
+                });
+            });
+        });
+
     </script>
 </x-v1.layout>
 
