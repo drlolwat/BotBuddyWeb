@@ -26,4 +26,19 @@ RUN apk add --update nodejs npm
 
 RUN mkdir /.npm && chown -R 1000:1000 /.npm && chmod -R 775 /.npm
 
+ENV GOLANG_VERSION 1.22.0
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN apk add --no-cache --virtual .build-deps bash gcc musl-dev openssl go \
+    && wget -O go.tgz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
+    && tar -C /usr/local -xzf go.tgz \
+    && rm go.tgz \
+    && go version \
+    && apk del .build-deps
+
+RUN mkdir -p /go/src /go/bin /go/cache && chmod -R 777 /go
+
+ENV GOCACHE /go/cache
+
 USER 1000:1000
