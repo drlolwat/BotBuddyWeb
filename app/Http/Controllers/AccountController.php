@@ -75,6 +75,16 @@ class AccountController extends Controller
                     continue;
                 }
 
+                if ($account->status == 'Running') {
+                    $errors[] = "$account->email is already running";
+                    continue;
+                }
+
+                if ($account->status == 'Starting') {
+                    $errors[] = "$account->email is already starting";
+                    continue;
+                }
+
                 $started = $socket->dispatch(new StartBotCommand($account));
 
                 if ($started != "true") {
@@ -83,6 +93,7 @@ class AccountController extends Controller
                 }
 
                 $account->status = 'Starting';
+                $account->start_queued_at = null; // in case it was formerly queued
                 $account->save();
 
                 $started_count++;
@@ -115,15 +126,84 @@ class AccountController extends Controller
         }
 
         if ($validated['action'] == 'queue') {
+
+            $user = auth()->user();
+
+            if (!$user->dreambot_username || !$user->dreambot_password) {
+                return redirect(route('settings'))
+                    ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
+            }
+
+            $response = back();
+            $errors = [];
+            $queued_count = 0;
             $start_queue = now()->addMinute()->second(0);
-            foreach ($accounts->shuffle() as $account) {
+
+            foreach ($accounts as $account) {
+                if(!$account->agent) {
+                    $errors[] = "$account->email is not assigned to an agent";
+                    continue;
+                }
+
+                if(!$account->script) {
+                    $errors[] = "$account->email does not have a script assigned";
+                    continue;
+                }
+
+                if ($account->agent->client_type != 'DreamBot') {
+                    $errors[] = "Agent \"{$account->agent->name}\" is not using DreamBot client";
+                    continue;
+                }
+
+                if (!$account->agent->dreambot_client_path) {
+                    $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot client.jar path configured";
+                    continue;
+                }
+
+                if (!$account->agent->dreambot_scripts_path) {
+                    $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot scripts path configured";
+                    continue;
+                }
+
+                if ($account->status == 'Running') {
+                    $errors[] = "$account->email is already running";
+                    continue;
+                }
+
+                if ($account->status == 'Starting') {
+                    $errors[] = "$account->email is already starting";
+                    continue;
+                }
+
+                if ($account->status == 'Starting') {
+                    $errors[] = "$account->email is already queued";
+                    continue;
+                }
+
+                $started = $socket->dispatch(new StartBotCommand($account));
+
+                if ($started != "true") {
+                    $errors[] = "Failed to queue $account->email";
+                    continue;
+                }
+
                 $start_queue->addMinute();
                 $account->start_queued_at = $start_queue;
                 $account->status = 'Queued';
                 $account->save();
+
+                $queued_count++;
             }
 
-            return back()->with('status', 'Accounts have been queued to start');
+            if ($queued_count == 1) {
+                $response = $response->with('status', '1 account has been queued to start');
+            }
+
+            if ($queued_count > 1) {
+                $response = $response->with('status', "$queued_count accounts have been queued to start");
+            }
+
+            return $response->withErrors($errors);
         }
 
         return back()->withErrors('Invalid action');

@@ -28,9 +28,28 @@ class StartQueuedAccounts implements ShouldQueue
      */
     public function handle(SocketService $socket): void
     {
-        $accounts = Account::where('start_queued_at', '<', now())->get();
+        $accounts = Account::query()
+            ->where('status', 'Queued')
+            ->where('start_queued_at', '<', now())
+            ->get();
 
         foreach ($accounts as $account) {
+            // todo: make common function to check if account can be started
+            if (
+                !$account->agent ||
+                !$account->script ||
+                $account->agent->client_type != 'DreamBot' ||
+                !$account->agent->dreambot_client_path ||
+                !$account->agent->dreambot_scripts_path ||
+                !$account->user->dreambot_username ||
+                !$account->user->dreambot_password
+            ) {
+                $account->status = 'Stopped';
+                $account->start_queued_at = null;
+                $account->save();
+                continue;
+            }
+
             $socket->dispatch(new StartBotCommand($account));
             $account->status = 'Starting';
             $account->start_queued_at = null;
