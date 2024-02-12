@@ -83,4 +83,48 @@ class AgentController extends Controller
 
         return redirect(route('agent'))->with('status', 'Agent deleted');
     }
+
+    public function download(Agent $agent)
+    {
+        if ($agent->user_id != auth()->id()) {
+            abort(404);
+        }
+
+        $arch = request()->get('arch');
+
+        $command = match($arch) {
+            'linux' => 'cd /var/www/html/goagent && go build -o %s -ldflags "-s -w -X main.CLIENT_UUID=%s -X main.CLIENT_KEY=%s" .',
+            'windows' => 'cd /var/www/html/goagent && GOOS=windows GOARCH=amd64 go build -o %s -ldflags "-s -w -X main.CLIENT_UUID=%s -X main.CLIENT_KEY=%s" .',
+            default => null,
+        };
+
+        if (!$command) {
+            abort(404);
+        }
+
+        $dir = public_path("agents/$agent->id");
+
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
+
+        $file = $dir . '/agent' . ($arch == 'linux' ? '' : '.exe');
+
+        if (file_exists($file)) {
+            return response()->download($file);
+        }
+
+        $command = sprintf(
+            $command,
+            $file,
+            $agent->uuid,
+            $agent->agent_key
+        );
+
+        if (exec($command) === false) {
+            return back()->withErrors('Could not download agent, please contact support');
+        }
+
+        return response()->download($file);
+    }
 }
