@@ -180,13 +180,6 @@ class AccountController extends Controller
                     continue;
                 }
 
-                $started = $socket->dispatch(new StartBotCommand($account));
-
-                if ($started != "true") {
-                    $errors[] = "Failed to queue $account->email";
-                    continue;
-                }
-
                 $start_queue->addMinute();
                 $account->start_queued_at = $start_queue;
                 $account->status = 'Queued';
