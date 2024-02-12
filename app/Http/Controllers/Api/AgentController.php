@@ -41,6 +41,10 @@ class AgentController extends Controller
                 ->where('uuid', $agentUUid)
                 ->first();
 
+            if (!$agent) {
+                continue;
+            }
+
             $accountIds = array_keys($accounts);
 
             $deadAccounts = Account::query()
