@@ -70,6 +70,7 @@ Route::group(['prefix' => 'agent'], function () {
     Route::get('/{agent}', [App\Http\Controllers\AgentController::class, 'show'])->name('agent.show');
     Route::put('/{agent}', [App\Http\Controllers\AgentController::class, 'update'])->name('agent.update');
     Route::delete('/{agent}', [App\Http\Controllers\AgentController::class, 'destroy'])->name('agent.destroy');
+    Route::get('/{agent}/download', [App\Http\Controllers\AgentController::class, 'download'])->name('agent.download');
 });
 
 Route::group(['prefix' => 'script'], function () {
