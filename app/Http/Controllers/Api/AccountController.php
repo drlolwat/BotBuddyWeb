@@ -116,37 +116,37 @@ class AccountController extends Controller
         foreach ($validated as $id => $stats) {
             $stats = $stats['BB_OUTPUT'];
             $account = Account::findOrFail($id);
-            if (!$account->stats) {
 
-                $data = [];
+            $data = [];
 
-                if (isset($stats['BB_GP'])) {
-                    $data['gp'] = $stats['BB_GP'];
-                }
-                if (isset($stats['BB_TTL'])) {
-                    $data['ttl'] = $stats['BB_TTL'];
-                }
-                if (isset($stats['BB_QP'])) {
-                    $data['qp'] = $stats['BB_QP'];
-                }
-                if (isset($stats['BB_WORLD'])) {
-                    $data['world_id'] = $stats['BB_WORLD'];
-                }
-                if (isset($stats['BB_DISPLAYNAME'])) {
-                    $data['name'] = $stats['BB_DISPLAYNAME'];
-                }
-                if (isset($stats['BB_TYPE'])) {
-                    $data['type'] = $stats['BB_TYPE'];
-                }
-                // todo: normalize skills into separate table?
-                if (isset($stats['BB_STATS'])) {
-                    $data['skills'] = collect($stats['BB_STATS'])->toJson();
-                }
-
-                $account->stats()->create($data);
-                $account->unsetRelation('stats');
+            if (isset($stats['BB_GP'])) {
+                $data['gp'] = $stats['BB_GP'];
             }
-            $updated[$id] = $account->stats->save();
+            if (isset($stats['BB_TTL'])) {
+                $data['ttl'] = $stats['BB_TTL'];
+            }
+            if (isset($stats['BB_QP'])) {
+                $data['qp'] = $stats['BB_QP'];
+            }
+            if (isset($stats['BB_WORLD'])) {
+                $data['world_id'] = $stats['BB_WORLD'];
+            }
+            if (isset($stats['BB_DISPLAYNAME'])) {
+                $data['name'] = $stats['BB_DISPLAYNAME'];
+            }
+            if (isset($stats['BB_TYPE'])) {
+                $data['type'] = $stats['BB_TYPE'];
+            }
+            // todo: normalize skills into separate table?
+            if (isset($stats['BB_STATS'])) {
+                $data['skills'] = collect($stats['BB_STATS'])->toJson();
+            }
+
+            if (!$account->stats) {
+                $updated[$id] = $account->stats()->create($data);
+            } else {
+                $updated[$id] = $account->stats->update($data);
+            }
         }
 
         return $updated;
