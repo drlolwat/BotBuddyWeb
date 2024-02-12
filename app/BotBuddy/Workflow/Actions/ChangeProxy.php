@@ -6,6 +6,7 @@ use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
+use App\Models\AccountGroup;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +20,14 @@ class ChangeProxy extends Action
     /** @var Account $model */
     public function run(Model $model, array $data): void
     {
-        $query = $model->account_group->proxies();
+        $query = match ($model::class) {
+            Account::class => $model->proxies(),
+            AccountGroup::class => $model->account_group->proxies()
+        };
+
+        if (!$query) {
+            throw new \Exception('Invalid model type received in ChangeProxy action');
+        }
 
         switch($data['type']) {
             case 'random':
