@@ -15,6 +15,7 @@
                 <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
                     <li><form id="bulk_start" method="post" action="{{ route('account.bulkAction') }}">@csrf<input type="hidden" name="action" value="start" /><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Start</button></form></li>
                     <li><form id="bulk_stop" method="post" action="{{ route('account.bulkAction') }}">@csrf<input type="hidden" name="action" value="stop" /><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Stop</button></form></li>
+                    <li><form id="bulk_queue" method="post" action="{{ route('account.bulkAction') }}">@csrf<input type="hidden" name="action" value="queue" /><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Queue start</button></form></li>
 {{--                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update proxy</a></li>--}}
 {{--                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update agent</a></li>--}}
                 </ul>
@@ -105,7 +106,7 @@
                                 <td class="px-4 py-3">
                                     @php
                                         $icon = '<div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>';
-                                        if ($account->status == 'Starting' || $account->status == 'Stopping') {
+                                        if ($account->status == 'Starting' || $account->status == 'Stopping' || $account->status == 'Queued') {
                                             $icon = '<div class="h-2.5 w-2.5 rounded-full bg-yellow-500 me-2"></div>';
                                         }
                                         if ($account->status == 'Running') {
@@ -141,6 +142,13 @@
                                                     <form method="post" action="{{ route('account.start', $account->id) }}">
                                                         @csrf
                                                         <button href="#" class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Start</button>
+                                                    </form>
+                                                </li>
+                                            @elseif($account->status == 'Queued')
+                                                <li>
+                                                    <form method="post" action="{{ route('account.dequeue', $account->id) }}">
+                                                        @csrf
+                                                        <button href="#" class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Cancel</button>
                                                     </form>
                                                 </li>
                                             @endif
@@ -259,7 +267,7 @@
         const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="accounts["]');
         checkboxes.forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
-                const formIds = ['bulk_start', 'bulk_stop'];
+                const formIds = ['bulk_start', 'bulk_stop', 'bulk_queue'];
 
                 formIds.forEach(function(formId) {
                     const form = document.getElementById(formId);
@@ -288,7 +296,7 @@
         const checkboxAll = document.getElementById('checkbox-all-search');
         checkboxAll.addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="accounts["]');
-            const formIds = ['bulk_start', 'bulk_stop'];
+            const formIds = ['bulk_start', 'bulk_stop', 'bulk_queue'];
 
             checkboxes.forEach(checkbox => {
                 formIds.forEach(formId => {

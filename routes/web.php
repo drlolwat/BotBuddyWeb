@@ -43,6 +43,7 @@ Route::group(['prefix' => 'account'], function () {
     Route::post('/start/{account}', [App\Http\Controllers\AccountController::class, 'start'])->name('account.start');
     Route::post('/stop/{account}', [App\Http\Controllers\AccountController::class, 'stop'])->name('account.stop');
     Route::post('/bulkAction', [App\Http\Controllers\AccountController::class, 'bulkAction'])->name('account.bulkAction');
+    Route::post('/dequeue/{account}', [App\Http\Controllers\AccountController::class, 'dequeue'])->name('account.dequeue');
 });
 
 Route::group(['prefix' => 'proxy/group'], function () {

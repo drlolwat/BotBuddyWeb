@@ -114,6 +114,18 @@ class AccountController extends Controller
             return back()->with('status', 'Accounts are being stopped');
         }
 
+        if ($validated['action'] == 'queue') {
+            $start_queue = now()->addMinute()->second(0);
+            foreach ($accounts->shuffle() as $account) {
+                $start_queue->addMinute();
+                $account->start_queued_at = $start_queue;
+                $account->status = 'Queued';
+                $account->save();
+            }
+
+            return back()->with('status', 'Accounts have been queued to start');
+        }
+
         return back()->withErrors('Invalid action');
     }
 
@@ -392,5 +404,22 @@ class AccountController extends Controller
         }
 
         return redirect(route('account'))->with('status', 'Accounts imported');
+    }
+
+    public function dequeue(Account $account)
+    {
+        if ($account->user_id != auth()->id()) {
+            return back()->withErrors('Cannot dequeue account');
+        }
+
+        if ($account->status != 'Queued') {
+            return back()->withErrors('Account is not queued');
+        }
+
+        $account->status = 'Stopped';
+        $account->start_queued_at = null;
+        $account->save();
+
+        return back()->with('status', 'Account is no longer queued');
     }
 }
