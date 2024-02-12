@@ -32,6 +32,7 @@ class WorkflowController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
+            'name' => 'required|string',
             'model_type' => 'required|string',
             'model_id' => 'required|integer',
             'event' => 'required|string',
@@ -60,6 +61,7 @@ class WorkflowController extends Controller
         });
 
         $workflow = Workflow::create([
+            'name' => $validated['name'],
             'user_id' => auth()->user()->id,
             ...$workflowData,
             'data' => count($eventData) > 0 ? $eventData : null,
