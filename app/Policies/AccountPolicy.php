@@ -3,11 +3,12 @@
 namespace App\Policies;
 
 use App\Models\Account;
+use App\Models\User;
 
 class AccountPolicy
 {
-    public function view(Account $account): bool
+    public function view(User $user, Account $account): bool
     {
-        return $account->user_id === auth()->id();
+        return $account->user_id === $user->id;
     }
 }

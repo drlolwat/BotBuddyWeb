@@ -2,12 +2,13 @@
 
 namespace App\Policies;
 
+use App\Models\User;
 use App\Models\Workflow;
 
 class WorkflowPolicy
 {
-    public function view(Workflow $workflow): bool
+    public function view(User $user, Workflow $workflow): bool
     {
-        return $workflow->user_id === auth()->id();
+        return $workflow->user_id === $user->id;
     }
 }
