@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('proxies', function (Blueprint $table) {
             $table->id();
             $table->string('host');
-            $table->smallInteger('port');
+            $table->unsignedSmallInteger('port');
             $table->string('password')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('proxy_group_id')->nullable();
