@@ -30,11 +30,8 @@ class AgentController extends Controller
     public function agentData(Request $request)
     {
         $uuids = array_keys($request->all());
-        Account::query()
-            ->whereIn('status', ['Running', 'Starting', 'Stopping'])
-            ->whereHas('agent', function ($query) use ($uuids) {
-                $query->whereNotIn('uuid', $uuids);
-            })->update(['status' => 'Stopped']);
+
+        $userId = null;
 
         foreach ($request->all() as $agentUUid => $accounts) {
             $agent = Agent::query()
@@ -45,12 +42,17 @@ class AgentController extends Controller
                 continue;
             }
 
+            if (!$userId) {
+                $userId = $agent->user_id;
+            }
+
             $accountIds = array_keys($accounts);
 
             $deadAccounts = Account::query()
                 ->with('agent')
                 ->whereNotIn('id', $accountIds)
                 ->where('status', 'Running')
+                ->where('user_id', $agent->user_id)
                 ->where('agent_id', $agent->id)
                 ->get();
 
@@ -59,13 +61,24 @@ class AgentController extends Controller
                 $deadAccount->save();
             }
 
-            foreach ($accounts as $accountId => $accountStatus) {
-                $account = Account::find($accountId);
-                if ($account && $account->status != $accountStatus) {
-                    $account->status = $accountStatus;
-                    $account->save();
+            foreach ($accounts as $accountData) {
+                foreach ($accountData as $accountId => $accountStatus) {
+                    $account = Account::find($accountId);
+                    if ($account && $account->status != $accountStatus) {
+                        $account->status = $accountStatus;
+                        $account->save();
+                    }
                 }
             }
+        }
+
+        if ($userId) {
+            Account::query()
+                ->whereIn('status', ['Running', 'Starting', 'Stopping'])
+                ->where('user_id', $userId)
+                ->whereHas('agent', function ($query) use ($uuids) {
+                    $query->whereNotIn('uuid', $uuids);
+                })->update(['status' => 'Stopped']);
         }
     }
 
