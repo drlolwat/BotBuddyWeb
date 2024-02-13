@@ -24,6 +24,7 @@
                         <tr>
                             <th scope="col" class="px-4 py-3">Name</th>
                             <th scope="col" class="px-4 py-3">Script</th>
+                            <th scope="col" class="px-4 py-3">Accounts</th>
                             <th scope="col" class="px-4 py-3">World</th>
                             <th scope="col" class="px-4 py-3">FPS</th>
                             <th scope="col" class="px-4 py-3">
@@ -44,6 +45,7 @@
                                         <span>-</span>
                                     @endif
                                 </td>
+                                <td class="px-4 py-3">{{ $accountGroup->accounts_count }}</td>
                                 <td class="px-4 py-3">{{ $accountGroup->world }}</td>
                                 <td class="px-4 py-3">{{ $accountGroup->fps }}</td>
                                 <td class="px-4 py-3 flex items-center justify-end">

@@ -18,7 +18,11 @@ class AccountGroupController extends Controller
 
     public function index()
     {
-        $accountGroups = AccountGroup::where('user_id', auth()->id())->paginate(10);
+        $accountGroups = AccountGroup::query()
+            ->where('user_id', auth()->id())
+            ->withCount('accounts')
+            ->paginate(10);
+
         return view('v1.account.group.index', compact('accountGroups'));
     }
 
@@ -26,7 +30,9 @@ class AccountGroupController extends Controller
     {
         $this->authorize('view', $group);
 
-        return view('v1.account.group.show', compact('group'));
+        $accounts = $group->accounts()->with('agent', 'script')->paginate(10);
+
+        return view('v1.account.group.show', compact('group', 'accounts'));
     }
 
     public function create()
