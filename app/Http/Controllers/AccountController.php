@@ -129,6 +129,12 @@ class AccountController extends Controller
         }
 
         if ($validated['action'] == 'queue') {
+            // todo: improve validation
+            $minutes = (int) request()->get('minutes');
+
+            if (!$minutes || $minutes < 1 || $minutes > 120) {
+                return back()->withErrors('Invalid minutes');
+            }
 
             $user = auth()->user();
 
@@ -183,7 +189,7 @@ class AccountController extends Controller
                     continue;
                 }
 
-                $start_queue->addMinute();
+                $start_queue->addMinutes($minutes);
                 $account->start_queued_at = $start_queue;
                 $account->status = 'Queued';
                 $account->save();
