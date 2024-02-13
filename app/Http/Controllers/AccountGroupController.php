@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\BotBuddy\Socket\Commands\StartBotCommand;
+use App\BotBuddy\Socket\Commands\StopBotCommand;
+use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use Illuminate\Http\Request;
@@ -97,5 +100,198 @@ class AccountGroupController extends Controller
         $group->delete();
 
         return redirect(route('account'))->with('status', 'Account group deleted');
+    }
+
+    public function start(AccountGroup $group, SocketService $socket)
+    {
+        $this->authorize('view', $group);
+
+        $accounts = $group->accounts()->whereIn('status', ['Stopped', 'Queued'])->get();
+        $user = auth()->user();
+
+        if (!$user->dreambot_username || !$user->dreambot_password) {
+            return redirect(route('settings'))
+                ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
+        }
+
+        $response = back();
+        $errors = [];
+        $started_count = 0;
+
+        foreach ($accounts as $account) {
+            if(!$account->agent) {
+                $errors[] = "$account->email is not assigned to an agent";
+                continue;
+            }
+
+            if(!$account->script) {
+                $errors[] = "$account->email does not have a script assigned";
+                continue;
+            }
+
+            if ($account->agent->client_type != 'DreamBot') {
+                $errors[] = "Agent \"{$account->agent->name}\" is not using DreamBot client";
+                continue;
+            }
+
+            if (!$account->agent->dreambot_client_path) {
+                $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot client.jar path configured";
+                continue;
+            }
+
+            if (!$account->agent->dreambot_scripts_path) {
+                $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot scripts path configured";
+                continue;
+            }
+
+            $started = $socket->dispatch(new StartBotCommand($account));
+
+            if ($started != "true") {
+                $errors[] = "Failed to start $account->email";
+                continue;
+            }
+
+            $account->status = 'Starting';
+            $account->start_queued_at = null; // in case it was formerly queued
+            $account->save();
+
+            $started_count++;
+        }
+
+        if ($started_count == 1) {
+            $response = $response->with('status', '1 account is being started');
+        }
+
+        if ($started_count > 1) {
+            $response = $response->with('status', "$started_count accounts are being started");
+        }
+
+        return $response->withErrors($errors);
+    }
+
+    public function stop(AccountGroup $group, SocketService $socket)
+    {
+        $this->authorize('view', $group);
+        $accounts = $group->accounts()->whereIn('status', ['Running', 'Starting'])->get();
+
+        $stop_count = 0;
+
+        foreach ($accounts as $account) {
+            $stopped = $socket->dispatch(new StopBotCommand($account));
+
+            if ($stopped != "true") {
+                continue;
+            }
+
+            $account->status = 'Stopping';
+            $account->save();
+            $stop_count++;
+        }
+
+        if ($stop_count == 0) {
+            return back()->withErrors('No accounts are running');
+        }
+
+        if ($stop_count == 1) {
+            return back()->with('status', '1 account is being stopped');
+        }
+
+        return back()->with('status', 'Accounts are being stopped');
+    }
+
+    public function queue(AccountGroup $group)
+    {
+        $this->authorize('view', $group);
+
+        $accounts = $group->accounts()->whereIn('status', ['Stopped', 'Stopping'])->get();
+
+        // todo: improve validation
+        $minutes = (int) request()->get('minutes');
+
+        if (!$minutes || $minutes < 1 || $minutes > 120) {
+            return back()->withErrors('Invalid minutes');
+        }
+
+        $user = auth()->user();
+
+        if (!$user->dreambot_username || !$user->dreambot_password) {
+            return redirect(route('settings'))
+                ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
+        }
+
+        $response = back();
+        $errors = [];
+        $queued_count = 0;
+        $start_queue = now()->addMinute()->second(0);
+
+        foreach ($accounts as $account) {
+            if(!$account->agent) {
+                $errors[] = "$account->email is not assigned to an agent";
+                continue;
+            }
+
+            if(!$account->script) {
+                $errors[] = "$account->email does not have a script assigned";
+                continue;
+            }
+
+            if ($account->agent->client_type != 'DreamBot') {
+                $errors[] = "Agent \"{$account->agent->name}\" is not using DreamBot client";
+                continue;
+            }
+
+            if (!$account->agent->dreambot_client_path) {
+                $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot client.jar path configured";
+                continue;
+            }
+
+            if (!$account->agent->dreambot_scripts_path) {
+                $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot scripts path configured";
+                continue;
+            }
+
+            $start_queue->addMinutes($minutes);
+            $account->start_queued_at = $start_queue;
+            $account->status = 'Queued';
+            $account->save();
+
+            $queued_count++;
+        }
+
+        if ($queued_count == 1) {
+            $response = $response->with('status', '1 account has been queued to start');
+        }
+
+        if ($queued_count > 1) {
+            $response = $response->with('status', "$queued_count accounts have been queued to start");
+        }
+
+        return $response->withErrors($errors);
+    }
+
+    public function dequeue(AccountGroup $group)
+    {
+        $this->authorize('view', $group);
+        $accounts = $group->accounts()->where('status', 'Queued')->get();
+
+        $response = back();
+        $queued_count = 0;
+
+        foreach ($accounts as $account) {
+            $account->status = 'Stopped';
+            $account->start_queued_at = null;
+            $account->save();
+            $queued_count++;
+        }
+
+        if ($queued_count == 0) {
+            return $response->withErrors('No accounts are queued');
+        }
+
+        if ($queued_count == 1) {
+            return $response->with('status', '1 account has been dequeued');
+        }
+
+        return $response->with('status', "$queued_count accounts have been dequeued");
     }
 }

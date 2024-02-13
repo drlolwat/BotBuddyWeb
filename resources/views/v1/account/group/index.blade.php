@@ -52,17 +52,31 @@
                                             <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                         </svg>
                                     </button>
-                                    <div id="account-{{ $accountGroup->id }}-dropdown" class="mt-[8.5rem] mr-[-1rem] hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                    <div id="account-{{ $accountGroup->id }}-dropdown" class="mt-[14.5rem] mr-[-1rem] hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
                                         <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="account-{{ $accountGroup->id }}-dropdown-button">
+                                            <form method="post" action="{{ route('account.group.start', $accountGroup->id) }}">@csrf
+                                                <button class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Start all</button>
+                                            </form>
+                                            <form method="post" action="{{ route('account.group.stop', $accountGroup->id) }}">@csrf
+                                                <button class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Stop all</button>
+                                            </form>
                                             <li>
-                                                <a href="{{ route('account.group.show', $accountGroup->id) }}" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                                <a id="queue-{{ $accountGroup->id }}" data-modal-target="default-modal" data-modal-toggle="default-modal" class="cursor-pointer block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Queue start all</a>
                                             </li>
+                                            @if($accountGroup->accounts()->where('status', 'Queued')->count() > 0)
+                                            <form method="post" action="{{ route('account.group.dequeue', $accountGroup->id) }}">@csrf
+                                                <button href="#" class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dequeue all</button>
+                                            </form>
+                                            @endif
                                         </ul>
                                         <div class="py-1">
+                                            <div>
+                                                <a href="{{ route('account.group.show', $accountGroup->id) }}" class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Edit</a>
+                                            </div>
                                             <form method="post" action="{{ route('account.group.destroy', $accountGroup->id) }}">
                                                 @csrf
                                                 <input type="hidden" name="_method" value="DELETE">
-                                                <button href="#" class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</button>
+                                                <button class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</button>
                                             </form>
                                         </div>
                                     </div>
@@ -134,23 +148,80 @@
             </div>
         </div>
     </section>
-    <script>
-        const dropdownToggles = document.querySelectorAll('[data-dropdown-toggle]');
 
-        dropdownToggles.forEach(function(toggle) {
-            toggle.addEventListener('click', function() {
-                const dropdownMenuId = toggle.getAttribute('data-dropdown-toggle');
-                const dropdownMenu = document.getElementById(dropdownMenuId);
-                if (dropdownMenu) {
-                    if (dropdownMenu.classList.contains('hidden')) {
-                        dropdownMenu.classList.remove('hidden');
-                        dropdownMenu.classList.add('absolute');
-                    } else {
-                        dropdownMenu.classList.add('hidden');
-                        dropdownMenu.classList.remove('absolute');
-                    }
-                }
-            });
+    <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden bg-[#00000075] overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-full max-h-full">
+        <div class="relative p-4 w-full max-w-2xl max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        Queue start all
+                    </h3>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <form id="queue" method="post" action="#">
+                    @csrf
+                    <div class="p-4 md:p-5 space-y-4">
+                        <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                            Enter the duration to wait before starting each account in the group that is not currently running.
+                        </p>
+                        <div class="flex gap-2">
+                            <input class="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full md:w-[75px] text-center mb-4 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-300 dark:text-white dark:focus:ring-primary-400 dark:focus:border-primary-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" id="minutes" type="number" name="minutes" value="2" min="1" max="120">
+                            <div class="text-gray-900 text-sm rounded-lg w-full md:w-[400px] mb-4 p-2.5 dark:text-white">Minutes</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                        <button type="submit" data-modal-hide="default-modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                        <button data-modal-hide="default-modal" type="button" class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toggleButton = document.querySelector('[data-modal-toggle="default-modal"]');
+        const modal = document.getElementById('default-modal');
+
+        function toggleModal(e) {
+            const id = e.target.getAttribute('id');
+            const groupId = id.replace('queue-', '');
+            const form = document.getElementById('queue');
+            form.action = `/account/group/queue/${groupId}`;
+            console.log(id);
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+            modal.setAttribute('aria-hidden', String(modal.classList.contains('hidden')));
+        }
+
+        toggleButton.addEventListener('click', toggleModal);
+
+        document.querySelectorAll('[data-modal-hide="default-modal"]').forEach(closeButton => {
+            closeButton.addEventListener('click', toggleModal);
         });
+
+        const dropdownToggles = document.querySelectorAll('[data-dropdown-toggle]');
+        if (dropdownToggles) {
+            dropdownToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function() {
+                    const dropdownMenuId = toggle.getAttribute('data-dropdown-toggle');
+                    const dropdownMenu = document.getElementById(dropdownMenuId);
+                    if (dropdownMenu) {
+                        if (dropdownMenu.classList.contains('hidden')) {
+                            dropdownMenu.classList.remove('hidden');
+                            dropdownMenu.classList.add('absolute');
+                        } else {
+                            dropdownMenu.classList.add('hidden');
+                            dropdownMenu.classList.remove('absolute');
+                        }
+                    }
+                });
+            });
+        }
+
     </script>
 </x-v1.layout>

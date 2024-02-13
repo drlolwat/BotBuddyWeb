@@ -29,6 +29,10 @@ Route::group(['prefix' => 'account/group'], function () {
     Route::get('/{group}', [App\Http\Controllers\AccountGroupController::class, 'show'])->name('account.group.show');
     Route::put('/{group}', [App\Http\Controllers\AccountGroupController::class, 'update'])->name('account.group.update');
     Route::delete('/{group}', [App\Http\Controllers\AccountGroupController::class, 'destroy'])->name('account.group.destroy');
+    Route::post('/start/{group}', [App\Http\Controllers\AccountGroupController::class, 'start'])->name('account.group.start');
+    Route::post('/stop/{group}', [App\Http\Controllers\AccountGroupController::class, 'stop'])->name('account.group.stop');
+    Route::post('/queue/{group}', [App\Http\Controllers\AccountGroupController::class, 'queue'])->name('account.group.queue');
+    Route::post('/dequeue/{group}', [App\Http\Controllers\AccountGroupController::class, 'dequeue'])->name('account.group.dequeue');
 });
 
 Route::group(['prefix' => 'account'], function () {

@@ -184,7 +184,7 @@ class AccountController extends Controller
                     continue;
                 }
 
-                if ($account->status == 'Starting') {
+                if ($account->status == 'Queued') {
                     $errors[] = "$account->email is already queued";
                     continue;
                 }
