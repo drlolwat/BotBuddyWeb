@@ -88,6 +88,11 @@ class AccountController extends Controller
                     continue;
                 }
 
+                if ($account->status == 'Completed') {
+                    $errors[] = "$account->email is already running";
+                    continue;
+                }
+
                 $started = $socket->dispatch(new StartBotCommand($account));
 
                 if ($started != "true") {
