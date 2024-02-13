@@ -21,6 +21,8 @@ class ScriptController extends Controller
 
     public function show(UserScript $script)
     {
+        $this->authorize('view', $script);
+
         return view('v1.script.show', compact('script'));
     }
 
@@ -47,6 +49,8 @@ class ScriptController extends Controller
 
     public function update(Request $request, UserScript $script)
     {
+        $this->authorize('view', $script);
+
         $validated = $this->validate($request, [
             'name' => 'required',
             'script' => 'required',
@@ -62,6 +66,8 @@ class ScriptController extends Controller
 
     public function destroy(UserScript $script)
     {
+        $this->authorize('view', $script);
+
         $groupInUse = Account::where('script_id', $script->id)->count();
 
         if ($groupInUse > 0) {

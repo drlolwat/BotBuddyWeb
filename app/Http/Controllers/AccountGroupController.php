@@ -21,6 +21,8 @@ class AccountGroupController extends Controller
 
     public function show(AccountGroup $group)
     {
+        $this->authorize('view', $group);
+
         return view('v1.account.group.show', compact('group'));
     }
 
@@ -57,6 +59,8 @@ class AccountGroupController extends Controller
 
     public function update(Request $request, AccountGroup $group)
     {
+        $this->authorize('view', $group);
+
         $validated = $this->validate($request, [
             'name' => 'required',
             'script_id' => 'required',
@@ -82,6 +86,8 @@ class AccountGroupController extends Controller
 
     public function destroy(AccountGroup $group)
     {
+        $this->authorize('view', $group);
+
         $groupInUse = Account::where('account_group_id', $group->id)->count();
 
         if ($groupInUse > 0) {

@@ -25,6 +25,8 @@ class ProxyController extends Controller
 
     public function show(Proxy $proxy)
     {
+        $this->authorize('view', $proxy);
+
         return view('v1.proxy.show', compact('proxy'));
     }
 
@@ -57,6 +59,8 @@ class ProxyController extends Controller
 
     public function update(Request $request, Proxy $proxy)
     {
+        $this->authorize('view', $proxy);
+
         $validated = $this->validate($request, [
             'host' => 'required',
             'port' => 'required|int',
@@ -78,6 +82,8 @@ class ProxyController extends Controller
 
     public function destroy(Proxy $proxy)
     {
+        $this->authorize('view', $proxy);
+
         $groupInUse = Account::where('proxy_id', $proxy->id)->count();
 
         if ($groupInUse > 0) {

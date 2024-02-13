@@ -34,7 +34,10 @@ class AccountController extends Controller
             'accounts' => 'required|array',
         ]);
 
-        $accounts = Account::whereIn('id', array_keys($validated['accounts']))->get();
+        $accounts = Account::query()
+            ->whereIn('id', array_keys($validated['accounts']))
+            ->where('user_id', auth()->id())
+            ->get();
 
         if ($validated['action'] == 'start') {
 
@@ -204,6 +207,8 @@ class AccountController extends Controller
 
     public function show(Account $account)
     {
+        $this->authorize('view', $account);
+
         return view('v1.account.show', compact('account'));
     }
 
@@ -250,6 +255,8 @@ class AccountController extends Controller
 
     public function update(Request $request, Account $account)
     {
+        $this->authorize('view', $account);
+
         $validated = $this->validate($request, [
             'email' => 'required',
             'password' => 'required',
@@ -285,6 +292,8 @@ class AccountController extends Controller
 
     public function destroy(Account $account)
     {
+        $this->authorize('view', $account);
+
         if ($account->status == 'Starting' || $account->status == 'Running' || $account->status == 'Stopping') {
             return back()->withErrors('Account is currently running');
         }
@@ -296,6 +305,15 @@ class AccountController extends Controller
 
     public function start(Account $account, SocketService $socket)
     {
+        $this->authorize('view', $account);
+
+        $user = auth()->user();
+
+        if (!$user->dreambot_username || !$user->dreambot_password) {
+            return redirect(route('settings'))
+                ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
+        }
+
         if(!$account->agent) {
             return back()->withErrors('Account is not assigned to an agent');
         }
@@ -316,13 +334,6 @@ class AccountController extends Controller
             return back()->withErrors('Please configure the agent DreamBot scripts path');
         }
 
-        $user = auth()->user();
-
-        if (!$user->dreambot_username || !$user->dreambot_password) {
-            return redirect(route('settings'))
-                ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
-        }
-
         $started = $socket->dispatch(new StartBotCommand($account));
 
         if ($started != "true") {
@@ -337,6 +348,8 @@ class AccountController extends Controller
 
     public function stop(Account $account, SocketService $socket)
     {
+        $this->authorize('view', $account);
+
         if(!$account->agent) {
             return back()->withErrors('Account is not assigned to an agent');
         }
@@ -481,9 +494,7 @@ class AccountController extends Controller
 
     public function dequeue(Account $account)
     {
-        if ($account->user_id != auth()->id()) {
-            return back()->withErrors('Cannot dequeue account');
-        }
+        $this->authorize('view', $account);
 
         if ($account->status != 'Queued') {
             return back()->withErrors('Account is not queued');

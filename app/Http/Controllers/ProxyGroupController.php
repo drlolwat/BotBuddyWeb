@@ -24,6 +24,8 @@ class ProxyGroupController extends Controller
 
     public function show(ProxyGroup $group)
     {
+        $this->authorize('view', $group);
+
         return view('v1.proxy.group.show', compact('group'));
     }
 
@@ -48,6 +50,8 @@ class ProxyGroupController extends Controller
 
     public function update(Request $request, ProxyGroup $group)
     {
+        $this->authorize('view', $group);
+
         $validated = $this->validate($request, [
             'name' => 'required',
         ]);
@@ -61,6 +65,8 @@ class ProxyGroupController extends Controller
 
     public function destroy(ProxyGroup $group)
     {
+        $this->authorize('view', $group);
+
         $groupInUse = Proxy::where('proxy_group_id', $group->id)->count();
 
         if ($groupInUse > 0) {

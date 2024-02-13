@@ -24,6 +24,8 @@ class AgentController extends Controller
 
     public function show(Agent $agent)
     {
+        $this->authorize('view', $agent);
+
         return view('v1.agent.show', compact('agent'));
     }
 
@@ -55,6 +57,8 @@ class AgentController extends Controller
 
     public function update(Request $request, Agent $agent)
     {
+        $this->authorize('view', $agent);
+
         $validated = $this->validate($request, [
             'name' => 'required',
             'dreambot_client_path' => '',
@@ -73,6 +77,8 @@ class AgentController extends Controller
 
     public function destroy(Agent $agent)
     {
+        $this->authorize('view', $agent);
+
         $agentInUse = Account::where('agent_id', $agent->id)->count();
 
         if ($agentInUse > 0) {
@@ -86,9 +92,7 @@ class AgentController extends Controller
 
     public function download(Agent $agent)
     {
-        if ($agent->user_id != auth()->id()) {
-            abort(404);
-        }
+        $this->authorize('view', $agent);
 
         $arch = request()->get('arch');
 

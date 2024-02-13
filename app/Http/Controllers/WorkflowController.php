@@ -82,6 +82,7 @@ class WorkflowController extends Controller
 
     public function destroy(Workflow $workflow)
     {
+        $this->authorize('view', $workflow);
         $workflow->delete();
         return redirect(route('workflow'))->with('status','Workflow deleted');
     }
