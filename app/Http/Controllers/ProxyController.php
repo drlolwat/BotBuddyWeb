@@ -38,6 +38,10 @@ class ProxyController extends Controller
 
     public function store(Request $request)
     {
+        if ($request['proxy_group_id'] == "0") {
+            $request['proxy_group_id'] = null;
+        }
+
         $validated = $this->validate($request, [
             'host' => 'required',
             'port' => 'required|int',
@@ -68,6 +72,10 @@ class ProxyController extends Controller
     public function update(Request $request, Proxy $proxy)
     {
         $this->authorize('view', $proxy);
+
+        if ($request['proxy_group_id'] == "0") {
+            $request['proxy_group_id'] = null;
+        }
 
         $validated = $this->validate($request, [
             'host' => 'required',

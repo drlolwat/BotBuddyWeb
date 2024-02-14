@@ -229,6 +229,16 @@ class AccountController extends Controller
 
     public function store(Request $request)
     {
+        if ($request['proxy_id'] == "0") {
+            $request['proxy_id'] = null;
+        }
+        if ($request['agent_id'] == "0") {
+            $request['agent_id'] = null;
+        }
+        if ($request['account_group_id'] == "0") {
+            $request['account_group_id'] = null;
+        }
+
         $validated = $this->validate($request, [
             'email' => 'required',
             'password' => 'required',
@@ -290,6 +300,16 @@ class AccountController extends Controller
     public function update(Request $request, Account $account)
     {
         $this->authorize('view', $account);
+
+        if ($request['proxy_id'] == "0") {
+            $request['proxy_id'] = null;
+        }
+        if ($request['agent_id'] == "0") {
+            $request['agent_id'] = null;
+        }
+        if ($request['account_group_id'] == "0") {
+            $request['account_group_id'] = null;
+        }
 
         $validated = $this->validate($request, [
             'email' => 'required',
@@ -431,11 +451,18 @@ class AccountController extends Controller
 
     public function importStore(Request $request)
     {
+        if ($request['proxy_id'] == "0") {
+            $request['proxy_id'] = null;
+        }
+        if ($request['agent_id'] == "0") {
+            $request['agent_id'] = null;
+        }
+
         $validated = $this->validate($request, [
             'account_file' => 'nullable|file|mimes:txt',
             'account_textarea' => 'nullable|string',
             'account_group_id' => [
-                'nullable',
+                'required',
                 Rule::exists('account_groups', 'id')
                     ->where(function ($query) {
                         $query->where('user_id', auth()->id());
@@ -458,10 +485,6 @@ class AccountController extends Controller
         ]);
 
         $accountGroup = AccountGroup::find($validated['account_group_id']);
-
-        if (!$accountGroup) {
-            return back()->withErrors('Account group does not exist');
-        }
 
         $linesFile = [];
         $linesTextarea = [];
