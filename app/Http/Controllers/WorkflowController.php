@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\BotBuddy\Workflow\WorkflowService;
 use App\Models\Workflow;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -29,17 +31,53 @@ class WorkflowController extends Controller
         return view('v1.workflow.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, WorkflowService $workflowService)
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'model_type' => 'required|string',
-            'model_id' => 'required|integer',
-            'event' => 'required|string',
-            'action' => 'required|array',
+            'model_type' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use($workflowService) {
+                    if (!array_key_exists($value, $workflowService->modelTypes)) {
+                        $fail($attribute.' is not a valid model type.');
+                    }
+                },
+            ],
         ]);
 
-        // todo: validate action names exist as fields, validate event_* field(s) exist
+        $this->validate($request, [
+            'model_id' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) use($request, $workflowService) {
+                    if (!$workflowService->modelTypes[$request->model_type]::query()->where('id', $value)->exists()) {
+                        $fail($value.' is not a valid model.');
+                    }
+                },
+            ],
+            'event' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use($workflowService) {
+                    if (!array_key_exists($value, $workflowService->events)) {
+                        $fail($attribute.' is not a valid event.');
+                    }
+                },
+            ],
+            'action' => [
+                'required',
+                'array',
+                function ($attribute, $value, $fail) use($workflowService) {
+                    foreach ($value as $action) {
+                        if (!array_key_exists($action, $workflowService->actions)) {
+                            $fail($attribute.' is not a valid action.');
+                        }
+                    }
+                },
+            ],
+        ]);
+
         $validated = $request->all();
 
         // todo: validate each action, action classes need to be able to define their own validation rules
@@ -47,7 +85,7 @@ class WorkflowController extends Controller
             ->mapWithKeys(fn ($action) => [$action => $validated[$action] ?? null])
             ->toArray();
 
-        // todo: ensure only contains valid columns
+        // todo: set columns manually on new workflow instead of using this
         $workflowData = Arr::where($validated, function ($value, $key) use ($actions) {
             return !Str::startsWith($key, 'event_')
                 && !Str::startsWith($key, 'action')
@@ -60,18 +98,26 @@ class WorkflowController extends Controller
             return [Str::replaceFirst('event_', '', $key) => $value];
         });
 
+        /** @var FormRequest $eventDataValidated */
+        $eventValidator = new $workflowService->events[$validated['event']]();
+        $eventValidator->replace($eventData);
+        /** @var array $eventDataValidated */
+        $eventDataValidated = $eventValidator->validate($eventValidator->rules());
+
+        // todo: validate all workflow actions here
+
         $workflow = Workflow::create([
             'name' => $validated['name'],
             'user_id' => auth()->user()->id,
             ...$workflowData,
-            'data' => count($eventData) > 0 ? $eventData : null,
+            'data' => count($eventDataValidated) > 0 ? $eventDataValidated : null,
         ]);
 
         $i = 1;
-        foreach ($actions as $action => $data) {
+        foreach ($actions as $action => $actionData) {
             $workflow->actions()->create([
                 'name' => $action,
-                'data' => $data ? array_filter($data, fn ($value) => !is_null($value)) : null,
+                'data' => $actionData ? array_filter($actionData, fn ($value) => !is_null($value)) : null,
                 'order' => $i,
             ]);
             $i++;

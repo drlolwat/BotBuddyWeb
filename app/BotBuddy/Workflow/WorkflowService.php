@@ -8,12 +8,31 @@ use App\BotBuddy\Workflow\Actions\ChangeScript;
 use App\BotBuddy\Workflow\Actions\RestartBot;
 use App\BotBuddy\Workflow\Actions\StopAndReplenishFrom;
 use App\BotBuddy\Workflow\Actions\StopBot;
+use App\BotBuddy\Workflow\Events\PermBanned;
+use App\BotBuddy\Workflow\Events\ProxyBlocked;
+use App\BotBuddy\Workflow\Events\ScriptComplete;
+use App\BotBuddy\Workflow\Events\TempBanned;
+use App\Models\Account;
+use App\Models\AccountGroup;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class WorkflowService
 {
+    // the model types allowed to be used in workflows
+    public array $modelTypes = [
+        'account' => Account::class,
+        'account_group' => AccountGroup::class,
+    ];
+
+    public array $events = [
+        'script_complete' => ScriptComplete::class,
+        'proxy_blocked' => ProxyBlocked::class,
+        'temp_banned' => TempBanned::class,
+        'perm_banned' => PermBanned::class,
+    ];
+
     public array $actions = [
         'change_script' => ChangeScript::class,
         'stop_bot' => StopBot::class,
