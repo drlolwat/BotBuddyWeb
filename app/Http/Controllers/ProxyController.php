@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Proxy;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProxyController extends Controller
 {
@@ -42,7 +43,14 @@ class ProxyController extends Controller
             'port' => 'required|int',
             'username' => 'nullable',
             'password' => 'nullable',
-            'proxy_group_id' => 'nullable',
+            'proxy_group_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('proxy_groups', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
         ]);
 
         $account = Proxy::create([
@@ -66,7 +74,14 @@ class ProxyController extends Controller
             'port' => 'required|int',
             'username' => 'nullable',
             'password' => 'nullable',
-            'proxy_group_id' => 'nullable',
+            'proxy_group_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('proxy_groups', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
         ]);
 
         $proxy->update([

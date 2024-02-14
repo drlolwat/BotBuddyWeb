@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\Proxy;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
@@ -134,12 +135,10 @@ class AccountController extends Controller
         }
 
         if ($validated['action'] == 'queue') {
-            // todo: improve validation
-            $minutes = (int) request()->get('minutes');
-
-            if (!$minutes || $minutes < 1 || $minutes > 120) {
-                return back()->withErrors('Invalid minutes');
-            }
+            $minutesValidated = request()->validate([
+                'minutes' => 'required|int|min:1|max:120',
+            ]);
+            $minutes = $minutesValidated['minutes'];
 
             $user = auth()->user();
 
@@ -234,11 +233,35 @@ class AccountController extends Controller
             'email' => 'required',
             'password' => 'required',
             'password_2fa' => 'nullable',
-            'account_group_id' => 'nullable',
-            'proxy_id' => 'nullable',
-            'script_id' => 'required',
+            'account_group_id' => [
+                'nullable',
+                Rule::exists('account_groups', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
+            'proxy_id' => [
+                'nullable',
+                Rule::exists('proxies', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
+            'script_id' => [
+                'required',
+                Rule::exists('user_scripts', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'script_params' => 'nullable',
-            'agent_id' => 'nullable',
+            'agent_id' => [
+                'nullable',
+                Rule::exists('agents', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'fps' => 'required|int',
             'world' => 'required',
         ]);
@@ -272,11 +295,35 @@ class AccountController extends Controller
             'email' => 'required',
             'password' => 'required',
             'password_2fa' => 'nullable',
-            'account_group_id' => 'nullable',
-            'proxy_id' => 'nullable',
-            'script_id' => 'required',
+            'account_group_id' => [
+                'nullable',
+                Rule::exists('account_groups', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
+            'proxy_id' => [
+                'nullable',
+                Rule::exists('proxies', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
+            'script_id' => [
+                'required',
+                Rule::exists('user_scripts', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'script_params' => 'nullable',
-            'agent_id' => 'nullable',
+            'agent_id' => [
+                'nullable',
+                Rule::exists('agents', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'fps' => 'required|int',
             'world' => 'required',
         ]);
@@ -387,9 +434,27 @@ class AccountController extends Controller
         $validated = $this->validate($request, [
             'account_file' => 'nullable|file|mimes:txt',
             'account_textarea' => 'nullable|string',
-            'account_group_id' => 'required',
-            'proxy_id' => 'nullable',
-            'agent_id' => 'nullable',
+            'account_group_id' => [
+                'nullable',
+                Rule::exists('account_groups', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
+            'proxy_id' => [
+                'nullable',
+                Rule::exists('proxies', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
+            'agent_id' => [
+                'nullable',
+                Rule::exists('agents', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
         ]);
 
         $accountGroup = AccountGroup::find($validated['account_group_id']);
@@ -490,7 +555,7 @@ class AccountController extends Controller
                 'email' => $account['account_email'],
                 'password' => $account['account_password'],
                 'password_2fa' => $account['account_2fa_password'] ?? null,
-                'account_group_id' => $request->get('account_group_id'),
+                'account_group_id' => $request->get('account_group_id') ?? null,
                 'agent_id' => $request->get('agent_id'),
                 'proxy_id' => $newProxy?->id ?? $request->get('proxy_id'),
                 'script_id' => $accountGroup->script_id,

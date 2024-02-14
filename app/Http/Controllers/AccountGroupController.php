@@ -8,6 +8,7 @@ use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AccountGroupController extends Controller
 {
@@ -44,7 +45,14 @@ class AccountGroupController extends Controller
     {
         $validated = $this->validate($request, [
             'name' => 'required',
-            'script_id' => 'required',
+            'script_id' => [
+                'required',
+                'integer',
+                Rule::exists('user_scripts', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'script_params' => 'nullable',
             'fps' => 'required|int',
             'world' => 'required',
@@ -72,7 +80,14 @@ class AccountGroupController extends Controller
 
         $validated = $this->validate($request, [
             'name' => 'required',
-            'script_id' => 'required',
+            'script_id' => [
+                'required',
+                'integer',
+                Rule::exists('user_scripts', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'script_params' => 'nullable',
             'fps' => 'required|int',
             'world' => 'required',
@@ -209,14 +224,12 @@ class AccountGroupController extends Controller
     {
         $this->authorize('view', $group);
 
+        $minutesValidated = request()->validate([
+            'minutes' => 'required|int|min:1|max:120',
+        ]);
+        $minutes = $minutesValidated['minutes'];
+
         $accounts = $group->accounts()->whereIn('status', ['Stopped', 'Stopping'])->get();
-
-        // todo: improve validation
-        $minutes = (int) request()->get('minutes');
-
-        if (!$minutes || $minutes < 1 || $minutes > 120) {
-            return back()->withErrors('Invalid minutes');
-        }
 
         $user = auth()->user();
 
