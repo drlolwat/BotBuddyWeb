@@ -80,18 +80,6 @@ class WorkflowController extends Controller
 
         $validated = $request->all();
 
-        // todo: validate each action, action classes need to be able to define their own validation rules
-        $actions = collect($validated['action'])
-            ->mapWithKeys(fn ($action) => [$action => $validated[$action] ?? null])
-            ->toArray();
-
-        // todo: set columns manually on new workflow instead of using this
-        $workflowData = Arr::where($validated, function ($value, $key) use ($actions) {
-            return !Str::startsWith($key, 'event_')
-                && !Str::startsWith($key, 'action')
-                && $key != '_token' && !array_key_exists($key, $actions);
-        });
-
         $eventData = Arr::mapWithKeys(Arr::where($validated, function ($value, $key) {
             return Str::startsWith($key, 'event_');
         }), function ($value, $key) {
@@ -104,12 +92,21 @@ class WorkflowController extends Controller
         /** @var array $eventDataValidated */
         $eventDataValidated = $eventValidator->validate($eventValidator->rules());
 
-        // todo: validate all workflow actions here
+        $actions = collect($validated['action'])
+            ->mapWithKeys(fn ($action) => [$action => $validated[$action] ?? null])
+            ->toArray();
+
+        foreach ($actions as $action => $actionData) {
+            $actionDataRequest = (new Request())->replace($actionData ?? []);
+            $this->validate($actionDataRequest, $workflowService->actions[$action]::rules());
+        }
 
         $workflow = Workflow::create([
             'name' => $validated['name'],
             'user_id' => auth()->user()->id,
-            ...$workflowData,
+            'model_type' => $validated['model_type'],
+            'model_id' => $validated['model_id'],
+            'event' => $validated['event'],
             'data' => count($eventDataValidated) > 0 ? $eventDataValidated : null,
         ]);
 

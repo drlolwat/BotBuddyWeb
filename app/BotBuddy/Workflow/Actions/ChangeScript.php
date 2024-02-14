@@ -8,6 +8,7 @@ use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class ChangeScript extends Action
 {
@@ -22,5 +23,23 @@ class ChangeScript extends Action
         $model->script_id = $data['script_id'];
         $model->script_params = $data['script_params'] ?? $model->script_params;
         $model->save();
+    }
+
+    public static function rules(): array
+    {
+        return [
+            'script_id' => [
+                'required',
+                'integer',
+                Rule::exists('user_scripts', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
+            'script_params' => [
+                'nullable',
+                'string',
+            ]
+        ];
     }
 }

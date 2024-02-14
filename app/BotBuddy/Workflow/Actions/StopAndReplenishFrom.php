@@ -8,6 +8,7 @@ use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class StopAndReplenishFrom extends Action
 {
@@ -41,5 +42,20 @@ class StopAndReplenishFrom extends Action
         $replenishAccount->save();
 
         $this->socket->dispatch(new StartBotCommand($replenishAccount));
+    }
+
+    public static function rules(): array
+    {
+        return [
+            'account_group_id' => [
+                'required',
+                'integer',
+                Rule::exists('account_groups', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
+            'random_proxy' => 'string|nullable',
+        ];
     }
 }

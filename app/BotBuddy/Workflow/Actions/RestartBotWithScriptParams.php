@@ -27,4 +27,11 @@ class RestartBotWithScriptParams extends Action
 
         $this->socket->dispatch(new StartBotCommand($model));
     }
+
+    public static function rules(): array
+    {
+        return [
+            'script_params' => 'string|nullable',
+        ];
+    }
 }

@@ -16,4 +16,9 @@ class Action
     {
         //
     }
+
+    public static function rules(): array
+    {
+        return [];
+    }
 }

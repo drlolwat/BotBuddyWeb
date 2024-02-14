@@ -50,4 +50,15 @@ class ChangeProxy extends Action
 
         // todo: log when proxy is not available
     }
+
+    public static function rules(): array
+    {
+        return [
+            'type' => [
+                'required',
+                'string',
+                'in:random,random_unused'
+            ]
+        ];
+    }
 }
