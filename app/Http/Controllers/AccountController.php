@@ -499,6 +499,7 @@ class AccountController extends Controller
         $lines = array_merge($linesFile, $linesTextarea);
 
         $accounts = [];
+        $failed = 0;
 
         foreach($lines as $line) {
             $line = trim($line);
@@ -507,7 +508,12 @@ class AccountController extends Controller
                 continue;
             }
 
-            $parts = explode(":", $line);
+            $parts = explode(",", $line);
+
+            if (count($parts) < 2 || count($parts) > 6) {
+                $failed++;
+                continue;
+            }
 
             if (count($parts) == 2) {
                 $accounts[] = [
@@ -524,24 +530,50 @@ class AccountController extends Controller
                 ];
             }
 
-            if (count($parts) == 6) {
+            if (count($parts) == 5) {
+                $hostParts = explode(":", $parts[2]);
+                if (count($hostParts) != 2) {
+                    $failed++;
+                    continue;
+                }
+                if ($hostParts[1] < 1 || $hostParts[1] > 65535) {
+                    $failed++;
+                    continue;
+                }
+                if ($hostParts[0] == "") {
+                    $failed++;
+                    continue;
+                }
                 $accounts[] = [
                     'account_email' => $parts[0],
                     'account_password' => $parts[1],
-                    'proxy_host' => $parts[2],
-                    'proxy_port' => $parts[3],
+                    'proxy_host' => $hostParts[0],
+                    'proxy_port' => $hostParts[1],
                     'proxy_username' => $parts[4],
                     'proxy_password' => $parts[5],
                 ];
             }
 
-            if (count($parts) == 7) {
+            if (count($parts) == 6) {
+                $hostParts = explode(":", $parts[3]);
+                if (count($hostParts) != 2) {
+                    $failed++;
+                    continue;
+                }
+                if ($hostParts[1] < 1 || $hostParts[1] > 65535) {
+                    $failed++;
+                    continue;
+                }
+                if ($hostParts[0] == "") {
+                    $failed++;
+                    continue;
+                }
                 $accounts[] = [
                     'account_email' => $parts[0],
                     'account_password' => $parts[1],
                     'account_2fa_password' => $parts[2],
-                    'proxy_host' => $parts[3],
-                    'proxy_port' => $parts[4],
+                    'proxy_host' => $hostParts[0],
+                    'proxy_port' => $hostParts[1],
                     'proxy_username' => $parts[5],
                     'proxy_password' => $parts[6],
                 ];
@@ -588,7 +620,21 @@ class AccountController extends Controller
             ]);
         }
 
-        return redirect(route('account'))->with('status', 'Accounts imported');
+        $response = back();
+
+        if (count($accounts) == 0) {
+            return $response->withErrors(['No valid accounts found']);
+        }
+
+        if ($failed > 0) {
+            $response = $response->withErrors(["Failed to import $failed accounts"]);
+        }
+
+        if (count($accounts) == 1) {
+            return $response->with('status', '1 account imported');
+        }
+
+        return $response->with('status', sprintf("%d accounts imported", count($accounts)));
     }
 
     public function dequeue(Account $account)
