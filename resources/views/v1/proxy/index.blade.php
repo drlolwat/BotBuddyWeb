@@ -24,6 +24,7 @@
                         <tr>
                             <th scope="col" class="px-4 py-3">Proxy</th>
                             <th scope="col" class="px-4 py-3">Auth</th>
+                            <th scope="col" class="px-4 py-3">Accounts</th>
                             <th scope="col" class="px-4 py-3">Group</th>
                             <th scope="col" class="px-4 py-3">
                                 <span class="sr-only">Actions</span>
@@ -37,6 +38,7 @@
                                     <a href="{{ route('proxy.show', $proxy->id) }}">{{ $proxy->host }}:{{ $proxy->port }}</a>
                                 </th>
                                 <td class="px-4 py-3">{{ $proxy->username && $proxy->password ? $proxy->username.":".$proxy->password : "-" }}</td>
+                                <td class="px-4 py-3">{{ $proxy->accounts_count }}</td>
                                 <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
                                     @if($proxy->proxy_group)
                                         <a class="font-medium" href="{{ route('proxy.group.show', $proxy->proxy_group_id) }}">{{ $proxy->proxy_group->name }}</a>

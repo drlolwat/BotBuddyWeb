@@ -20,6 +20,7 @@ class ProxyController extends Controller
         $proxies = auth()->user()
             ->proxies()
             ->with('proxy_group')
+            ->withCount('accounts')
             ->paginate(10);
 
         return view('v1.proxy.index', compact('proxies'));
@@ -29,7 +30,9 @@ class ProxyController extends Controller
     {
         $this->authorize('view', $proxy);
 
-        return view('v1.proxy.show', compact('proxy'));
+        $accounts = $proxy->accounts()->with('agent', 'script')->paginate(10);
+
+        return view('v1.proxy.show', compact('proxy', 'accounts'));
     }
 
     public function create()

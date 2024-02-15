@@ -12,10 +12,10 @@
                     <details class="mb-2 text-gray-900 dark:text-white" open>
                         <summary>Accepted formats</summary>
                         <ul class="text-xs mb-2 w-full">
-                            <li>user:pass</li>
-                            <li>user:pass:2fa_pass</li>
-                            <li>user:pass:proxy_host:proxy_user:proxy_pass</li>
-                            <li>user:pass:2fa_pass:proxy_host:proxy_user:proxy_pass</li>
+                            <li>user,pass</li>
+                            <li>user,pass,2fa_pass</li>
+                            <li>user,pass,proxy_host:proxy_port,proxy_user,proxy_pass</li>
+                            <li>user,pass,2fa_pass,proxy_host:proxy_port,proxy_user,proxy_pass</li>
                         </ul>
                     </details>
                 </div>

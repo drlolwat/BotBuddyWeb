@@ -21,4 +21,9 @@ class Proxy extends Model
     {
         return $this->belongsTo(ProxyGroup::class);
     }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
 }
