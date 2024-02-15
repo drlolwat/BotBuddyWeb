@@ -17,6 +17,7 @@ class ProxyGroupController extends Controller
     {
         $proxyGroups = auth()->user()
             ->proxy_groups()
+            ->withCount('proxies')
             ->paginate(10);
 
         return view('v1.proxy.group.index', compact('proxyGroups'));
@@ -26,7 +27,9 @@ class ProxyGroupController extends Controller
     {
         $this->authorize('view', $group);
 
-        return view('v1.proxy.group.show', compact('group'));
+        $proxies = $group->proxies()->withCount('accounts')->paginate(10);
+
+        return view('v1.proxy.group.show', compact('group', 'proxies'));
     }
 
     public function create()
