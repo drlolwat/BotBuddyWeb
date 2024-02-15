@@ -560,7 +560,7 @@ class AccountController extends Controller
                     ->where('port', $account['proxy_port'])
                     ->where('username', $account['proxy_username'])
                     ->where('password', $account['proxy_password'])
-                    ->value('id');
+                    ->first();
 
                 if (!$newProxy) {
                     $newProxy = Proxy::create([
