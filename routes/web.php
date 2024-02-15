@@ -60,6 +60,8 @@ Route::group(['prefix' => 'proxy/group'], function () {
 });
 
 Route::group(['prefix' => 'proxy'], function () {
+    Route::get('/import', [App\Http\Controllers\ProxyController::class, 'import'])->name('proxy.import');
+    Route::post('/import', [App\Http\Controllers\ProxyController::class, 'importStore'])->name('proxy.import.store');
     Route::get('/', [App\Http\Controllers\ProxyController::class, 'index'])->name('proxy');
     Route::post('/', [App\Http\Controllers\ProxyController::class, 'store'])->name('proxy.store');
     Route::get('/create', [App\Http\Controllers\ProxyController::class, 'create'])->name('proxy.create');
