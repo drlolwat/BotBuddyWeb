@@ -4,7 +4,7 @@
         <div class="flex flex-col items-center justify-center px-6 mx-auto md:h-screen lg:py-0">
             <div class="flex justify-start items-center">
                 <a href="{{ route('index') }}" class="flex items-center justify-between mr-4 py-6">
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BotBuddy</span>
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BotBuddy <span class="text-sm">Beta</span></span>
                 </a>
             </div>
             @if($errors->isNotEmpty())

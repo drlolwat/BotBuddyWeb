@@ -11,7 +11,7 @@
                 <span class="sr-only">Toggle sidebar</span>
             </button>
             <a href="{{ route('index') }}" class="flex items-center justify-between mr-4">
-                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BotBuddy</span>
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BotBuddy <span class="text-sm">Beta</span></span>
             </a>
         </div>
     </div>
