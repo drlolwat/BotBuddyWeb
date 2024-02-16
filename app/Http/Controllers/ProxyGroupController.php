@@ -10,7 +10,7 @@ class ProxyGroupController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'verified']);
+        $this->middleware(['auth']);
     }
 
     public function index()

@@ -14,7 +14,8 @@ class StoreController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'verified'])->except('webhook');
+        $this->middleware(['auth'])->except('webhook');
+        $this->middleware('subscription.expire.warning');
     }
 
     public function index()

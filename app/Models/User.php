@@ -27,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'dreambot_username',
         'dreambot_password',
         'sellix_customer_uniqid',
+        'subscription_id', 'subscription_expires_at',
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'subscription_expires_at' => 'datetime',
     ];
 
     public function account_groups()
