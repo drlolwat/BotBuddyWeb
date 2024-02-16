@@ -122,5 +122,7 @@ class DatabaseSeeder extends Seeder
             'script_id' => $script2->id,
             'agent_id' => $agent2->id,
         ]);
+
+        $this->call(SubscriptionSeeder::class);
     }
 }

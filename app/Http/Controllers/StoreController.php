@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\BotBuddy\Sellix\SellixService;
+use App\Models\Subscription;
 use function Sentry\captureException;
 use Throwable;
 
@@ -15,13 +16,25 @@ class StoreController extends Controller
 
     public function index()
     {
-        return view('v1.store');
+        $subscriptions = Subscription::query()
+            ->where('name', '!=', 'Founder')
+            ->orderBy('id')
+            ->get();
+
+        // map $subscriptions by slug
+        $subscriptions = $subscriptions->mapWithKeys(function ($subscription) {
+            return [$subscription->slug => $subscription];
+        });
+
+        return view('v1.store', compact('subscriptions'));
     }
 
     public function checkout($product, SellixService $sellix)
     {
         // todo: replace with configurable values
-        $products = ['tier1' => '64658dbf9b949'];
+        $products = [
+            //'basic-monthly' => '64658dbf9b949',
+        ];
 
         if (!in_array($product, array_keys($products))) {
             return back()->withErrors('This product does not exist.');
