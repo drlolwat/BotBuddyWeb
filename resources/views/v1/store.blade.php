@@ -21,7 +21,7 @@
             <div class="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
                 <div class="rounded-3xl p-8 xl:p-10 ring-1 ring-gray-200 dark:ring-white/10">
                     <div class="flex items-center justify-between gap-x-4">
-                        <h3 id="tier-basic" class="text-lg font-semibold leading-8 text-gray-900 dark:text-white">{{ $subscriptions['essential-monthly']->name }}</h3>
+                        <h3 id="tier-basic" class="text-lg font-semibold leading-8 text-gray-900 dark:text-white">{{ $subscriptions['basic-monthly']->name }}</h3>
                     </div>
                     <p class="mt-4 text-sm leading-6 text-gray-600 dark:text-gray-300" id="basic-description">{{ $subscriptions['basic-monthly']->description }}</p>
                     <p class="mt-6 flex items-baseline gap-x-1">
