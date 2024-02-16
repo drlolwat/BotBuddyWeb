@@ -160,7 +160,11 @@
                                             $icon = '<div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>';
                                         }
                                         $status = $account->status;
-                                        if ($account->temp_banned_at) {
+
+                                        if (auth()->user()->subscription->name == 'Basic') {
+                                            $status = 'Banned';
+                                        }
+                                        else if ($account->temp_banned_at) {
                                             $status = 'Banned (Temporary)';
                                         }
                                         if ($account->perm_banned_at) {
