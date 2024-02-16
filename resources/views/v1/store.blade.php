@@ -25,7 +25,7 @@
                     </div>
                     <p class="mt-4 text-sm leading-6 text-gray-600 dark:text-gray-300" id="basic-description">{{ $subscriptions['basic-monthly']->description }}</p>
                     <p class="mt-6 flex items-baseline gap-x-1">
-                        <span id="basic-price" class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">$10</span>
+                        <span id="basic-price" class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">${{ $subscriptions['basic-monthly']->price }}</span>
                         <span id="basic-frequency" class="text-sm font-semibold leading-6 text-gray-600 dark:text-gray-300">/month</span>
                         <span id="basic-annual-percent-off" class="ml-1 hidden rounded-full bg-blue-600/10 dark:bg-blue-500 px-2.5 py-1 text-xs font-semibold text-blue-600 dark:text-white">20% OFF</span>
                     </p>
@@ -86,7 +86,7 @@
                     </div>
                     <p class="mt-4 text-sm leading-6 text-gray-600 dark:text-gray-300" id="farm-description">{{ $subscriptions['farm-monthly']->description }}</p>
                     <p class="mt-6 flex items-baseline gap-x-1">
-                        <span id="farm-price" class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">$50</span>
+                        <span id="farm-price" class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">${{ $subscriptions['farm-monthly']->price }}</span>
                         <span id="farm-frequency" class="text-sm font-semibold leading-6 text-gray-600 dark:text-gray-300">/month</span>
                         <span id="farm-annual-percent-off" class="ml-1 hidden rounded-full bg-blue-600/10 dark:bg-blue-500 px-2.5 py-1 text-xs font-semibold text-blue-600 dark:text-white">20% OFF</span>
                     </p>
