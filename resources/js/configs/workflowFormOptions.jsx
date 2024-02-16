@@ -1,5 +1,5 @@
 import DynamicSelect from '../components/DynamicSelect.jsx';
-import {fetchAccounts, fetchScripts, fetchAccountGroups} from '../utils/fetchUtils.js';
+import {fetchAccounts, fetchScripts, fetchAccountGroups, fetchWorkflowEvents} from '../utils/fetchUtils.js';
 import Select from '../components/Select.jsx';
 import CreateWorkflowButton from '../components/CreateWorkflowButton.jsx';
 import {Fragment} from 'react';
@@ -40,6 +40,11 @@ const workflowFormOptions = {
         options: [{label: "Select a model"}],
         optionsCallback: async () => {
             const accounts = await fetchAccounts();
+            const workflowEvents =  await fetchWorkflowEvents();
+            let eventSelect = {...workflowFormOptions.eventSelect};
+            eventSelect.options = eventSelect.options.filter((event) => {
+                return workflowEvents.includes(event.value) || event.value === undefined;
+            });
             return accounts.map(script => {
                 return {
                     label: script.label,
@@ -47,7 +52,7 @@ const workflowFormOptions = {
                     render: (parent, callback) => {
                         return <Select
                             parent={parent} callback={callback}
-                            {...workflowFormOptions.eventSelect}
+                            {...eventSelect}
                         />
                     }
                 }
@@ -60,12 +65,17 @@ const workflowFormOptions = {
         options: [{label: "Select a model"}],
         optionsCallback: async () => {
             const accountGroups = await fetchAccountGroups();
+            const workflowEvents =  await fetchWorkflowEvents();
+            let eventSelect = {...workflowFormOptions.eventSelect};
+            eventSelect.options = eventSelect.options.filter((event) => {
+                return workflowEvents.includes(event.value) || event.value === undefined;
+            });
             return accountGroups.map(script => {
                 return {
                     label: script.label,
                     value: script.value,
                     render: (parent, callback) => {
-                        return <Select parent={parent} callback={callback} {...workflowFormOptions.eventSelect} />
+                        return <Select parent={parent} callback={callback} {...eventSelect} />
                     }
                 }
             });

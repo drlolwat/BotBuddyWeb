@@ -24,3 +24,8 @@ export const fetchAccountGroups = async () => {
         value: String(group.id),
     }));
 };
+
+export const fetchWorkflowEvents = async () => {
+    const res = await fetch('/api/user/workflow/event');
+    return await res.json();
+}

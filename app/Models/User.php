@@ -85,4 +85,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Workflow::class);
     }
+
+    public function subscription()
+    {
+        // if they have never had a subscription or their subscription has expired
+        if (!($this->subscription_expires_at && $this->subscription_expires_at->isFuture())) {
+            return null;
+        }
+        return $this->belongsTo(Subscription::class);
+    }
 }

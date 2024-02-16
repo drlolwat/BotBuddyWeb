@@ -24,6 +24,10 @@ class AccountController extends Controller
             return ['success' => false];
         }
 
+        if (!$account->user->subscription) {
+            return ['success' => false];
+        }
+
         // todo: handle via event system
         if ($validated['Status'] == 'Completed') {
             // handle for specific account
@@ -41,7 +45,7 @@ class AccountController extends Controller
         }
 
         if ($validated['Status'] == 'Banned') {
-            if ($account->stats?->name) {
+            if ($account->user->subscription->name != 'Basic' || $account->stats?->name) {
                 // check if account is temp banned or perm banned via hiscores
                 $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
                     'player' => $account->stats->name
@@ -54,6 +58,8 @@ class AccountController extends Controller
                     $event = 'temp_banned';
                 }
             } else {
+                // we either don't know the name of the account to check for temp,
+                // or the account does not have the eligible subscription
                 $account->perm_banned_at = now();
                 $event = 'perm_banned';
             }

@@ -86,6 +86,10 @@ class WorkflowController extends Controller
             return [Str::replaceFirst('event_', '', $key) => $value];
         });
 
+        if (auth()->user()->subscription->name == 'Basic' && $validated['event'] == 'temp_banned') {
+            return back()->withErrors('You are not allowed to use this workflow event');
+        }
+
         /** @var FormRequest $eventDataValidated */
         $eventValidator = new $workflowService->events[$validated['event']]();
         $eventValidator->replace($eventData);
@@ -128,5 +132,22 @@ class WorkflowController extends Controller
         $this->authorize('view', $workflow);
         $workflow->delete();
         return redirect(route('workflow'))->with('status','Workflow deleted');
+    }
+
+    // returns the workflow events the user is allowed to use
+    public function events(WorkflowService $workflowService)
+    {
+        $subscription = auth()->user()->subscription;
+        if (!$subscription) {
+            return [];
+        }
+
+        $events = array_keys($workflowService->events);
+
+        if ($subscription->name == 'Basic') {
+            unset($events[array_search('temp_banned', $events)]);
+        }
+
+        return array_values($events);
     }
 }

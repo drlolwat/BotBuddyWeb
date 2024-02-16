@@ -105,12 +105,16 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
     });
 
     Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {
-        //Route::get('account', fn () => auth()->user()->accounts);
-        //Route::get('account/group', fn () => auth()->user()->account_groups);
+
+        // currently used for workflows
+        Route::get('account', fn () => auth()->user()->accounts);
+        Route::get('account/group', fn () => auth()->user()->account_groups);
         //Route::get('proxy', fn () => auth()->user()->proxies);
-        //Route::get('proxy/group', fn () => auth()->user()->proxy_groups);
+        Route::get('proxy/group', fn () => auth()->user()->proxy_groups);
         //Route::get('agent', fn () => auth()->user()->agents);
-        //Route::get('script', fn () => auth()->user()->scripts);
+        Route::get('script', fn () => auth()->user()->scripts);
+        Route::get('workflow/event', [WorkflowController::class, 'events'])->name('workflow.events');
+
         Route::get('getRunningBotsByClient', function(\App\BotBuddy\Socket\SocketService $socket) {
             echo $socket->dispatch(new \App\BotBuddy\Socket\Commands\GetRunningBotsByClient(auth()->user()));
         });
