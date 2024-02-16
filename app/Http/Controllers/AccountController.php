@@ -549,8 +549,8 @@ class AccountController extends Controller
                     'account_password' => $parts[1],
                     'proxy_host' => $hostParts[0],
                     'proxy_port' => $hostParts[1],
-                    'proxy_username' => $parts[4],
-                    'proxy_password' => $parts[5],
+                    'proxy_username' => $parts[3],
+                    'proxy_password' => $parts[4],
                 ];
             }
 
@@ -574,8 +574,8 @@ class AccountController extends Controller
                     'account_2fa_password' => $parts[2],
                     'proxy_host' => $hostParts[0],
                     'proxy_port' => $hostParts[1],
-                    'proxy_username' => $parts[5],
-                    'proxy_password' => $parts[6],
+                    'proxy_username' => $parts[4],
+                    'proxy_password' => $parts[5],
                 ];
             }
         }
