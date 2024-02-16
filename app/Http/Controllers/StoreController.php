@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BotBuddy\Sellix\SellixService;
 use App\Models\Subscription;
 use App\Models\User;
+use Illuminate\Http\Request;
 use function Sentry\captureException;
 use Throwable;
 
@@ -89,5 +90,10 @@ class StoreController extends Controller
             captureException($e);
             return back()->withErrors('Something went wrong. Please try again later.');
         }
+    }
+
+    public function webhook(Request $request)
+    {
+        captureException(new \Exception(json_encode($request->toArray())));
     }
 }

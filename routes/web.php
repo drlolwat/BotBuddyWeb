@@ -116,3 +116,4 @@ Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {
 
 Route::get('store', [\App\Http\Controllers\StoreController::class, 'index'])->name('store');
 Route::get('store/{product}', [\App\Http\Controllers\StoreController::class, 'checkout'])->name('store.checkout');
+Route::post('store/webhook', [\App\Http\Controllers\StoreController::class, 'webhook'])->name('store.webhook');
