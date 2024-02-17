@@ -34,6 +34,16 @@ class AgentController extends Controller
         $userId = null;
 
         foreach ($request->all() as $agentUUid => $accounts) {
+
+            $decodedArray = json_decode(json_encode($accounts), true);
+            $accountStatusById = [];
+
+            foreach ($decodedArray as $item) {
+                foreach ($item as $key => $value) {
+                    $accountStatusById[$key] = $value;
+                }
+            }
+
             $agent = Agent::query()
                 ->where('uuid', $agentUUid)
                 ->first();
@@ -46,9 +56,7 @@ class AgentController extends Controller
                 $userId = $agent->user_id;
             }
 
-            $accountIds = collect($accounts)->map(function ($account) {
-                return array_keys($account)[0];
-            })->toArray();
+            $accountIds = array_keys($accountStatusById);
 
             $deadAccounts = Account::query()
                 ->with('agent')
@@ -65,13 +73,13 @@ class AgentController extends Controller
 
             $accountModels = Account::query()
                 ->whereIn('id', $accountIds)
-                ->get()->mapWithKeys(function ($account) {
-                    return [$account->id => $account->status];
-                })->toArray();
+                ->get();
+
+            $accountModelsById = $accountModels->keyBy('id');
 
             foreach ($accounts as $accountData) {
                 foreach ($accountData as $accountId => $accountStatus) {
-                    $account = $accountModels[$accountId];
+                    $account = $accountModelsById[$accountId];
                     if ($account && $account->status != $accountStatus) {
                         $account->status = $accountStatus;
                         $account->save();
