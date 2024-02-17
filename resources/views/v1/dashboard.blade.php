@@ -32,6 +32,9 @@
                             {{--                                </div>--}}
                             {{--                            </th>--}}
                             <th scope="col" class="px-4 py-3">Name</th>
+                            <th scope="col" class="px-4 py-3">GP</th>
+                            <th scope="col" class="px-4 py-3">QP</th>
+                            <th scope="col" class="px-4 py-3">TTL</th>
                             <th scope="col" class="px-4 py-3">Group</th>
                             <th scope="col" class="px-4 py-3">Agent</th>
                             <th scope="col" class="px-4 py-3">Script</th>
@@ -47,6 +50,21 @@
                             <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 <a href="{{ route('account.show', $account->id) }}">{{ $account->email }}</a>
                             </th>
+                                <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
+                                    @if($account->stats?->gp)
+                                        <img class="inline mb-[2px]" src="{{ url('/gp.png') }}" /> {{ $account->stats->gp_formatted }}
+                                    @else - @endif
+                                </td>
+                                <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
+                                    @if($account->stats?->qp)
+                                        <img class="inline mb-[2px]" src="{{ url('/qp.png') }}" /> {{ $account->stats->qp }}
+                                    @else - @endif
+                                </td>
+                                <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
+                                    @if($account->stats?->ttl)
+                                        <img class="inline mb-[2px]" src="{{ url('/ttl.webp') }}" /> {{ $account->stats->ttl }}
+                                    @else - @endif
+                                </td>
                             <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
                                 @if($account->account_group)
                                     <a class="font-medium" href="{{ route('account.group.show', $account->account_group_id) }}">{{ $account->account_group->name }}</a>

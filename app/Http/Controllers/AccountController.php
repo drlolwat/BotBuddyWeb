@@ -219,7 +219,19 @@ class AccountController extends Controller
     {
         $this->authorize('view', $account);
 
-        return view('v1.account.show', compact('account'));
+        $chunkedSkills = [];
+
+        if ($account->stats) {
+            foreach ($account->stats->skills->chunk(2)->toArray() as $skills) {
+                $chunk = [];
+                foreach ($skills as $skillName => $skillLevel) {
+                    $chunk[] = ['skill' => $skillName, 'level' => $skillLevel];
+                }
+                $chunkedSkills[] = $chunk;
+            }
+        }
+
+        return view('v1.account.show', compact('account', 'chunkedSkills'));
     }
 
     public function create()
