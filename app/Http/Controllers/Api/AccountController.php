@@ -146,7 +146,7 @@ class AccountController extends Controller
             }
             // todo: normalize skills into separate table?
             if (isset($stats['BB_STATS'])) {
-                $data['skills'] = collect($stats['BB_STATS'])->toJson();
+                $data['skills'] = collect($stats['BB_STATS']);
             }
 
             if (!$account->stats) {
