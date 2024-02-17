@@ -242,7 +242,7 @@ const workflowFormOptions = {
                     value: script.value,
                     render: (parent, callback) => {
                         return <span className="ml-2">
-                            <select name="change_proxy[type]" className={className}>
+                            <select name="stop_and_replenish_with[type]" className={className}>
                                            <option value="existing">Use existing proxy configuration</option>
                                            <option value="random">Random proxy from account group</option>
                                            <option value="random_unused">Random unused proxy from account group</option>
