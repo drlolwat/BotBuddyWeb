@@ -69,7 +69,7 @@
                         @foreach($proxies as $proxy)
                             <tr class="border-b dark:border-gray-700">
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <a href="{{ route('proxy.show', $proxy->id) }}">{{ $proxy->host }}:{{ $proxy->port }}</a>
+                                    <a href="{{ route('proxy.show', $proxy->id) }}">{{ $proxy->host }}:{{ $proxy->port }} {{ $proxy->username }}</a>
                                 </th>
                                 <td class="px-4 py-3">{{ $proxy->username && $proxy->password ? $proxy->username.":".$proxy->password : "-" }}</td>
                                 <td class="px-4 py-3">{{ $proxy->accounts_count }}</td>
