@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\BotBuddy\Workflow\WorkflowService;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -158,8 +159,12 @@ class AccountController extends Controller
         return $updated;
     }
 
-    public function allowedClients()
+    public function allowedClients(Request $request)
     {
-        return 3;
+        $user = User::find($request['customerId']);
+        if (!$user) {
+            return 0;
+        }
+        return $user->subscription?->max_agents ?? 0;
     }
 }
