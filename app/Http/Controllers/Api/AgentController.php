@@ -46,7 +46,9 @@ class AgentController extends Controller
                 $userId = $agent->user_id;
             }
 
-            $accountIds = array_keys($accounts);
+            $accountIds = collect($accounts)->map(function ($account) {
+                return array_keys($account)[0];
+            })->toArray();
 
             $deadAccounts = Account::query()
                 ->with('agent')
@@ -62,7 +64,7 @@ class AgentController extends Controller
             }
 
             $accountModels = Account::query()
-                ->whereIn('id', array_keys($accounts))
+                ->whereIn('id', $accountIds)
                 ->get()->mapWithKeys(function ($account) {
                     return [$account->id => $account->status];
                 })->toArray();
