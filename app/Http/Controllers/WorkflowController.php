@@ -33,6 +33,16 @@ class WorkflowController extends Controller
 
     public function store(Request $request, WorkflowService $workflowService)
     {
+        $workflowCount = Workflow::query()
+            ->where('user_id', auth()->id())
+            ->count();
+
+        $maxWorkflows = auth()->user()->subscription->max_workflows;
+
+        if ($workflowCount >= $maxWorkflows) {
+            return back()->withErrors("You are not allowed to create more than $maxWorkflows workflows");
+        }
+
         $this->validate($request, [
             'name' => 'required|string',
             'model_type' => [
