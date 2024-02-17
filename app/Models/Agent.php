@@ -12,6 +12,10 @@ class Agent extends Model
 
     protected $fillable = [
         'name', 'user_id', 'uuid', 'agent_key', 'client_type',
-        'dreambot_client_path', 'dreambot_scripts_path',
+        'dreambot_client_path', 'dreambot_scripts_path', 'last_agentdata_at',
+    ];
+
+    public $casts = [
+        'last_agentdata_at' => 'datetime'
     ];
 }

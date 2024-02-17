@@ -58,6 +58,19 @@ class AgentController extends Controller
 
             $accountIds = array_keys($accountStatusById);
 
+            $deadAccounts = Account::query()
+                ->with('agent')
+                ->whereNotIn('id', $accountIds)
+                ->whereIn('status', ['Running', 'Stopping'])
+                ->where('user_id', $agent->user_id)
+                ->where('agent_id', $agent->id)
+                ->get();
+
+            foreach ($deadAccounts as $deadAccount) {
+                $deadAccount->status = 'Stopped';
+                $deadAccount->save();
+            }
+
             $accountModels = Account::query()
                 ->whereIn('id', $accountIds)
                 ->get();
@@ -75,14 +88,20 @@ class AgentController extends Controller
             }
         }
 
-        if ($userId) {
-            Account::query()
-                ->whereIn('status', ['Running', 'Stopping'])
-                ->where('user_id', $userId)
-                ->whereHas('agent', function ($query) use ($uuids) {
-                    $query->whereNotIn('uuid', $uuids);
-                })->update(['status' => 'Stopped']);
-        }
+        // mark agentdata as received
+        Agent::query()
+            ->whereIn('uuid', $uuids)
+            ->update(['last_agentdata_at' => now()]);
+
+        // update accounts on agents not running
+        Account::query()
+            ->with('agent')
+            ->whereNotIn('agent_id', Agent::query()->whereIn('uuid', $uuids)
+                ->where('last_agentdata_at', '>', now()->subMinutes(5))
+                ->pluck('id'))
+            ->where('status', '!=', 'Stopped')
+            ->where('user_id', $userId)
+            ->update(['status' => 'Stopped']);
     }
 
     public function customerId(Request $request)
