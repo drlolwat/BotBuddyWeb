@@ -36,6 +36,16 @@ class AgentController extends Controller
 
     public function store(Request $request)
     {
+        $agentCount = Agent::query()
+            ->where('user_id', auth()->id())
+            ->count();
+
+        $maxAgents = auth()->user()->subscription->max_agents;
+
+        if ($agentCount >= $maxAgents) {
+            return back()->withErrors("You are not allowed to create more than $maxAgents agents");
+        }
+
         $validated = $this->validate($request, [
             'name' => 'required',
             'dreambot_client_path' => '',

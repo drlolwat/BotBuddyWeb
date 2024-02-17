@@ -58,19 +58,6 @@ class AgentController extends Controller
 
             $accountIds = array_keys($accountStatusById);
 
-            $deadAccounts = Account::query()
-                ->with('agent')
-                ->whereNotIn('id', $accountIds)
-                ->where('status', 'Running')
-                ->where('user_id', $agent->user_id)
-                ->where('agent_id', $agent->id)
-                ->get();
-
-            foreach ($deadAccounts as $deadAccount) {
-                $deadAccount->status = 'Stopped';
-                $deadAccount->save();
-            }
-
             $accountModels = Account::query()
                 ->whereIn('id', $accountIds)
                 ->get();
