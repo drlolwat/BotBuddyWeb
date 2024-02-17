@@ -93,7 +93,7 @@ class StopAndReplenishFrom extends Action
             'type' => [
                 'required',
                 'string',
-                'in:random,random_unused'
+                'in:existing,random,random_unused'
             ]
         ];
     }
