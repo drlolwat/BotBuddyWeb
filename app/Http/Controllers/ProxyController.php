@@ -180,27 +180,26 @@ class ProxyController extends Controller
                 $failed++;
                 continue;
             }
-            $accepted[] = $parts;
+
+            $proxyData = [
+                'host' => $parts[0],
+                'port' => (int)$parts[1],
+                'proxy_group_id' => $proxyGroup?->id ?? null,
+                'user_id' => auth()->id(),
+            ];
+
+            if (count($parts) == 4) {
+                $proxyData['username'] = $parts[2];
+                $proxyData['password'] = $parts[3];
+            }
+
+            $accepted[] = $proxyData;
         }
 
-        foreach ($accepted as $proxy) {
-            if (count($proxy) == 4) {
-                Proxy::create([
-                    'host' => $proxy[0],
-                    'port' => (int)$proxy[1],
-                    'username' => $proxy[2],
-                    'password' => $proxy[3],
-                    'proxy_group_id' => $proxyGroup?->id ?? null,
-                    'user_id' => auth()->id(),
-                ]);
-            } else if (count($proxy) == 2) {
-                Proxy::create([
-                    'host' => $proxy[0],
-                    'port' => (int)$proxy[1],
-                    'proxy_group_id' => $proxyGroup?->id ?? null,
-                    'user_id' => auth()->id(),
-                ]);
-            }
+        $batches = array_chunk($accepted, 100);
+
+        foreach ($batches as $batch) {
+            Proxy::insert($batch);
         }
 
         $response = back();

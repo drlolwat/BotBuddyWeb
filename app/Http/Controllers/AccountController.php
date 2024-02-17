@@ -583,10 +583,13 @@ class AccountController extends Controller
             }
         }
 
+        $accountsToImport = [];
+
         foreach ($accounts as $account) {
 
             $newProxy = null;
 
+            // todo: fix N+1 for proxy queries
             if (count($account) > 3) {
 
                 $newProxy = Proxy::select('id')
@@ -608,7 +611,7 @@ class AccountController extends Controller
                 }
             }
 
-            Account::create([
+            $accountsToImport[] = [
                 'user_id' => auth()->id(),
                 'email' => $account['account_email'],
                 'password' => $account['account_password'],
@@ -620,7 +623,13 @@ class AccountController extends Controller
                 'script_params' => $accountGroup->script_params,
                 'fps' => $accountGroup->fps,
                 'world' => $accountGroup->world,
-            ]);
+            ];
+        }
+
+        $batches = array_chunk($accountsToImport, 100);
+
+        foreach ($batches as $batch) {
+            Account::insert($batch);
         }
 
         $response = back();
