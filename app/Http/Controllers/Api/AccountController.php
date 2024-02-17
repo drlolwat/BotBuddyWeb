@@ -46,7 +46,7 @@ class AccountController extends Controller
         }
 
         if ($validated['Status'] == 'Banned') {
-            if ($account->user->subscription->name != 'Basic' || $account->stats?->name) {
+            if ($account->user->subscription->name != 'Basic' && $account->stats?->name) {
                 // check if account is temp banned or perm banned via hiscores
                 $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
                     'player' => $account->stats->name
