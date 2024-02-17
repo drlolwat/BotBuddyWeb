@@ -159,47 +159,44 @@ class ProxyController extends Controller
 
         $lines = array_merge($linesFile, $linesTextarea);
 
+        $lines = array_map(function($line) {
+            return rtrim($line, "\r");
+        }, $lines);
+
         $accepted = [];
         $failed = 0;
 
         foreach($lines as $line) {
-            $proxy = explode(",", $line);
-            if (count($proxy) != 3 && count($proxy) != 1) {
+            $parts = explode(":", $line);
+            if (count($parts) != 4 && count($parts) != 2) {
                 $failed++;
                 continue;
             }
-            $hostParts = explode(":", $proxy[0]);
-            if (count($hostParts) != 2) {
+            if ($parts[1] < 1 || $parts[1] > 65535) {
                 $failed++;
                 continue;
             }
-            if ($hostParts[1] < 1 || $hostParts[1] > 65535) {
+            if ($parts[0] == "") {
                 $failed++;
                 continue;
             }
-            if ($hostParts[0] == "") {
-                $failed++;
-                continue;
-            }
-            $accepted[] = $proxy;
+            $accepted[] = $parts;
         }
 
         foreach ($accepted as $proxy) {
-            [$host, $port] = explode(":", $proxy[0]);
-
-            if (count($proxy) == 3) {
+            if (count($proxy) == 4) {
                 Proxy::create([
-                    'host' => $host,
-                    'port' => $port,
-                    'username' => $proxy[1],
-                    'password' => $proxy[2],
+                    'host' => $proxy[0],
+                    'port' => (int)$proxy[1],
+                    'username' => $proxy[2],
+                    'password' => $proxy[3],
                     'proxy_group_id' => $proxyGroup?->id ?? null,
                     'user_id' => auth()->id(),
                 ]);
-            } else if (count($proxy) == 1) {
+            } else if (count($proxy) == 2) {
                 Proxy::create([
-                    'host' => $host,
-                    'port' => $port,
+                    'host' => $proxy[0],
+                    'port' => (int)$proxy[1],
                     'proxy_group_id' => $proxyGroup?->id ?? null,
                     'user_id' => auth()->id(),
                 ]);

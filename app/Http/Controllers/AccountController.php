@@ -520,9 +520,9 @@ class AccountController extends Controller
                 continue;
             }
 
-            $parts = explode(",", $line);
+            $parts = explode(":", $line);
 
-            if (count($parts) < 2 || count($parts) > 6) {
+            if (count($parts) < 2 || count($parts) > 7) {
                 $failed++;
                 continue;
             }
@@ -542,41 +542,32 @@ class AccountController extends Controller
                 ];
             }
 
-            if (count($parts) == 5) {
-                $hostParts = explode(":", $parts[2]);
-                if (count($hostParts) != 2) {
+            if (count($parts) == 6) {
+                $parts[3] = (int)$parts[3];
+                if ($parts[3] < 1 || $parts[3] > 65535) {
                     $failed++;
                     continue;
                 }
-                if ($hostParts[1] < 1 || $hostParts[1] > 65535) {
-                    $failed++;
-                    continue;
-                }
-                if ($hostParts[0] == "") {
+                if ($parts[2] == "") {
                     $failed++;
                     continue;
                 }
                 $accounts[] = [
                     'account_email' => $parts[0],
                     'account_password' => $parts[1],
-                    'proxy_host' => $hostParts[0],
-                    'proxy_port' => $hostParts[1],
-                    'proxy_username' => $parts[3],
-                    'proxy_password' => $parts[4],
+                    'proxy_host' => $parts[2],
+                    'proxy_port' => (int)$parts[3],
+                    'proxy_username' => $parts[4],
+                    'proxy_password' => $parts[5],
                 ];
             }
 
-            if (count($parts) == 6) {
-                $hostParts = explode(":", $parts[3]);
-                if (count($hostParts) != 2) {
+            if (count($parts) == 7) {
+                if ($parts[4] < 1 || $parts[4] > 65535) {
                     $failed++;
                     continue;
                 }
-                if ($hostParts[1] < 1 || $hostParts[1] > 65535) {
-                    $failed++;
-                    continue;
-                }
-                if ($hostParts[0] == "") {
+                if ($parts[3] == "") {
                     $failed++;
                     continue;
                 }
@@ -584,10 +575,10 @@ class AccountController extends Controller
                     'account_email' => $parts[0],
                     'account_password' => $parts[1],
                     'account_2fa_password' => $parts[2],
-                    'proxy_host' => $hostParts[0],
-                    'proxy_port' => $hostParts[1],
-                    'proxy_username' => $parts[4],
-                    'proxy_password' => $parts[5],
+                    'proxy_host' => $parts[3],
+                    'proxy_port' => (int)$parts[4],
+                    'proxy_username' => $parts[5],
+                    'proxy_password' => $parts[6],
                 ];
             }
         }

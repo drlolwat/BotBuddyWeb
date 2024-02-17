@@ -13,7 +13,7 @@
                         <summary>Accepted formats</summary>
                         <ul class="text-xs mb-2 w-full">
                             <li>host:port</li>
-                            <li>host:port,user,pass</li>
+                            <li>host:port:user:pass</li>
                         </ul>
                     </details>
                 </div>
