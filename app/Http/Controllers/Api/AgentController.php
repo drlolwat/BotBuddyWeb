@@ -61,9 +61,15 @@ class AgentController extends Controller
                 $deadAccount->save();
             }
 
+            $accountModels = Account::query()
+                ->whereIn('id', array_keys($accounts))
+                ->get()->mapWithKeys(function ($account) {
+                    return [$account->id => $account->status];
+                })->toArray();
+
             foreach ($accounts as $accountData) {
                 foreach ($accountData as $accountId => $accountStatus) {
-                    $account = Account::find($accountId);
+                    $account = $accountModels[$accountId];
                     if ($account && $account->status != $accountStatus) {
                         $account->status = $accountStatus;
                         $account->save();
@@ -74,7 +80,7 @@ class AgentController extends Controller
 
         if ($userId) {
             Account::query()
-                ->whereIn('status', ['Running', 'Starting', 'Stopping'])
+                ->whereIn('status', ['Running', 'Stopping'])
                 ->where('user_id', $userId)
                 ->whereHas('agent', function ($query) use ($uuids) {
                     $query->whereNotIn('uuid', $uuids);
