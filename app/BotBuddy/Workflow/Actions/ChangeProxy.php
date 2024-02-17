@@ -21,8 +21,8 @@ class ChangeProxy extends Action
     public function run(Model $model, array $data): void
     {
         $query = match ($model::class) {
-            Account::class => $model->proxies(),
-            AccountGroup::class => $model->account_group->proxies()
+            Account::class => $model->account_group()->proxies(),
+            AccountGroup::class => $model->proxies(),
         };
 
         if (!$query) {

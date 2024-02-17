@@ -6,6 +6,7 @@ use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
+use App\Models\AccountGroup;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
@@ -33,9 +34,43 @@ class StopAndReplenishFrom extends Action
             $replenishAccount->account_group_id = $model->account_group_id;
             $replenishAccount->script_id = $model->script_id;
             $replenishAccount->script_params = $model->script_params;
-            if (isset($data['random_proxy']) && $data['random_proxy'] == 'on') {
-                $randomProxy = $group->proxies()->inRandomOrder()->first();
-                $replenishAccount->proxy_id = $randomProxy->id;
+
+            if (!$replenishAccount->proxy) {
+                switch ($data['type']) {
+                    case 'existing':
+                        break;
+                    case 'random':
+                        $query = match ($model::class) {
+                            Account::class => $model->account_group()->proxies(),
+                            AccountGroup::class => $model->proxies(),
+                        };
+                        if (!$query) {
+                            throw new \Exception('Invalid model type received in ChangeProxy action');
+                        }
+                        $newProxy = $query->where('id', '!=', $model->proxy_id)
+                            ->inRandomOrder()
+                            ->first();
+                        if ($newProxy) {
+                            $replenishAccount->proxy_id = $newProxy->id;
+                        }
+                        break;
+                    case 'random_unused':
+                        $query = match ($model::class) {
+                            Account::class => $model->account_group()->proxies(),
+                            AccountGroup::class => $model->proxies(),
+                        };
+                        if (!$query) {
+                            throw new \Exception('Invalid model type received in ChangeProxy action');
+                        }
+                        $query = $query->proxies()->whereDoesntHave('accounts', function ($subQuery) use ($replenishAccount) {
+                            $subQuery->where('id', '!=', $replenishAccount->id);
+                        });
+                        $newProxy = $query->inRandomOrder()->first();
+                        if ($newProxy) {
+                            $replenishAccount->proxy_id = $newProxy->id;
+                        }
+                        break;
+                }
             }
         }
 
@@ -55,7 +90,11 @@ class StopAndReplenishFrom extends Action
                         $query->where('user_id', auth()->id());
                     }),
             ],
-            'random_proxy' => 'string|nullable',
+            'type' => [
+                'required',
+                'string',
+                'in:random,random_unused'
+            ]
         ];
     }
 }

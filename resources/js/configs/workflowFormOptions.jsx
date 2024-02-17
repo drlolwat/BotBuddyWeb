@@ -4,6 +4,7 @@ import Select from '../components/Select.jsx';
 import CreateWorkflowButton from '../components/CreateWorkflowButton.jsx';
 import {Fragment} from 'react';
 import CallbackRunner from "../components/CallbackRunner.jsx";
+import Alert from "../components/Alert.jsx";
 
 // const className = "border-2 border-gray-300 rounded-lg mb-2 mr-2";
 const className = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 min-w-[200px] mb-2 mr-2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500";
@@ -240,10 +241,16 @@ const workflowFormOptions = {
                     label: script.label,
                     value: script.value,
                     render: (parent, callback) => {
-                        return <span class="ml-2">
-                            <span className="mr-2">Random proxy?</span>
-                            <input type="checkbox" name="stop_and_replenish_with[random_proxy]"
-                                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                        return <span className="ml-2">
+                            <select name="change_proxy[type]" className={className}>
+                                           <option value="existing">Use existing proxy configuration</option>
+                                           <option value="random">Random proxy from account group</option>
+                                           <option value="random_unused">Random unused proxy from account group</option>
+                                       </select>
+                                       <Alert message={"Note: If selecting a random proxy and there is none available, the replenishment account will not be started."}/>
+                            {/*<span className="mr-2">Random proxy?</span>*/}
+                            {/*<input type="checkbox" name="stop_and_replenish_with[random_proxy]"*/}
+                            {/*       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>*/}
                         </span>;
                     }
                 }

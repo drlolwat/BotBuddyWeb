@@ -97,7 +97,7 @@
                             <svg class="h-6 w-5 flex-none text-blue-600 dark:text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
                             </svg>
-                            10 agents
+                            Unlimited agents
                         </li>
                         <li class="flex gap-x-3">
                             <svg class="h-6 w-5 flex-none text-blue-600 dark:text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -132,36 +132,36 @@
         const pricing = {
             basic: {
                 monthly: {
-                    price: {{ $subscriptions['basic-monthly']->price }},
+                    price: 9.99,
                     name: '{{ $subscriptions['basic-monthly']->slug }}',
                     description: '{{ $subscriptions['basic-monthly']->description }}',
                 },
                 annually: {
-                    price: {{ $subscriptions['basic-annually']->price/12 }},
+                    price: 7.99,
                     name: '{{ $subscriptions['basic-annually']->slug }}',
                     description: '{{ $subscriptions['basic-annually']->description }}',
                 }
             },
             essential: {
                 monthly: {
-                    price: {{ $subscriptions['essential-monthly']->price }},
+                    price: 19.99,
                     name: '{{ $subscriptions['essential-monthly']->slug }}',
                     description: '{{ $subscriptions['essential-monthly']->description }}',
                 },
                 annually: {
-                    price: {{ $subscriptions['essential-annually']->price/12 }},
+                    price: 15.99,
                     name: '{{ $subscriptions['essential-annually']->slug }}',
                     description: '{{ $subscriptions['essential-annually']->description }}',
                 }
             },
             farm: {
                 monthly: {
-                    price: {{ $subscriptions['farm-monthly']->price }},
+                    price: 39.99,
                     name: '{{ $subscriptions['farm-monthly']->slug }}',
                     description: '{{ $subscriptions['farm-monthly']->description }}',
                 },
                 annually: {
-                    price: {{ $subscriptions['farm-annually']->price/12 }},
+                    price: 31.99,
                     name: '{{ $subscriptions['farm-annually']->slug }}',
                     description: '{{ $subscriptions['farm-annually']->description }}',
                 }
