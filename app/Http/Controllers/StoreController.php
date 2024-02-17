@@ -65,8 +65,19 @@ class StoreController extends Controller
 
             if (!$user->sellix_customer_uniqid) {
                 try {
-                    $user->sellix_customer_uniqid = $sellix->client->create_customer($customer_payload);
-                    $user->save();
+                    try {
+                        $user->sellix_customer_uniqid = $sellix->client->create_customer($customer_payload);
+                        $user->save();
+                    } catch (Throwable $e) {
+                        $customer = $sellix->client->get_customer($user->email);
+                        if ($customer) {
+                            $user->sellix_customer_uniqid = $customer->id;
+                            $user->save();
+                        } else {
+                            captureException(new \Exception("Failed to create customer or get existing customer: {$user->email}"));
+                            return back()->withErrors('Something went wrong. Please try again later.');
+                        }
+                    }
                 } catch (Throwable $e) {
                     captureException($e);
                     return back()->withErrors('Something went wrong. Please try again later.');
