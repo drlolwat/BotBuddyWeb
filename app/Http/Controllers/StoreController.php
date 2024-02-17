@@ -35,10 +35,6 @@ class StoreController extends Controller
 
     public function checkout($product, SellixService $sellix)
     {
-        if (auth()->user()->id != 1) {
-            return back()->withErrors('This store is currently disabled.');
-        }
-
         $subscriptions = Subscription::query()
             ->where('name', '!=', 'Founder')
             ->orderBy('id')
