@@ -94,6 +94,14 @@ class StoreController extends Controller
         try {
             $subscription = $sellix->client->create_subscription($subscription_payload);
             // $subscription->uniqid for the subscription id
+            if (!$subscription) {
+                captureException(new \Exception("Subscription variable is null?"));
+                return back()->withErrors('Something went wrong. Please try again later.');
+            }
+            if (!$subscription->url) {
+                captureException(new \Exception("Subscription url not available:", json_encode($subscription)));
+                return back()->withErrors('Something went wrong. Please try again later.');
+            }
             return redirect($subscription->url);
         } catch (\Exception $e) {
             captureException($e);
