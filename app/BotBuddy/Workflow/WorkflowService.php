@@ -85,4 +85,37 @@ class WorkflowService
 
         return $query->get();
     }
+
+    public function getWorkflowsNullableAllowed($modelType, $modelId, $event, $eventData, $operator = '='): Collection
+    {
+        $query = Workflow::query()
+            ->with('model', 'actions')
+            ->where('model_type', $modelType)
+            ->where('model_id', $modelId)
+            ->where('event', $event);
+
+        if ($eventData) {
+            foreach ($eventData as $key => $value) {
+                switch($operator) {
+                    case '=':
+                        $query = $query->whereRaw("((data->>'$.$key' = ? OR data->>'$.$key' IS NULL)", [$value]);
+                        break;
+                    case '>':
+                        $query = $query->whereRaw("(data->>'$.$key' > ? OR data->>'$.$key' IS NULL)", [$value]);
+                        break;
+                    case '>=':
+                        $query = $query->whereRaw("(data->>'$.$key' >= ? OR data->>'$.$key' IS NULL)", [$value]);
+                        break;
+                    case '<':
+                        $query = $query->whereRaw("(data->>'$.$key' < ? OR data->>'$.$key' IS NULL)", [$value]);
+                        break;
+                    case '<=':
+                        $query = $query->whereRaw("(data->>'$.$key' <= ? OR data->>'$.$key' IS NULL)", [$value]);
+                        break;
+                }
+            }
+        }
+
+        return $query->get();
+    }
 }
