@@ -30,33 +30,6 @@ services:
         depends_on:
             - mysql
             - redis
-#    laravel.test:
-#        build:
-#            context: ./vendor/laravel/sail/runtimes/8.2
-#            dockerfile: Dockerfile
-#            args:
-#                WWWGROUP: '${WWWGROUP}'
-#        image: sail-8.2/app
-#        ports:
-#            - '${APP_PORT:-80}:80'
-#            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-#        environment:
-#            WWWUSER: '${WWWUSER}'
-#            LARAVEL_SAIL: 1
-#            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-#            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-#            IGNITION_LOCAL_SITES_PATH: '${PWD}'
-#        volumes:
-#            - '.:/var/www/html'
-#        networks:
-#            - sail
-#            - proxy
-#        depends_on:
-#            - mysql
-#            - redis
-#            - meilisearch
-#            - mailpit
-#            - selenium
     cron:
         build:
             context: ./build/cron
@@ -103,6 +76,24 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+    grafana:
+        image: 'grafana/grafana'
+        ports:
+            - '3000:3000'
+        networks:
+            - sail
+        environment:
+            GF_SECURITY_ADMIN_PASSWORD: '${GRAFANA_PASSWORD}'
+        volumes:
+            - grafana:/var/lib/grafana
+    prometheus:
+        image: 'prom/prometheus'
+#        ports:
+#            - '9090:9090'
+        volumes:
+            - ./build/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        networks:
+            - sail
 #    meilisearch:
 #        image: 'getmeili/meilisearch:latest'
 #        ports:
@@ -122,13 +113,13 @@ services:
 #                - 'http://localhost:7700/health'
 #            retries: 3
 #            timeout: 5s
-    mailpit:
-        image: 'axllent/mailpit:latest'
-        ports:
-            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
-        networks:
-            - sail
+#    mailpit:
+#        image: 'axllent/mailpit:latest'
+#        ports:
+#            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+#            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+#        networks:
+#            - sail
 #    selenium:
 #        image: selenium/standalone-chrome
 #        extra_hosts:
@@ -148,4 +139,6 @@ volumes:
     sail-redis:
         driver: local
     sail-meilisearch:
+        driver: local
+    grafana:
         driver: local
