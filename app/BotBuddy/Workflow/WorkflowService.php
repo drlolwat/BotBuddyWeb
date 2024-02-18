@@ -11,6 +11,7 @@ use App\BotBuddy\Workflow\Actions\StopBot;
 use App\BotBuddy\Workflow\Events\PermBanned;
 use App\BotBuddy\Workflow\Events\ProxyBlocked;
 use App\BotBuddy\Workflow\Events\ScriptComplete;
+use App\BotBuddy\Workflow\Events\StatGoal;
 use App\BotBuddy\Workflow\Events\TempBanned;
 use App\Models\Account;
 use App\Models\AccountGroup;
@@ -31,6 +32,7 @@ class WorkflowService
         'proxy_blocked' => ProxyBlocked::class,
         'temp_banned' => TempBanned::class,
         'perm_banned' => PermBanned::class,
+        'stat_goal' => StatGoal::class,
     ];
 
     public array $actions = [
@@ -51,7 +53,7 @@ class WorkflowService
         }
     }
 
-    public function getWorkflows($modelType, $modelId, $event, $eventData): Collection
+    public function getWorkflows($modelType, $modelId, $event, $eventData, $operator = '='): Collection
     {
         $query = Workflow::query()
             ->with('model', 'actions')
@@ -61,7 +63,23 @@ class WorkflowService
 
         if ($eventData) {
             foreach ($eventData as $key => $value) {
-                $query = $query->whereRaw("data->>'$." . $key . "' = ?", [$value]);
+                switch($operator) {
+                    case '=':
+                        $query = $query->whereRaw("data->>'$." . $key . "' = ?", [$value]);
+                        break;
+                    case '>':
+                        $query = $query->whereRaw("data->>'$." . $key . "' > ?", [$value]);
+                        break;
+                    case '>=':
+                        $query = $query->whereRaw("data->>'$." . $key . "' >= ?", [$value]);
+                        break;
+                    case '<':
+                        $query = $query->whereRaw("data->>'$." . $key . "' < ?", [$value]);
+                        break;
+                    case '<=':
+                        $query = $query->whereRaw("data->>'$." . $key . "' <= ?", [$value]);
+                        break;
+                }
             }
         }
 
