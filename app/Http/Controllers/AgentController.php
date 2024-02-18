@@ -122,7 +122,7 @@ class AgentController extends Controller
             mkdir($dir);
         }
 
-        $file = $dir . '/' . Str::snake(strtolower($agent->name)) . '-bbagent' . ($arch == 'linux' ? '' : '.exe');
+        $file = $dir . '/' . Str::of(Str::snake(strtolower($agent->name)))->replaceMatches('/[^a-zA-Z0-9\-_\.]/', '') . '-bbagent' . ($arch == 'linux' ? '' : '.exe');
 
         if (file_exists($file)) {
             return response()->download($file);
