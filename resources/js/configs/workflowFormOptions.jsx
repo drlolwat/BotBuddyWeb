@@ -5,6 +5,7 @@ import CreateWorkflowButton from '../components/CreateWorkflowButton.jsx';
 import {Fragment} from 'react';
 import CallbackRunner from "../components/CallbackRunner.jsx";
 import Alert from "../components/Alert.jsx";
+import StatGoalForm from "../components/StatGoalForm.jsx";
 
 // const className = "border-2 border-gray-300 rounded-lg mb-2 mr-2";
 const className = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 min-w-[200px] mb-2 mr-2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500";
@@ -127,6 +128,15 @@ const workflowFormOptions = {
                     value="perm_banned"
                 />,
             },
+            {
+                label: "Reaches stat goal",
+                value: "stat_goal",
+                render: (parent, callback) => <Fragment key="stat_goal">
+                    <div>
+                        <StatGoalForm />
+                    </div>
+                </Fragment>,
+            }
         ],
     },
     eventScriptSelect: {
@@ -146,62 +156,6 @@ const workflowFormOptions = {
             });
         }
     },
-    // actionSelect: {
-    //     name: "action",
-    //     className,
-    //     options: [
-    //         {label: "Select an action"},
-    //         {
-    //             label: "Change script",
-    //             value: "change_script",
-    //             // render: (props) => (
-    //             //     <Fragment key="change_script">
-    //             //         <DynamicSelectComponent parent={parent} callback={callback}
-    //             //                                 fetchOptions={() => fetchScripts(() =>
-    //             //                                     <>
-    //             //                                         <input type="text" name="action_script_params"
-    //             //                                                className="border-2 border-gray-300 rounded-lg mb-2 mr-2"
-    //             //                                                placeholder="e.g. param1 param2"/>
-    //             //                                         <CreateWorkflowButton/>
-    //             //                                     </>)} {...workflowFormOptions.actionScriptSelect} />
-    //             //     </Fragment>
-    //             // )
-    //         },
-    //         {
-    //             label: "Change account group",
-    //             value: "change_account_group",
-    //             // render: (parent,callback) => (
-    //             //     <Fragment key="change_account_group">
-    //             //         <DynamicSelectComponent parent={parent} callback={callback}
-    //             //                                 fetchOptions={() => fetchAccountGroups(() =>
-    //             //                                     <CreateWorkflowButton/>)} {...workflowFormOptions.actionAccountGroupSelect} />
-    //             //     </Fragment>
-    //             // )
-    //         },
-    //         {
-    //             label: "Stop bot",
-    //             value: "stop_bot",
-    //             render: (parent,callback) => <CreateWorkflowButton/>,
-    //         },
-    //         {
-    //             label: "Restart bot",
-    //             value: "restart_bot",
-    //             render: (parent,callback) => <CreateWorkflowButton/>,
-    //         },
-    //         {
-    //             label: "Restart bot with script params",
-    //             value: "restart_bot_with_script_params",
-    //             render: (parent,callback) => (
-    //                 <>
-    //                     <input type="text" name="action_script_params"
-    //                            className="border-2 border-gray-300 rounded-lg mb-2 mr-2"
-    //                            placeholder="e.g. param1 param2"/>
-    //                     <CreateWorkflowButton/>
-    //                 </>
-    //             ),
-    //         },
-    //     ],
-    // },
     actionScriptSelect: {
         name: "action_script_id",
         className,
@@ -258,5 +212,6 @@ const workflowFormOptions = {
         }
     },
 };
+
 
 export default workflowFormOptions;

@@ -98,7 +98,7 @@ class WorkflowService
             foreach ($eventData as $key => $value) {
                 switch($operator) {
                     case '=':
-                        $query = $query->whereRaw("((data->>'$.$key' = ? OR data->>'$.$key' IS NULL)", [$value]);
+                        $query = $query->whereRaw("(data->>'$.$key' = ? OR data->>'$.$key' IS NULL)", [$value]);
                         break;
                     case '>':
                         $query = $query->whereRaw("(data->>'$.$key' > ? OR data->>'$.$key' IS NULL)", [$value]);

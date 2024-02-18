@@ -96,8 +96,16 @@ class WorkflowController extends Controller
             return [Str::replaceFirst('event_', '', $key) => $value];
         });
 
-        if (auth()->user()->subscription->name == 'Basic' && $validated['event'] == 'temp_banned') {
+        if (auth()->user()->subscription->name == 'Basic' && in_array($validated['event'], ['temp_banned'])) {
             return back()->withErrors('You are not allowed to use this workflow event');
+        }
+
+        if (auth()->user()->subscription->name != 'Founder' && in_array($validated['event'], ['stat_goal'])) {
+            return back()->withErrors('You are not allowed to use this workflow event');
+        }
+
+        if (count($eventData) == 0) {
+            return back()->withErrors('You have not provided any stat goals');
         }
 
         /** @var FormRequest $eventDataValidated */
@@ -113,6 +121,11 @@ class WorkflowController extends Controller
         foreach ($actions as $action => $actionData) {
             $actionDataRequest = (new Request())->replace($actionData ?? []);
             $this->validate($actionDataRequest, $workflowService->actions[$action]::rules());
+        }
+
+        // todo: handle via a workflow event class
+        if ($validated['event'] == 'stat_goal') {
+            $eventDataValidated = [...$eventDataValidated['stat']];
         }
 
         $workflow = Workflow::create([
@@ -156,6 +169,10 @@ class WorkflowController extends Controller
 
         if ($subscription->name == 'Basic') {
             unset($events[array_search('temp_banned', $events)]);
+        }
+
+        if ($subscription->name != 'Founder') {
+            unset($events[array_search('stat_goal', $events)]);
         }
 
         return array_values($events);

@@ -6,6 +6,7 @@ use App\BotBuddy\Workflow\WorkflowService;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\User;
+use App\Models\Workflow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -33,13 +34,13 @@ class AccountController extends Controller
         if ($validated['Status'] == 'Completed') {
             // handle for specific account
             $workflows = $workflowService->getWorkflows('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
-            foreach($workflows as $workflow) {
+            foreach ($workflows as $workflow) {
                 $workflowService->handle($account, $workflow);
             }
             // handle for account groups instead if they are not defined for the account
             if ($workflows->count() == 0 && $account->account_group_id) {
                 $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
-                foreach($workflows as $workflow) {
+                foreach ($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
                 }
             }
@@ -67,13 +68,13 @@ class AccountController extends Controller
 
             // handle for specific account
             $workflows = $workflowService->getWorkflows('account', $account->id, $event, null);
-            foreach($workflows as $workflow) {
+            foreach ($workflows as $workflow) {
                 $workflowService->handle($account, $workflow);
             }
             // handle for account groups instead if they are not defined for the account
             if ($workflows->count() == 0 && $account->account_group_id) {
                 $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, $event, null);
-                foreach($workflows as $workflow) {
+                foreach ($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
                 }
             }
@@ -86,13 +87,13 @@ class AccountController extends Controller
         if ($validated['Status'] == 'ProxyBlocked') {
             // handle for specific account
             $workflows = $workflowService->getWorkflows('account', $account->id, 'proxy_blocked', null);
-            foreach($workflows as $workflow) {
+            foreach ($workflows as $workflow) {
                 $workflowService->handle($account, $workflow);
             }
             // handle for account groups instead if they are not defined for the account
             if ($workflows->count() == 0 && $account->account_group_id) {
                 $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'proxy_blocked', null);
-                foreach($workflows as $workflow) {
+                foreach ($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
                 }
             }
@@ -105,7 +106,7 @@ class AccountController extends Controller
         return ['success' => $account->save()];
     }
 
-    public function wrapper(Request $request)
+    public function wrapper(Request $request, WorkflowService $workflowService)
     {
         $validated = $this->validate($request, [
             '*.BB_OUTPUT.BB_GP' => 'filled|int',
@@ -153,6 +154,71 @@ class AccountController extends Controller
                 $updated[$id] = $account->stats()->create($data);
             } else {
                 $updated[$id] = $account->stats->update($data);
+            }
+
+            // create structure to check for stat goals
+            unset($data['world_id']);
+            unset($data['name']);
+            unset($data['type']);
+            if (isset($data['skills'])) {
+                $data = [...$data['skills']];
+                unset($data['skills']);
+            }
+            $keys = array_keys($data);
+
+            if (count($keys) > 0) {
+                $workflows = Workflow::query()
+                    ->with('model', 'actions')
+                    ->where('model_type', 'account')
+                    ->where('model_id', $account->id)
+                    ->where('event', 'stat_goal')
+                    ->get()->filter(function ($workflow) use ($data, $keys) {
+                        $match = 0;
+                        foreach ($keys as $key) {
+                            if (isset($workflow->data[$key]) && !isset($data[$key])) {
+                                // it is a requirement and not present
+                                continue;
+                            }
+                            if (isset($data[$key]) && isset($workflow->data[$key]) && $workflow->data[$key] <= $data[$key]) {
+                                // it matches or exceeds the required value
+                                $match++;
+                            }
+                        }
+                        return count($workflow->data) == $match;
+                    });
+
+                // handle for specific account
+                foreach ($workflows as $workflow) {
+                    $workflowService->handle($account, $workflow);
+                }
+
+                // handle for account groups instead if they are not defined for the account
+                if ($workflows->count() == 0 && $account->account_group_id) {
+                    $workflows = Workflow::query()
+                        ->with('model', 'actions')
+                        ->where('model_type', 'account_group')
+                        ->where('model_id', $account->account_group_id)
+                        ->where('event', 'stat_goal')
+                        ->get()
+                        ->filter(function ($workflow) use ($data, $keys) {
+                            $match = 0;
+                            foreach ($keys as $key) {
+                                if (isset($workflow->data[$key]) && !isset($data[$key])) {
+                                    // it is a requirement and not present
+                                    continue;
+                                }
+                                if (isset($data[$key]) && isset($workflow->data[$key]) && $workflow->data[$key] <= $data[$key]) {
+                                    // it matches or exceeds the required value
+                                    $match++;
+                                }
+                            }
+                            return count($workflow->data) == $match;
+                        });
+
+                    foreach ($workflows as $workflow) {
+                        $workflowService->handle($account, $workflow);
+                    }
+                }
             }
         }
 
