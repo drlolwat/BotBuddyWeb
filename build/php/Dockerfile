@@ -26,6 +26,8 @@ RUN apk add --update nodejs npm
 
 RUN mkdir /.npm && chown -R 1000:1000 /.npm && chmod -R 775 /.npm
 
+RUN mkdir -p /.config/psysh && chown -R 1000:1000 /.config/psysh && chmod -R 775 /.config/psysh
+
 ENV GOLANG_VERSION 1.22.0
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
