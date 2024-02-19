@@ -10,6 +10,7 @@ use App\Models\AccountGroup;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
+use function Sentry\captureException;
 
 class StopAndReplenishFrom extends Action
 {
@@ -21,62 +22,111 @@ class StopAndReplenishFrom extends Action
     /** @var Account $model */
     public function run(Model $model, array $data): void
     {
-        $this->socket->dispatch(new StopBotCommand($model));
-        sleep(3);
+        if ($model::class === Account::class) {
+            $this->socket->dispatch(new StopBotCommand($model));
 
-        $group = $model->user->account_groups()
-            ->where('id', $data['account_group_id'])
-            ->firstOrFail();
+            $group = $model->user->account_group()
+                ->where('id', $data['account_group_id'])
+                ->firstOrFail();
+            $replenishAccount = $group->accounts()->whereNot('id', $model->id)->inRandomOrder()->first();
 
-        $replenishAccount = $group->accounts()->whereNot('id', $model->id)->inRandomOrder()->first();
+            if ($replenishAccount->account_group_id != $model->account_group_id) {
+                $replenishAccount->account_group_id = $model->account_group_id;
+                $replenishAccount->script_id = $model->script_id;
+                $replenishAccount->script_params = $model->script_params;
+                $replenishAccount->save();
 
-        if ($replenishAccount->account_group_id != $model->account_group_id) {
-            $replenishAccount->account_group_id = $model->account_group_id;
-            $replenishAccount->script_id = $model->script_id;
-            $replenishAccount->script_params = $model->script_params;
-
-            if (!$replenishAccount->proxy) {
-                switch ($data['type']) {
-                    case 'existing':
-                        break;
-                    case 'random':
-                        $query = match ($model::class) {
-                            Account::class => $model->account_group()->proxies(),
-                            AccountGroup::class => $model->proxies(),
-                        };
-                        if (!$query) {
-                            throw new \Exception('Invalid model type received in ChangeProxy action');
-                        }
-                        $newProxy = $query->where('id', '!=', $model->proxy_id)
-                            ->inRandomOrder()
-                            ->first();
-                        if ($newProxy) {
+                if (!$replenishAccount->proxy) {
+                    switch ($data['type']) {
+                        case 'existing':
+                            $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                            break;
+                        case 'random':
+                            $newProxy = $model->proxy_group?->proxies()->where('id', '!=', $model->proxy_id)
+                                ->inRandomOrder()
+                                ->first();
+                            if (!$newProxy) {
+                                captureException(new \Exception("Cannot find a new proxy via account: {$model->id}"));
+                                break;
+                            }
                             $replenishAccount->proxy_id = $newProxy->id;
-                        }
-                        break;
-                    case 'random_unused':
-                        $query = match ($model::class) {
-                            Account::class => $model->account_group()->proxies(),
-                            AccountGroup::class => $model->proxies(),
-                        };
-                        if (!$query) {
-                            throw new \Exception('Invalid model type received in ChangeProxy action');
-                        }
-                        $query = $query->proxies()->whereDoesntHave('accounts', function ($subQuery) use ($replenishAccount) {
-                            $subQuery->where('id', '!=', $replenishAccount->id);
-                        });
-                        $newProxy = $query->inRandomOrder()->first();
-                        if ($newProxy) {
+                            $replenishAccount->save();
+                            $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                            break;
+                        case 'random_unused':
+                            $newProxy = $model->proxy_group?->proxies()
+                                ->whereDoesntHave('accounts', function ($subQuery) use ($replenishAccount) {
+                                    $subQuery->where('id', '!=', $replenishAccount->id);
+                                })->inRandomOrder()
+                                ->first();
+                            if (!$newProxy) {
+                                captureException(new \Exception("Cannot find a new proxy via account: {$model->id}"));
+                                break;
+                            }
                             $replenishAccount->proxy_id = $newProxy->id;
-                        }
-                        break;
+                            $replenishAccount->save();
+                            $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                            break;
+                    }
                 }
             }
+            return;
         }
 
-        $replenishAccount->save();
+        if ($model::class === AccountGroup::class) {
+            foreach ($model->accounts as $model) {
+                $this->socket->dispatch(new StopBotCommand($model));
 
-        $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                $group = $model->user->account_group()
+                    ->where('id', $data['account_group_id'])
+                    ->firstOrFail();
+                $replenishAccount = $group->accounts()->whereNot('id', $model->id)->inRandomOrder()->first();
+
+                if ($replenishAccount->account_group_id != $model->account_group_id) {
+                    $replenishAccount->account_group_id = $model->account_group_id;
+                    $replenishAccount->script_id = $model->script_id;
+                    $replenishAccount->script_params = $model->script_params;
+                    $replenishAccount->save();
+
+                    if (!$replenishAccount->proxy) {
+                        switch ($data['type']) {
+                            case 'existing':
+                                $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                                break;
+                            case 'random':
+                                $newProxy = $model->proxy_group?->proxies()->where('id', '!=', $model->proxy_id)
+                                    ->inRandomOrder()
+                                    ->first();
+                                if (!$newProxy) {
+                                    captureException(new \Exception("Cannot find a new proxy via account: {$model->id}"));
+                                    break;
+                                }
+                                $replenishAccount->proxy_id = $newProxy->id;
+                                $replenishAccount->save();
+                                $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                                break;
+                            case 'random_unused':
+                                $newProxy = $model->proxy_group?->proxies()
+                                    ->whereDoesntHave('accounts', function ($subQuery) use ($replenishAccount) {
+                                        $subQuery->where('id', '!=', $replenishAccount->id);
+                                    })->inRandomOrder()
+                                    ->first();
+                                if (!$newProxy) {
+                                    captureException(new \Exception("Cannot find a new proxy via account: {$model->id}"));
+                                    break;
+                                }
+                                $replenishAccount->proxy_id = $newProxy->id;
+                                $replenishAccount->save();
+                                $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                                break;
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+        captureException(new \Exception("Invalid model received in action: {$model::class}: {$model->id}"));
     }
 
     public static function rules(): array
