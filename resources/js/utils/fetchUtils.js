@@ -25,6 +25,15 @@ export const fetchAccountGroups = async () => {
     }));
 };
 
+export const fetchProxyGroups = async () => {
+    const res = await fetch('/api/user/proxy/group');
+    const groups = await res.json();
+    return groups.map(group => ({
+        label: String(group.name),
+        value: String(group.id),
+    }));
+};
+
 export const fetchWorkflowEvents = async () => {
     const res = await fetch('/api/user/workflow/event');
     return await res.json();

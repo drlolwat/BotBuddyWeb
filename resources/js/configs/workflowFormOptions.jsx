@@ -1,5 +1,11 @@
 import DynamicSelect from '../components/DynamicSelect.jsx';
-import {fetchAccounts, fetchScripts, fetchAccountGroups, fetchWorkflowEvents} from '../utils/fetchUtils.js';
+import {
+    fetchAccounts,
+    fetchScripts,
+    fetchAccountGroups,
+    fetchWorkflowEvents,
+    fetchProxyGroups
+} from '../utils/fetchUtils.js';
 import Select from '../components/Select.jsx';
 import CreateWorkflowButton from '../components/CreateWorkflowButton.jsx';
 import {Fragment} from 'react';
@@ -114,7 +120,7 @@ const workflowFormOptions = {
                     parent={parent}
                     callback={callback}
                     name="event"
-                    value="temp_banned"
+                    value   ="temp_banned"
                  />,
             },
             {
@@ -242,11 +248,62 @@ const workflowFormOptions = {
                     value: script.value,
                     render: (parent, callback) => {
                         return <span className="ml-2">
-                            <select name="stop_and_replenish_with[type]" className={className}>
-                                           <option value="existing">Use existing proxy configuration</option>
-                                           <option value="random">Random proxy from account group</option>
-                                           <option value="random_unused">Random unused proxy from account group</option>
-                                       </select>
+                            {/*<select name="stop_and_replenish_with[type]" className={className}>*/}
+                            {/*               <option>Select an option</option>*/}
+                            {/*               <option value="existing">Do not change proxy</option>*/}
+                            {/*               <option value="random">Random proxy from account group</option>*/}
+                            {/*               <option value="random_unused">Random unused proxy from account group</option>*/}
+                            {/*           </select>*/}
+                            <DynamicSelect {...{
+                                name: "stop_and_replenish_with[proxy_group_id]",
+                                className,
+                                options: [
+                                    {label: "Select a proxy option"},
+                                    {label: "Do not change proxy", value: "existing"},
+                                    {label: "Random proxy from proxy group", value: "random", render: (parent, callback) => (
+                                            <DynamicSelect {...{
+                                                name: "stop_and_replenish_with[proxy_group_id]",
+                                                className,
+                                                options: [
+                                                    {label: "Select a proxy group"},
+                                                ],
+                                                optionsCallback: async () => {
+                                                    const accountGroups = await fetchProxyGroups();
+                                                    return accountGroups.map(script => {
+                                                        return {
+                                                            label: script.label,
+                                                            value: script.value,
+                                                            render: (parent, callback) => {
+                                                                return null;
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }} />
+                                        )},
+                                    {label: "Random unused proxy from proxy group", value: "random_unused", render: (parent, callback) => (
+                                            <DynamicSelect {...{
+                                                name: "stop_and_replenish_with[proxy_group_id]",
+                                                className,
+                                                options: [
+                                                    {label: "Select a proxy group"},
+                                                ],
+                                                optionsCallback: async () => {
+                                                    const accountGroups = await fetchProxyGroups();
+                                                    return accountGroups.map(script => {
+                                                        return {
+                                                            label: script.label,
+                                                            value: script.value,
+                                                            render: (parent, callback) => {
+                                                                return null;
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }} />
+                                        )},
+                                ],
+                            }} />
                                        <Alert message={"Note: If selecting a random proxy and there is none available, the replenishment account will not be started."}/>
                             {/*<span className="mr-2">Random proxy?</span>*/}
                             {/*<input type="checkbox" name="stop_and_replenish_with[random_proxy]"*/}
