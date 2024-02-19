@@ -160,6 +160,10 @@ class AccountController extends Controller
                 $updated[$id] = $account->stats->update($data);
             }
 
+            if (!$account->user->subscription || $account->user->subscription->name == 'Basic') {
+                return;
+            }
+
             // create structure to check for stat goals
             unset($data['world_id']);
             unset($data['name']);
