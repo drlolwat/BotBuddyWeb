@@ -30,6 +30,8 @@ class StartBotCommand
             'accountTotp' => $this->account->password_2fa ?? '',
             'fps' => $this->account->fps,
             'world' => $this->account->world,
+            'javaXmx' => $this->agent->dreambot_max_heap ?? '512M',
+            'javaXms' => $this->agent->dreambot_min_heap ?? '256M',
         ];
     }
 }

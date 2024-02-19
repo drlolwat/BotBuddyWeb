@@ -10,14 +10,24 @@
                     <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{ $agent->name }}" placeholder="Type the agent name">
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white">DreamBot client.jar location</label>
+                    <label for="dreambot_client_path" class="block text-sm font-medium text-gray-900 dark:text-white">DreamBot client.jar location</label>
                     <div class="mb-2 text-sm text-gray-900 dark:text-gray-400">e.g. C:\Users\User\DreamBot\BotData\client.jar</div>
                     <input type="text" name="dreambot_client_path" id="dreambot_client_path" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{ $agent->dreambot_client_path }}" placeholder="Type the path on your device to client.jar">
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white">DreamBot scripts location</label>
+                    <label for="dreambot_scripts_path" class="block text-sm font-medium text-gray-900 dark:text-white">DreamBot scripts location</label>
                     <div class="mb-2 text-sm text-gray-900 dark:text-gray-400">e.g. C:\Users\User\DreamBot\Scripts</div>
                     <input type="text" name="dreambot_scripts_path" id="dreambot_scripts_path" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{ $agent->dreambot_scripts_path }}" placeholder="Type the path on your device to the scripts folder">
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="dreambot_min_heap" class="block text-sm font-medium text-gray-900 dark:text-white">DreamBot minimum RAM</label>
+                    <div class="mb-2 text-sm text-gray-900 dark:text-gray-400">e.g. 256M or 1G</div>
+                    <input type="text" name="dreambot_min_heap" id="dreambot_min_heap" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{ $agent->dreambot_min_heap }}" placeholder="Type the min amount of RAM to allocate to DreamBot">
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="dreambot_max_heap" class="block text-sm font-medium text-gray-900 dark:text-white">DreamBot maximum RAM</label>
+                    <div class="mb-2 text-sm text-gray-900 dark:text-gray-400">e.g. 512M or 4G</div>
+                    <input type="text" name="dreambot_max_heap" id="dreambot_max_heap" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{ $agent->dreambot_max_heap }}" placeholder="Type the max amount of RAM to allocate to DreamBot">
                 </div>
             </div>
             <div class="flex items-center space-x-4">
