@@ -255,7 +255,7 @@ const workflowFormOptions = {
                             {/*               <option value="random_unused">Random unused proxy from account group</option>*/}
                             {/*           </select>*/}
                             <DynamicSelect {...{
-                                name: "stop_and_replenish_with[proxy_group_id]",
+                                name: "stop_and_replenish_with[type]",
                                 className,
                                 options: [
                                     {label: "Select a proxy option"},
