@@ -149,6 +149,10 @@ class AccountController extends Controller
             if (isset($stats['BB_STATS'])) {
                 $data['skills'] = collect($stats['BB_STATS']);
             }
+            // todo: store this
+            if (isset($stats['BB_MEM_DAYS_LEFT'])) {
+                //$data['membership_days_left'] = $stats['BB_MEM_DAYS_LEFT'];
+            }
 
             if (!$account->stats) {
                 $updated[$id] = $account->stats()->create($data);
@@ -160,6 +164,10 @@ class AccountController extends Controller
             unset($data['world_id']);
             unset($data['name']);
             unset($data['type']);
+
+            // todo: unset this when it is being stored
+            //unset($data['membership_days_left']);
+
             if (isset($data['skills'])) {
                 $data = [...$data['skills']];
                 unset($data['skills']);
