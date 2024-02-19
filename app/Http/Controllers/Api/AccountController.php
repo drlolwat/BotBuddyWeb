@@ -169,7 +169,10 @@ class AccountController extends Controller
             //unset($data['membership_days_left']);
 
             if (isset($data['skills'])) {
-                $data['skills'] = [...$data['skills']];
+                foreach($data['skills'] as $key => $value) {
+                    $data[$key] = $value;
+                }
+                unset($data['skills']);
             }
             $keys = array_keys($data);
 
