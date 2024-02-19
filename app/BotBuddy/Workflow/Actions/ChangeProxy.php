@@ -9,6 +9,8 @@ use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
+use function Sentry\captureException;
 
 class ChangeProxy extends Action
 {
@@ -20,35 +22,32 @@ class ChangeProxy extends Action
     /** @var Account $model */
     public function run(Model $model, array $data): void
     {
-        $query = match ($model::class) {
-            Account::class => $model->account_group()->proxies(),
-            AccountGroup::class => $model->proxies(),
-        };
-
-        if (!$query) {
-            throw new \Exception('Invalid model type received in ChangeProxy action');
+        $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
+        if (!$proxyGroup) {
+            captureException(new \Exception("Cannot find proxy group: {$data['proxy_group_id']}"));
+            return;
         }
+
+        $query = $proxyGroup->proxies();
 
         switch($data['type']) {
             case 'random':
                 break;
             case 'random_unused':
-                $query->whereDoesntHave('accounts', function($subQuery) use ($model) {
-                    $subQuery->where('id', '!=', $model->id);
-                });
+                $query->whereDoesntHave('accounts')->where('id', '!=', $model->proxy_id);
                 break;
         }
 
-        $proxy = $query->where('id', '!=', $model->proxy_id)
-            ->inRandomOrder()
-            ->first();
+        $proxy = $query->inRandomOrder()->first();
 
-        if ($proxy) {
-            $model->proxy_id = $proxy->id;
-            $model->save();
+        if (!$proxy) {
+            // todo: log when proxy is not available
+            captureException(new \Exception("No proxy could be found for group: {$proxyGroup->id}"));
+            return;
         }
 
-        // todo: log when proxy is not available
+        $model->proxy_id = $proxy->id;
+        $model->save();
     }
 
     public static function rules(): array
@@ -58,7 +57,15 @@ class ChangeProxy extends Action
                 'required',
                 'string',
                 'in:random,random_unused'
-            ]
+            ],
+            'proxy_group_id' => [
+                'required',
+                'integer',
+                Rule::exists('proxy_groups', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
         ];
     }
 }

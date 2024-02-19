@@ -50,6 +50,8 @@ class AgentController extends Controller
             'name' => 'required',
             'dreambot_client_path' => '',
             'dreambot_scripts_path' => '',
+            'dreambot_min_heap' => 'required|regex:/^\d+[MG]$/',
+            'dreambot_max_heap' => 'required|regex:/^\d+[MG]$/',
         ]);
 
         $agent = Agent::create([
@@ -60,6 +62,8 @@ class AgentController extends Controller
             'client_type' => 'DreamBot',
             'dreambot_client_path' => $validated['dreambot_client_path'] ?? null,
             'dreambot_scripts_path' => $validated['dreambot_scripts_path'] ?? null,
+            'dreambot_min_heap' => $validated['dreambot_min_heap'],
+            'dreambot_max_heap' => $validated['dreambot_max_heap'],
         ]);
 
         return redirect(route('agent.show', $agent))->with('status', 'Agent created');
@@ -73,6 +77,8 @@ class AgentController extends Controller
             'name' => 'required',
             'dreambot_client_path' => '',
             'dreambot_scripts_path' => '',
+            'dreambot_min_heap' => 'required|regex:/^\d+[MG]$/',
+            'dreambot_max_heap' => 'required|regex:/^\d+[MG]$/',
         ]);
 
         $agent->update([
@@ -80,6 +86,8 @@ class AgentController extends Controller
             'client_type' => 'DreamBot',
             'dreambot_client_path' => $validated['dreambot_client_path'] ?? $agent->dreambot_client_path,
             'dreambot_scripts_path' => $validated['dreambot_scripts_path'] ?? $agent->dreambot_scripts_path,
+            'dreambot_min_heap' => $validated['dreambot_heap_min'] ?? $agent->dreambot_min_heap,
+            'dreambot_max_heap' => $validated['dreambot_heap_max'] ?? $agent->dreambot_max_heap,
         ]);
 
         return redirect(route('agent.show', $agent))->with('status', 'Agent updated');
@@ -122,7 +130,7 @@ class AgentController extends Controller
             mkdir($dir);
         }
 
-        $file = $dir . '/' . Str::snake(strtolower($agent->name)) . '-bbagent' . ($arch == 'linux' ? '' : '.exe');
+        $file = $dir . '/' . Str::of(Str::snake(strtolower($agent->name)))->replaceMatches('/[^a-zA-Z0-9\-_\.]/', '') . '-bbagent' . ($arch == 'linux' ? '' : '.exe');
 
         if (file_exists($file)) {
             return response()->download($file);

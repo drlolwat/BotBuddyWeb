@@ -6,7 +6,7 @@ import Action from "./Action.jsx";
 import Select from "./Select.jsx";
 import workflowFormOptions from "../configs/workflowFormOptions.jsx";
 import DynamicSelect from "./DynamicSelect.jsx";
-import {fetchAccountGroups} from "../utils/fetchUtils.js";
+import {fetchAccountGroups, fetchProxyGroups} from "../utils/fetchUtils.js";
 import Alert from "./Alert.jsx";
 
 // const className = "border-b border-gray-300";
@@ -86,9 +86,28 @@ const Workflow = () => {
                                    <>
                                        <input type="hidden" name="action[]" value="change_proxy"/>
                                        <select name="change_proxy[type]" className={selectClassNames}>
-                                           <option value="random">Random proxy from account group</option>
-                                           <option value="random_unused">Random unused proxy from account group</option>
+                                           <option value="random">Random proxy from proxy group</option>
+                                           <option value="random_unused">Random unused proxy from proxy group</option>
                                        </select>
+                                       <DynamicSelect {...{
+                                           name: "change_proxy[proxy_group_id]",
+                                           className: selectClassNames,
+                                           options: [
+                                               {label: "Select a proxy group"},
+                                           ],
+                                           optionsCallback: async () => {
+                                               const accountGroups = await fetchProxyGroups();
+                                               return accountGroups.map(script => {
+                                                   return {
+                                                       label: script.label,
+                                                       value: script.value,
+                                                       render: (parent, callback) => {
+                                                           return null;
+                                                       }
+                                                   }
+                                               });
+                                           }
+                                       }} />
                                        <Alert message={"Note: The account will not be restarted if there are no other proxies available."}/>
                                    </>
                                )}/>,
