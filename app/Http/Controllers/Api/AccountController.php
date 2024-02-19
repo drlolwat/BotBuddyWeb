@@ -169,8 +169,7 @@ class AccountController extends Controller
             //unset($data['membership_days_left']);
 
             if (isset($data['skills'])) {
-                $data = [...$data['skills']];
-                unset($data['skills']);
+                $data['skills'] = [...$data['skills']];
             }
             $keys = array_keys($data);
 
@@ -180,20 +179,7 @@ class AccountController extends Controller
                     ->where('model_type', 'account')
                     ->where('model_id', $account->id)
                     ->where('event', 'stat_goal')
-                    ->get()->filter(function ($workflow) use ($data, $keys) {
-                        $match = 0;
-                        foreach ($keys as $key) {
-                            if (isset($workflow->data[$key]) && !isset($data[$key])) {
-                                // it is a requirement and not present
-                                continue;
-                            }
-                            if (isset($data[$key]) && isset($workflow->data[$key]) && $workflow->data[$key] <= $data[$key]) {
-                                // it matches or exceeds the required value
-                                $match++;
-                            }
-                        }
-                        return count($workflow->data) == $match;
-                    });
+                    ->get()->filter(function ($workflow) use ($data, $keys) {$match = 0;foreach ($keys as $key) {if (isset($workflow->data[$key]) && !isset($data[$key])) {continue;}if (isset($data[$key]) && isset($workflow->data[$key]) && $workflow->data[$key] <= $data[$key]) {$match++;}}return count($workflow->data) == $match;});
 
                 // handle for specific account
                 foreach ($workflows as $workflow) {
