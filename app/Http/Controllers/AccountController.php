@@ -231,7 +231,9 @@ class AccountController extends Controller
             }
         }
 
-        return view('v1.account.show', compact('account', 'chunkedSkills'));
+        $proxies = auth()->user()->proxies()->withCount('accounts')->get();
+
+        return view('v1.account.show', compact('account', 'chunkedSkills', 'proxies'));
     }
 
     public function create()
