@@ -170,7 +170,7 @@ class AccountController extends Controller
 
             if (isset($data['skills'])) {
                 foreach($data['skills'] as $key => $value) {
-                    $data[$key] = $value;
+                    $data[strtolower($key)] = $value;
                 }
                 unset($data['skills']);
             }
