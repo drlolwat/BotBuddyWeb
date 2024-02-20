@@ -110,7 +110,7 @@ class StopAndReplenishFrom extends Action
                 'in:existing,random,random_unused'
             ],
             'proxy_group_id' => [
-                'required',
+                'nullable',
                 'integer',
                 Rule::exists('proxy_groups', 'id')
                     ->where(function ($query) {

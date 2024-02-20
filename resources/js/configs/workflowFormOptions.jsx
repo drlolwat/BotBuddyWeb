@@ -213,7 +213,9 @@ const workflowFormOptions = {
                                 className,
                                 options: [
                                     {label: "Select a proxy option"},
-                                    {label: "Do not change proxy", value: "existing"},
+                                    {label: "Do not change proxy", value: "existing", render: (parent, callback) => (
+                                        <input type="hidden" name="stop_and_replenish_with[proxy_group_id]" value="0" />
+                                        )},
                                     {label: "Random proxy from proxy group", value: "random", render: (parent, callback) => (
                                             <DynamicSelect {...{
                                                 name: "stop_and_replenish_with[proxy_group_id]",
