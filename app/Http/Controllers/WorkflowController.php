@@ -100,7 +100,7 @@ class WorkflowController extends Controller
             return back()->withErrors('You are not allowed to use this workflow event');
         }
 
-        if (count($eventData) == 0) {
+        if ($validated['event'] == 'stat_goals' && count($eventData) == 0) {
             return back()->withErrors('You have not provided any stat goals');
         }
 
