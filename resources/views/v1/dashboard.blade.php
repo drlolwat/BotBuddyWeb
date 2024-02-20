@@ -213,36 +213,4 @@
             </div>
         </div>
     </section>
-    <script>
-        const dropdownToggles = document.querySelectorAll('[data-dropdown-toggle]');
-        if (dropdownToggles) {
-            dropdownToggles.forEach(function(toggle) {
-                toggle.addEventListener('click', function() {
-                    const dropdownMenuId = toggle.getAttribute('data-dropdown-toggle');
-                    const dropdownMenu = document.getElementById(dropdownMenuId);
-                    if (dropdownMenu) {
-                        if (dropdownMenu.classList.contains('hidden')) {
-                            dropdownMenu.classList.remove('hidden');
-                            dropdownMenu.classList.add('absolute');
-                        } else {
-                            dropdownMenu.classList.add('hidden');
-                            dropdownMenu.classList.remove('absolute');
-                        }
-                    }
-                });
-            });
-        }
-
-        const masterCheckbox = document.getElementById('checkbox-all-search');
-        if (masterCheckbox) {
-            const rowCheckboxes = document.querySelectorAll('input[type="checkbox"]');
-            masterCheckbox.addEventListener('change', function() {
-                rowCheckboxes.forEach(function(checkbox) {
-                    if (checkbox !== masterCheckbox) {
-                        checkbox.checked = masterCheckbox.checked;
-                    }
-                });
-            });
-        }
-    </script>
 </x-v1.layout>

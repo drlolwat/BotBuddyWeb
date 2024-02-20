@@ -62,6 +62,5 @@
                 </a>
             </div>
         </div>
-
     </div>
 </x-v1.layout>

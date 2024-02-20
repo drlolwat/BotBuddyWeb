@@ -173,5 +173,4 @@
         </section>
         @endif
     </div>
-
 </x-v1.layout>
