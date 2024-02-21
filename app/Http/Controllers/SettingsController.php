@@ -16,6 +16,23 @@ class SettingsController extends Controller
         return view('v1.settings');
     }
 
+    public function dark_mode(Request $request)
+    {
+        //dd($request->all());
+        $this->validate($request, [
+            'dark_mode' => 'nullable',
+        ]);
+
+        // convert checkbox value to bool
+        $darkMode = $request->input('dark_mode') === 'on';
+
+        $user = auth()->user();
+        $user->dark_mode = $darkMode;
+        $user->save();
+
+        return back()->with('status', "Dark mode " . ($darkMode ? 'enabled' : 'disabled'));
+    }
+
     public function update(Request $request)
     {
         $validated = $this->validate($request, [

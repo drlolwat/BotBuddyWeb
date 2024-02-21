@@ -1,5 +1,16 @@
 <x-v1.layout page="Settings">
     <div class="max-w-2xl px-4 mx-auto">
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Dark mode</h2>
+        <form method="post" action="{{ route('settings.dark_mode') }}" class="mb-4">
+            @csrf
+            <div class="flex items-center space-x-4 mb-4">
+                <input type="checkbox" name="dark_mode" id="dark_mode" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" {{ auth()->user()->dark_mode ? 'checked' : '' }}>
+                <label for="dark_mode" class="text-gray-900 dark:text-white">Dark mode enabled</label>
+            </div>
+            <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                Update
+            </button>
+        </form>
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">DreamBot settings</h2>
         <form method="post" action="{{ route('settings.update') }}" class="mb-4">
             @csrf
