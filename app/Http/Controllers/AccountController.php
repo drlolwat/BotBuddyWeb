@@ -121,6 +121,10 @@ class AccountController extends Controller
 
         if ($validated['action'] == 'stop') {
             foreach ($accounts as $account) {
+                if(!$account->agent) {
+                    // skip this account, not assigned to agent
+                    continue;
+                }
                 $stopped = $socket->dispatch(new StopBotCommand($account));
 
                 if ($stopped != "true") {
