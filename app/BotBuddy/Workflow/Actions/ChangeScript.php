@@ -20,6 +20,15 @@ class ChangeScript extends Action
     /** @var Account $model */
     public function run(Model $model, array $data): void
     {
+        $script = $model->user->scripts()->find($data['script_id']);
+        if (!$script) {
+            $model->user->notifications()->create([
+                'message' => "Could not change to script ID {$data['script_id']} for {$model->name} (was it deleted?)",
+                'type' => 'error'
+            ]);
+            return;
+        }
+
         $model->script_id = $data['script_id'];
         $model->script_params = $data['script_params'] ?? $model->script_params;
         $model->save();

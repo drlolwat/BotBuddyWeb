@@ -29,7 +29,10 @@ class StopAndReplenishFrom extends Action
             ->first();
 
         if (!$group) {
-            captureException(new \Exception("Cannot find account group: {$data['account_group_id']}"));
+            $model->user->notifications()->create([
+                'message' => "Could not change to account group ID {$data['account_group_id']} to replenish from (was it deleted?)",
+                'type' => 'error'
+            ]);
             return;
         }
 
@@ -40,7 +43,10 @@ class StopAndReplenishFrom extends Action
             ->first();
 
         if (!$replenishAccount) {
-            captureException(new \Exception("Cannot find replenish account"));
+            $model->user->notifications()->create([
+                'message' => "Could not find a replenishment account in group {$group->name} to start",
+                'type' => 'error'
+            ]);
             return;
         }
 
@@ -58,15 +64,21 @@ class StopAndReplenishFrom extends Action
             case 'random':
                 $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
                 if (!$proxyGroup) {
-                    captureException(new \Exception("Cannot find proxy group: {$data['proxy_group_id']}"));
-                    break;
+                    $model->user->notifications()->create([
+                        'message' => "Replenish account could not be started, could not find proxy group ID: {$data['proxy_group_id']} (was it deleted?)",
+                        'type' => 'error'
+                    ]);
+                    return;
                 }
                 $newProxy = $proxyGroup->proxies()
                     ->inRandomOrder()
                     ->first();
                 if (!$newProxy) {
-                    captureException(new \Exception("Cannot find a new proxy via account: {$model->id}"));
-                    break;
+                    $model->user->notifications()->create([
+                        'message' => "Replenish account could not be started, cannot find a new proxy to use from proxy group {$proxyGroup->name}",
+                        'type' => 'error'
+                    ]);
+                    return;
                 }
                 $replenishAccount->proxy_id = $newProxy->id;
                 $replenishAccount->save();
@@ -75,16 +87,22 @@ class StopAndReplenishFrom extends Action
             case 'random_unused':
                 $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
                 if (!$proxyGroup) {
-                    captureException(new \Exception("Cannot find proxy group: {$data['proxy_group_id']}"));
-                    break;
+                    $model->user->notifications()->create([
+                        'message' => "Replenish account could not be started, could not find proxy group ID: {$data['proxy_group_id']} (was it deleted?)",
+                        'type' => 'error'
+                    ]);
+                    return;
                 }
                 $newProxy = $proxyGroup->proxy_group?->proxies()
                     ->whereDoesntHave('accounts')
                     ->inRandomOrder()
                     ->first();
                 if (!$newProxy) {
-                    captureException(new \Exception("Cannot find a new proxy via account: {$model->id}"));
-                    break;
+                    $model->user->notifications()->create([
+                        'message' => "Replenish account could not be started, cannot find a new proxy to use from proxy group {$proxyGroup->name}",
+                        'type' => 'error'
+                    ]);
+                    return;
                 }
                 $replenishAccount->proxy_id = $newProxy->id;
                 $replenishAccount->save();

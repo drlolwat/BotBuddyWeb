@@ -21,7 +21,7 @@ class RestartBotWithScriptParams extends Action
     {
         $this->socket->dispatch(new StopBotCommand($model));
 
-        $model->script_params = $data['script_params'] ?? '';
+        $model->script_params = $data['script_params'];
         $model->save();
 
         $this->socket->dispatch(new StartBotCommand($model));

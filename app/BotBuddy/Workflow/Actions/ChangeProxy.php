@@ -24,7 +24,10 @@ class ChangeProxy extends Action
     {
         $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
         if (!$proxyGroup) {
-            captureException(new \Exception("Cannot find proxy group: {$data['proxy_group_id']}"));
+            $model->user->notifications()->create([
+                'message' => "{$model->name} could not be restarted, could not find proxy group ID: {$data['proxy_group_id']} (was it deleted?)",
+                'type' => 'error'
+            ]);
             return;
         }
 
@@ -41,8 +44,10 @@ class ChangeProxy extends Action
         $proxy = $query->inRandomOrder()->first();
 
         if (!$proxy) {
-            // todo: log when proxy is not available
-            captureException(new \Exception("No proxy could be found for group: {$proxyGroup->id}"));
+            $model->user->notifications()->create([
+                'message' => "{$model->name} could not be restarted, no available proxy could be found in group: {$proxyGroup->name}",
+                'type' => 'error'
+            ]);
             return;
         }
 
