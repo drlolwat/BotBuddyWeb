@@ -14,5 +14,6 @@
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BotBuddy <span class="text-sm">Beta</span></span>
             </a>
         </div>
+        <x-v1.nav-notifications />
     </div>
 </nav>

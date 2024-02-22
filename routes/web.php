@@ -120,6 +120,9 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
             echo $socket->dispatch(new \App\BotBuddy\Socket\Commands\GetRunningBotsByClient(auth()->user()));
         });
     });
+
+    Route::get('notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications');
+    Route::get('notifications/clear', [App\Http\Controllers\NotificationController::class, 'clear'])->name('notifications.clear');
 });
 
 Route::get('store', [\App\Http\Controllers\StoreController::class, 'index'])->name('store');
