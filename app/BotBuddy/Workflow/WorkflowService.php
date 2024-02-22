@@ -5,6 +5,7 @@ namespace App\BotBuddy\Workflow;
 use App\BotBuddy\Workflow\Actions\ChangeAccountGroup;
 use App\BotBuddy\Workflow\Actions\ChangeProxy;
 use App\BotBuddy\Workflow\Actions\ChangeScript;
+use App\BotBuddy\Workflow\Actions\RemoveProxy;
 use App\BotBuddy\Workflow\Actions\RestartBot;
 use App\BotBuddy\Workflow\Actions\StopAndReplenishFrom;
 use App\BotBuddy\Workflow\Actions\StopBot;
@@ -43,6 +44,7 @@ class WorkflowService
         'change_account_group' => ChangeAccountGroup::class,
         'stop_and_replenish_with' => StopAndReplenishFrom::class,
         'change_proxy' => ChangeProxy::class,
+        'remove_proxy' => RemoveProxy::class,
     ];
 
     public function handle(Model $model, Workflow $workflow): void

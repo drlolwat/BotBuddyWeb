@@ -112,7 +112,17 @@ const Workflow = () => {
                                    </>
                                )}/>,
             events: ["script_complete"],
-        }
+        },
+        removeProxy: {
+            jsx: () => <Action name="Remove proxy" className={className}
+                               content={() => (
+                                   <>
+                                       <input type="hidden" name="action[]" value="remove_proxy"/>
+                                       <Alert message={"The proxy will be removed from the account"}/>
+                                   </>
+                               )}/>,
+            events: ["script_complete"],
+        },
     };
 
     const hasSelected = (obj, name, value, selectedValue, defaultValue) => {
