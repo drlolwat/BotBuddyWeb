@@ -11,11 +11,6 @@ class NotificationController extends Controller
 
     public function index()
     {
-        auth()->user()->notifications()->create([
-            'message' => 'This is an unread message',
-            'type' => 'info',
-        ]);
-
         $notifications = auth()->user()->notifications()
             ->orderByDesc('id')
             ->paginate(10);

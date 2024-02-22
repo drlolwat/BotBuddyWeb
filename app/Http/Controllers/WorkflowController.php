@@ -18,6 +18,11 @@ class WorkflowController extends Controller
 
     public function index()
     {
+        auth()->user()->notifications()->create([
+            'message' => 'Your workflow fucked up',
+            'type' => 'error',
+        ]);
+
         $workflows = Workflow::query()
             ->with('actions')
             ->where('user_id', auth()->id())
