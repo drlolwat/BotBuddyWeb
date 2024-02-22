@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Agent;
 use Illuminate\Http\Request;
+use function Sentry\captureException;
 
 class AgentController extends Controller
 {
@@ -31,7 +32,7 @@ class AgentController extends Controller
     {
         $uuids = array_keys($request->all());
 
-        $userId = null;
+        $user = null;
 
         foreach ($request->all() as $agentUUid => $accounts) {
 
@@ -45,6 +46,7 @@ class AgentController extends Controller
             }
 
             $agent = Agent::query()
+                ->with('user')
                 ->where('uuid', $agentUUid)
                 ->first();
 
@@ -52,8 +54,8 @@ class AgentController extends Controller
                 continue;
             }
 
-            if (!$userId) {
-                $userId = $agent->user_id;
+            if (!$user) {
+                $user = $agent->user;
             }
 
             $accountIds = array_keys($accountStatusById);
@@ -79,6 +81,10 @@ class AgentController extends Controller
 
             foreach ($accounts as $accountData) {
                 foreach ($accountData as $accountId => $accountStatus) {
+                    if (!isset($accountModelsById[$accountId])) {
+                        captureException(new \Exception("Account ID $accountId received via agentData, not found (was it deleted?)"));
+                        continue;
+                    }
                     $account = $accountModelsById[$accountId];
                     if ($account && $account->status != $accountStatus) {
                         $account->status = $accountStatus;
@@ -100,7 +106,7 @@ class AgentController extends Controller
                 ->where('last_agentdata_at', '>', now()->subMinutes(5))
                 ->pluck('id'))
             ->where('status', '!=', 'Stopped')
-            ->where('user_id', $userId)
+            ->where('user_id', $user->id)
             ->update(['status' => 'Stopped']);
     }
 
