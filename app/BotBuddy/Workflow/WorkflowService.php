@@ -49,8 +49,38 @@ class WorkflowService
 
     public function handle(Model $model, Workflow $workflow): void
     {
-        foreach($workflow->actions as $action) {
-            $runner = app()->makeWith($this->actions[$action->name], ['workflow' => $workflow]);
+        $actions = $workflow->actions;
+
+        // stage 1: run any stop bot actions on the source model
+        // it is ok for replenish accounts to start at this stage,
+        // as the other actions of this workflow do not interact with them
+        $stopActions = $actions->filter(fn($action) => in_array($action->name, ['stop_bot','stop_and_replenish_with']));
+        foreach ($stopActions as $restartAction) {
+            $runner = app()->makeWith($this->actions[$restartAction->name], ['workflow' => $workflow]);
+            $runner->run($model, $restartAction->data ?? []);
+        }
+
+        // stage 2: run any change related actions on the source model
+        // the bot will have been stopped at this point if requested
+        // and will be updated before any restart actions can be run
+        $changeActions = $actions->filter(fn($action) => in_array($action->name, ['change_script', 'change_account_group', 'change_proxy']));
+        foreach ($changeActions as $restartAction) {
+            $runner = app()->makeWith($this->actions[$restartAction->name], ['workflow' => $workflow]);
+            $runner->run($model, $restartAction->data ?? []);
+        }
+
+        // stage 3: run any restart related actions on the source model.
+        // the model will have been updated with a new script/account group/proxy by this point if requested
+        $restartActions = $actions->filter(fn($action) => in_array($action->name, ['restart_bot','restart_bot_with_script_params']));
+        foreach ($restartActions as $restartAction) {
+            $runner = app()->makeWith($this->actions[$restartAction->name], ['workflow' => $workflow]);
+            $runner->run($model, $restartAction->data ?? []);
+        }
+
+        // stage 4: remove any requested data from the source model. only the proxy can be removed at this time
+        $removeProxyAction = $actions->filter(fn($action) => $action->name == 'remove_proxy')->first();
+        if ($removeProxyAction) {
+            $runner = app()->makeWith($this->actions[$removeProxyAction->name], ['workflow' => $workflow]);
             $runner->run($model, $action->data ?? []);
         }
     }
