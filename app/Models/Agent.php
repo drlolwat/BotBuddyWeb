@@ -19,4 +19,9 @@ class Agent extends Model
     public $casts = [
         'last_agentdata_at' => 'datetime'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
