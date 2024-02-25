@@ -1,6 +1,13 @@
 services:
-    master:
-        build: ./masterserver
+#    master:
+#        build: ./masterserver
+#        ports:
+#            - "7888:7888"
+#            - "8888:8888"
+#        networks:
+#            - sail
+    gomaster:
+        build: ./gomaster
         ports:
             - "7888:7888"
             - "8888:8888"
