@@ -123,7 +123,7 @@ class AccountController extends Controller
 
         foreach ($validated as $id => $stats) {
             $stats = $stats['BB_OUTPUT'];
-            $account = Account::findOrFail($id);
+            $account = Account::query()->with('stats')->findOrFail($id);
 
             $data = [];
 

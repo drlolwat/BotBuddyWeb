@@ -100,14 +100,14 @@ class AgentController extends Controller
             ->update(['last_agentdata_at' => now()]);
 
         // update accounts on agents not running
-        Account::query()
-            ->with('agent')
-            ->whereNotIn('agent_id', Agent::query()
-                ->where('last_agentdata_at', '>', now()->subMinutes(5))
-                ->pluck('id'))
-            ->where('status', '!=', 'Stopped')
-            ->where('user_id', $user->id)
-            ->update(['status' => 'Stopped']);
+//        Account::query()
+//            ->with('agent')
+//            ->whereNotIn('agent_id', Agent::query()
+//                ->where('last_agentdata_at', '>', now()->subMinutes(5))
+//                ->pluck('id'))
+//            ->where('status', '!=', 'Stopped')
+//            ->where('user_id', $user->id)
+//            ->update(['status' => 'Stopped']);
     }
 
     public function customerId(Request $request)
