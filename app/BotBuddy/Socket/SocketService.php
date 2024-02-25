@@ -13,7 +13,7 @@ class SocketService
      */
     public function send(string $header, array $data): string
     {
-        $jsonData = sprintf("%s\r%s", $header, json_encode($data));
+        $jsonData = sprintf("%s\r%s\n", $header, json_encode($data));
 
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if (!$socket) {
