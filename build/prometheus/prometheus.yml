@@ -7,4 +7,4 @@ scrape_configs:
       - targets: ['localhost:9090']
   - job_name: 'master'
     static_configs:
-      - targets: ['master:2112']
+      - targets: ['gomaster:2112']
