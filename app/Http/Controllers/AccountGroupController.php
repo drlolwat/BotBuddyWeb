@@ -20,6 +20,7 @@ class AccountGroupController extends Controller
     public function index()
     {
         $accountGroups = AccountGroup::query()
+            ->with('script')
             ->where('user_id', auth()->id())
             ->withCount('accounts')
             ->paginate(10);
@@ -31,7 +32,7 @@ class AccountGroupController extends Controller
     {
         $this->authorize('view', $group);
 
-        $accounts = $group->accounts()->with('agent', 'script')->paginate(10);
+        $accounts = $group->accounts()->with('agent', 'script', 'stats')->paginate(10);
 
         return view('v1.account.group.show', compact('group', 'accounts'));
     }
@@ -127,7 +128,9 @@ class AccountGroupController extends Controller
     {
         $this->authorize('view', $group);
 
-        $accounts = $group->accounts()->whereIn('status', ['Stopped', 'Queued'])->get();
+        $accounts = $group->accounts()
+            ->with('agent', 'script')
+            ->whereIn('status', ['Stopped', 'Queued'])->get();
         $user = auth()->user();
 
         if (!$user->dreambot_username || !$user->dreambot_password) {
@@ -229,7 +232,9 @@ class AccountGroupController extends Controller
         ]);
         $minutes = $minutesValidated['minutes'];
 
-        $accounts = $group->accounts()->whereIn('status', ['Stopped', 'Stopping'])->get();
+        $accounts = $group->accounts()
+            ->with('agent', 'script')
+            ->whereIn('status', ['Stopped', 'Stopping'])->get();
 
         $user = auth()->user();
 

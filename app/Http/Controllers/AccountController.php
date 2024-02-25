@@ -22,7 +22,7 @@ class AccountController extends Controller
     {
         $accounts = auth()->user()
             ->accounts()
-            ->with('account_group', 'account_group.script', 'proxy', 'script', 'agent')
+            ->with('account_group', 'account_group.script', 'proxy', 'script', 'agent', 'stats')
             ->paginate(25);
 
         return view('v1.account.index', compact('accounts'));
@@ -36,6 +36,7 @@ class AccountController extends Controller
         ]);
 
         $accounts = Account::query()
+            ->with('agent','script')
             ->whereIn('id', array_keys($validated['accounts']))
             ->where('user_id', auth()->id())
             ->get();

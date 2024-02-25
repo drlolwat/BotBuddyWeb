@@ -25,7 +25,10 @@ class DashboardController extends Controller
             })
             ->count();
 
-        $accounts = auth()->user()->accounts()->where('status', 'Running')->paginate(25, ['*'], 'accounts');
+        $accounts = auth()->user()->accounts()
+            ->with('account_group', 'stats', 'agent', 'script')
+            ->where('status', 'Running')
+            ->paginate(25, ['*'], 'accounts');
 
         return view('v1.dashboard', compact('online', 'offline', 'bannedLast24h', 'accounts'));
     }
