@@ -130,10 +130,12 @@ class AgentController extends Controller
             mkdir($dir);
         }
 
-        $file = $dir . '/' . Str::of(Str::snake(strtolower($agent->name)))->replaceMatches('/[^a-zA-Z0-9\-_\.]/', '') . '-bbagent' . ($arch == 'linux' ? '' : '.exe');
+        $name = Str::of(Str::snake(strtolower($agent->name)))->replaceMatches('/[^a-zA-Z0-9\-_\.]/', '') . '-bbagent' . ($arch == 'linux' ? '' : '.exe');
+
+        $file = $dir . "/$name";
 
         if (file_exists($file)) {
-            return response()->download($file, ['Cache-Control' => 'no-cache, must-revalidate']);
+            return response()->download($file, $name, ['Cache-Control' => 'no-cache, must-revalidate']);
         }
 
         $command = sprintf(
@@ -147,6 +149,6 @@ class AgentController extends Controller
             return back()->withErrors('Could not download agent, please contact support');
         }
 
-        return response()->download($file, ['Cache-Control' => 'no-cache, must-revalidate']);
+        return response()->download($file, $name, ['Cache-Control' => 'no-cache, must-revalidate']);
     }
 }
