@@ -94,7 +94,7 @@ class StopAndReplenishFrom extends Action
                     ]);
                     return;
                 }
-                $newProxy = $proxyGroup->proxy_group?->proxies()
+                $newProxy = $proxyGroup->proxies()
                     ->whereDoesntHave('accounts')
                     ->inRandomOrder()
                     ->first();
