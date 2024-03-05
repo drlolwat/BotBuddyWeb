@@ -59,7 +59,7 @@ class AccountGroupController extends Controller
             'world' => 'required',
         ]);
 
-        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || is_int($validated['world']))) {
+        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || filter_var($validated['world'], FILTER_VALIDATE_INT))) {
             return back()->withErrors('Invalid world provided');
         }
 
@@ -94,7 +94,7 @@ class AccountGroupController extends Controller
             'world' => 'required',
         ]);
 
-        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || is_int($validated['world']))) {
+        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || filter_var($validated['world'], FILTER_VALIDATE_INT))) {
             return back()->withErrors('Invalid world provided');
         }
 
