@@ -216,6 +216,9 @@ const workflowFormOptions = {
                                     {label: "Do not change proxy", value: "existing", render: (parent, callback) => (
                                         <input type="hidden" name="stop_and_replenish_with[proxy_group_id]" />
                                         )},
+                                    {label: "Use proxy from account that triggered event", value: "triggered", render: (parent, callback) => (
+                                            <input type="hidden" name="stop_and_replenish_with[proxy_group_id]" />
+                                        )},
                                     {label: "Random proxy from proxy group", value: "random", render: (parent, callback) => (
                                             <DynamicSelect {...{
                                                 name: "stop_and_replenish_with[proxy_group_id]",
