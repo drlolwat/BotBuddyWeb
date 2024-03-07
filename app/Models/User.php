@@ -90,7 +90,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         // if they have never had a subscription or their subscription has expired
         if (!($this->subscription_expires_at && $this->subscription_expires_at->isFuture())) {
-            return null;
+            return $this->belongsTo(Subscription::class)->where('id', -1);
         }
         return $this->belongsTo(Subscription::class);
     }
