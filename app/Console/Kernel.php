@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\CheckTempBannedAccounts;
 use App\Jobs\HeartbeatAccounts;
 use App\Jobs\StartQueuedAccounts;
 use Illuminate\Console\Scheduling\Schedule;
@@ -16,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new HeartbeatAccounts())->everyMinute();
         $schedule->job(new StartQueuedAccounts())->everyMinute();
+        $schedule->job(new CheckTempBannedAccounts())->everySixHours();
     }
 
     /**
