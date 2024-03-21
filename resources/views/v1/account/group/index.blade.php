@@ -186,21 +186,25 @@
     </div>
 
     <script>
-        const toggleButton = document.querySelector('[data-modal-toggle="default-modal"]');
         const modal = document.getElementById('default-modal');
 
         function toggleModal(e) {
-            const id = e.target.getAttribute('id');
-            const groupId = id.replace('queue-', '');
-            const form = document.getElementById('queue');
-            form.action = `/account/group/queue/${groupId}`;
-            console.log(id);
             modal.classList.toggle('hidden');
             modal.classList.toggle('flex');
             modal.setAttribute('aria-hidden', String(modal.classList.contains('hidden')));
         }
 
-        toggleButton.addEventListener('click', toggleModal);
+        function toggleModalAndPopulateForm(e) {
+            const id = e.target.getAttribute('id');
+            const groupId = id.replace('queue-', '');
+            const form = document.getElementById('queue');
+            form.action = `/account/group/queue/${groupId}`;
+            toggleModal(e);
+        }
+
+        document.querySelectorAll('[data-modal-toggle="default-modal"]').forEach(button => {
+            button.addEventListener('click', toggleModalAndPopulateForm);
+        });
 
         document.querySelectorAll('[data-modal-hide="default-modal"]').forEach(closeButton => {
             closeButton.addEventListener('click', toggleModal);
