@@ -27,31 +27,52 @@ class CheckTempBannedAccounts implements ShouldQueue
      */
     public function handle(): void
     {
-        $past2Days = now()->subDays(2);
+//        $past2Days = now()->subDays(2);
+//        $past52Hours = now()->subHours(52);
+//
+//        $accounts = Account::query()->with('stats', 'user')
+//            ->whereNotNull('temp_banned_at')
+//            ->whereNull('perm_banned_at')
+//            ->where('temp_banned_at', '<', $past2Days)
+//            ->where('temp_banned_at', '>', $past52Hours)
+//            ->whereHas('user.subscription', function ($query) {
+//                $query->where('name', '!=', 'Basic');
+//            })
+//            ->get();
+//
+//        foreach ($accounts as $account) {
+//            $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
+//                'player' => $account->stats->name
+//            ]);
+//            if ($res->status() == 200) {
+//                $account->temp_banned_at = null;
+//                $account->status = 'Stopped';
+//                $account->save();
+//
+//                $account->user->notifications()->create([
+//                    'message' => "$account->email is no longer temp banned",
+//                    'type' => 'info'
+//                ]);
+//            }
+//        }
 
+        $past52Hours = now()->subHours(52);
         $accounts = Account::query()->with('stats', 'user')
             ->whereNotNull('temp_banned_at')
             ->whereNull('perm_banned_at')
-            ->where('temp_banned_at', '>=', $past2Days)
-            ->whereHas('user.subscription', function ($query) {
-                $query->where('name', '!=', 'Basic');
-            })
+            ->where('temp_banned_at', '<', $past52Hours)
             ->get();
 
+        // been over 52h, we can safely assume no longer temp banned
         foreach ($accounts as $account) {
-            $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
-                'player' => $account->stats->name
-            ]);
-            if ($res->status() == 200) {
-                $account->temp_banned_at = null;
-                $account->status = 'Stopped';
-                $account->save();
+            $account->temp_banned_at = null;
+            $account->status = 'Stopped';
+            $account->save();
 
-                $account->user->notifications()->create([
-                    'message' => "$account->email is no longer temp banned",
-                    'type' => 'info'
-                ]);
-            }
+            $account->user->notifications()->create([
+                'message' => "$account->email is no longer marked as temp banned",
+                'type' => 'info'
+            ]);
         }
     }
 }
