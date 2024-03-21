@@ -29,9 +29,9 @@ class CheckTempBannedAccounts implements ShouldQueue
     {
         $past2Days = now()->subDays(2);
 
-        $accounts = Account::query()
-            ->with('stats', 'user')
+        $accounts = Account::query()->with('stats', 'user')
             ->whereNotNull('temp_banned_at')
+            ->whereNull('perm_banned_at')
             ->where('temp_banned_at', '>=', $past2Days)
             ->whereHas('user.subscription', function ($query) {
                 $query->where('name', '!=', 'Basic');
