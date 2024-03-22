@@ -19,7 +19,7 @@ class SubscriptionExpireWarning
         if (
             auth()->check() && auth()->user()->subscription_expires_at &&
             auth()->user()->subscription_expires_at->isFuture() &&
-            auth()->user()->subscription_expires_at->diffInDays(now()) <= 7) {
+            abs(auth()->user()->subscription_expires_at->diffInDays(now())) <= 7) {
 
             $diffForHumans = now()->diffForHumans(auth()->user()->subscription_expires_at, true, false, 1);
 
