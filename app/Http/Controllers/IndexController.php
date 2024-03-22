@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class IndexController extends Controller
 {
@@ -11,7 +11,7 @@ class IndexController extends Controller
         $this->middleware('guest');
     }
 
-    public function index()
+    public function index(): RedirectResponse
     {
         return redirect(route('login'));
     }

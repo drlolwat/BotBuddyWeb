@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
@@ -16,12 +17,20 @@ class SubscriptionExpireWarning
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (
-            auth()->check() && auth()->user()->subscription_expires_at &&
-            auth()->user()->subscription_expires_at->isFuture() &&
-            abs(auth()->user()->subscription_expires_at->diffInDays(now())) <= 7) {
+        if (!auth()->check()) {
+            return $next($request);
+        }
 
-            $diffForHumans = now()->diffForHumans(auth()->user()->subscription_expires_at, true, false, 1);
+        /** @var User $user */
+        $user = auth()->user();
+
+        if (
+            $user->subscription_expires_at &&
+            $user->subscription_expires_at->isFuture() &&
+            abs($user->subscription_expires_at->diffInDays(now())) <= 7
+        ) {
+
+            $diffForHumans = now()->diffForHumans($user->subscription_expires_at, 1);
 
             session()->flash('warning', 'Your subscription is expiring in ' . $diffForHumans . '. Please renew your subscription.');
         }

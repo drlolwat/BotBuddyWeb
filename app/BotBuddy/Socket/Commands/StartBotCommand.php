@@ -4,12 +4,15 @@ namespace App\BotBuddy\Socket\Commands;
 
 use App\Models\Account;
 
-class StartBotCommand
+class StartBotCommand extends Command
 {
     public string $header = 'startBot';
 
     public function __construct(public Account $account) {}
 
+    /**
+     * @return array<string, int|string>
+     */
     public function dispatchUsing(): array
     {
         return [

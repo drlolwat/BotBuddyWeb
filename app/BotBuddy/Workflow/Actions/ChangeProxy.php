@@ -19,13 +19,16 @@ class ChangeProxy extends Action
         parent::__construct($workflow);
     }
 
-    /** @var Account $model */
+    /**
+     * @param Account $model
+     * @param array<string, mixed> $data
+     */
     public function run(Model $model, array $data): void
     {
         $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
         if (!$proxyGroup) {
             $model->user->notifications()->create([
-                'message' => "{$model->name} could not be restarted, could not find proxy group ID: {$data['proxy_group_id']} (was it deleted?)",
+                'message' => "{$model->email} could not be restarted, could not find proxy group ID: {$data['proxy_group_id']} (was it deleted?)",
                 'type' => 'error'
             ]);
             return;
@@ -45,7 +48,7 @@ class ChangeProxy extends Action
 
         if (!$proxy) {
             $model->user->notifications()->create([
-                'message' => "{$model->name} could not be restarted, no available proxy could be found in group: {$proxyGroup->name}",
+                'message' => "{$model->email} could not be restarted, no available proxy could be found in group: {$proxyGroup->name}",
                 'type' => 'error'
             ]);
             return;

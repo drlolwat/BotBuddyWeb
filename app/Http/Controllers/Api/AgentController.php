@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Agent;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use function Sentry\captureException;
 
 class AgentController extends Controller
 {
-    public function agentKey(Request $request)
+    public function agentKey(Request $request): RedirectResponse|string
     {
         $validated = $this->validate($request, [
             'uuid' => 'required|string',
@@ -28,7 +29,7 @@ class AgentController extends Controller
         return $agent->agent_key;
     }
 
-    public function agentData(Request $request)
+    public function agentData(Request $request): void
     {
         $uuids = array_keys($request->all());
 
@@ -36,7 +37,10 @@ class AgentController extends Controller
 
         foreach ($request->all() as $agentUUid => $accounts) {
 
-            $decodedArray = json_decode(json_encode($accounts), true);
+            $encoded = json_encode($accounts);
+            $decodedArray = $encoded
+                ? json_decode($encoded, true)
+                : [];
             $accountStatusById = [];
 
             foreach ($decodedArray as $item) {
@@ -86,7 +90,7 @@ class AgentController extends Controller
                         continue;
                     }
                     $account = $accountModelsById[$accountId];
-                    if ($account && $account->status != $accountStatus) {
+                    if ($account->status != $accountStatus) {
                         $account->status = $accountStatus;
                         $account->save();
                     }
@@ -110,7 +114,7 @@ class AgentController extends Controller
             ->update(['status' => 'Stopped']);
     }
 
-    public function customerId(Request $request)
+    public function customerId(Request $request): RedirectResponse|int|string
     {
         $validated = $this->validate($request, [
             'uuid' => 'required|string',

@@ -2,6 +2,8 @@
 
 namespace App\BotBuddy\Socket;
 
+use App\BotBuddy\Socket\Commands\Command;
+
 class SocketService
 {
     /**
@@ -10,6 +12,8 @@ class SocketService
      *
      * Returns a string if the message was acknowledged by the master server,
      * otherwise returns an empty string.
+     *
+     * @param array<string, mixed> $data
      */
     public function send(string $header, array $data): string
     {
@@ -45,7 +49,7 @@ class SocketService
         return $response;
     }
 
-    public function dispatch($command): string
+    public function dispatch(Command $command): string
     {
         return $this->send($command->header, $command->dispatchUsing());
     }

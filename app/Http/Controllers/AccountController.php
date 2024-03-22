@@ -8,8 +8,10 @@ use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\Proxy;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class AccountController extends Controller
 {
@@ -18,7 +20,7 @@ class AccountController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         $accounts = auth()->user()
             ->accounts()
@@ -28,7 +30,7 @@ class AccountController extends Controller
         return view('v1.account.index', compact('accounts'));
     }
 
-    public function bulkAction(SocketService $socket)
+    public function bulkAction(SocketService $socket): RedirectResponse
     {
         $validated = request()->validate([
             'action' => 'required',
@@ -220,7 +222,7 @@ class AccountController extends Controller
         return back()->withErrors('Invalid action');
     }
 
-    public function show(Account $account)
+    public function show(Account $account): View|RedirectResponse
     {
         $this->authorize('view', $account);
 
@@ -241,12 +243,12 @@ class AccountController extends Controller
         return view('v1.account.show', compact('account', 'chunkedSkills', 'proxies'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('v1.account.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         if ($request['proxy_id'] == "0") {
             $request['proxy_id'] = null;
@@ -316,7 +318,7 @@ class AccountController extends Controller
         return redirect(route('account.show', $account))->with('status', 'Account created');
     }
 
-    public function update(Request $request, Account $account)
+    public function update(Request $request, Account $account): RedirectResponse
     {
         $this->authorize('view', $account);
 
@@ -387,7 +389,7 @@ class AccountController extends Controller
         return redirect(route('account.show', $account))->with('status', 'Account updated');
     }
 
-    public function destroy(Account $account)
+    public function destroy(Account $account): RedirectResponse
     {
         $this->authorize('view', $account);
 
@@ -400,7 +402,7 @@ class AccountController extends Controller
         return redirect(route('account'))->with('status', 'Account deleted');
     }
 
-    public function start(Account $account, SocketService $socket)
+    public function start(Account $account, SocketService $socket): RedirectResponse
     {
         $this->authorize('view', $account);
 
@@ -438,13 +440,13 @@ class AccountController extends Controller
         }
 
         $account->status = 'Starting';
-        $account->queue_start_at = null;
+        $account->start_queued_at = null;
         $account->save();
 
         return back()->with('status', 'Account is being started');
     }
 
-    public function stop(Account $account, SocketService $socket)
+    public function stop(Account $account, SocketService $socket): RedirectResponse
     {
         $this->authorize('view', $account);
 
@@ -464,12 +466,12 @@ class AccountController extends Controller
         return redirect(route('account'))->with('status', 'Account stopped');
     }
 
-    public function import()
+    public function import(): View
     {
         return view('v1.account.import');
     }
 
-    public function importStore(Request $request)
+    public function importStore(Request $request): RedirectResponse
     {
         if ($request['proxy_id'] == "0") {
             $request['proxy_id'] = null;
@@ -504,13 +506,15 @@ class AccountController extends Controller
             ],
         ]);
 
-        $accountGroup = AccountGroup::find($validated['account_group_id']);
+        $accountGroup = AccountGroup::where('id', $validated['account_group_id'])->first();
 
         $linesFile = [];
         $linesTextarea = [];
 
-        if (isset($validated['account_file'])) {
-            $linesFile = explode("\n", file_get_contents($validated['account_file']));
+        $file = file_get_contents($validated['account_file']);
+
+        if (isset($validated['account_file']) && $file) {
+            $linesFile = explode("\n", $file);
         }
         if (isset($validated['account_textarea'])) {
             $linesTextarea = explode("\n", $validated['account_textarea']);
@@ -598,23 +602,34 @@ class AccountController extends Controller
             $newProxy = null;
 
             // todo: fix N+1 for proxy queries
-            if (count($account) > 3) {
+            if (count($account) == 6 || count($account) == 7) {
 
-                $newProxy = Proxy::select('id')
-                    ->where('user_id', auth()->id())
-                    ->where('host', $account['proxy_host'])
-                    ->where('port', $account['proxy_port'])
-                    ->where('username', $account['proxy_username'])
-                    ->where('password', $account['proxy_password'])
-                    ->first();
+                $query = Proxy::select('id');
+                $data = [];
+
+                if (isset($account['proxy_host'])) {
+                    $query->where('host', $account['proxy_host']);
+                    $data['host'] = $account['proxy_host'];
+                }
+                if (isset($account['proxy_port'])) {
+                    $query->where('port', $account['proxy_port']);
+                    $data['port'] = $account['proxy_port'];
+                }
+                if (isset($account['proxy_username'])) {
+                    $query->where('username', $account['proxy_username']);
+                    $data['username'] = $account['proxy_username'];
+                }
+                if (isset($account['proxy_password'])) {
+                    $query->where('password', $account['proxy_password']);
+                    $data['password'] = $account['proxy_password'];
+                }
+
+                $newProxy = $query->where('user_id', auth()->id())->first();
 
                 if (!$newProxy) {
                     $newProxy = Proxy::create([
                         'user_id' => auth()->id(),
-                        'host' => $account['proxy_host'],
-                        'port' => $account['proxy_port'],
-                        'username' => $account['proxy_username'],
-                        'password' => $account['proxy_password'],
+                        ...$data,
                     ]);
                 }
             }
@@ -657,7 +672,7 @@ class AccountController extends Controller
         return $response->with('status', sprintf("%d accounts imported", count($accounts)));
     }
 
-    public function dequeue(Account $account)
+    public function dequeue(Account $account): RedirectResponse
     {
         $this->authorize('view', $account);
 

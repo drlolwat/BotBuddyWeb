@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Proxy;
 use App\Models\ProxyGroup;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProxyGroupController extends Controller
 {
@@ -13,7 +15,7 @@ class ProxyGroupController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         $proxyGroups = auth()->user()
             ->proxy_groups()
@@ -23,7 +25,7 @@ class ProxyGroupController extends Controller
         return view('v1.proxy.group.index', compact('proxyGroups'));
     }
 
-    public function show(ProxyGroup $group)
+    public function show(ProxyGroup $group): View|RedirectResponse
     {
         $this->authorize('view', $group);
 
@@ -32,12 +34,12 @@ class ProxyGroupController extends Controller
         return view('v1.proxy.group.show', compact('group', 'proxies'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('v1.proxy.group.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $this->validate($request, [
             'name' => 'required',
@@ -51,7 +53,7 @@ class ProxyGroupController extends Controller
         return redirect(route('proxy.group.show', $group))->with('status', 'Proxy group created');
     }
 
-    public function update(Request $request, ProxyGroup $group)
+    public function update(Request $request, ProxyGroup $group): RedirectResponse
     {
         $this->authorize('view', $group);
 
@@ -66,7 +68,7 @@ class ProxyGroupController extends Controller
         return redirect(route('proxy.group.show', $group))->with('status', 'Proxy group updated');
     }
 
-    public function destroy(ProxyGroup $group)
+    public function destroy(ProxyGroup $group): RedirectResponse
     {
         $this->authorize('view', $group);
 

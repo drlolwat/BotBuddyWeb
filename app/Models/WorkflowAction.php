@@ -15,8 +15,11 @@ class WorkflowAction extends Model
 
     protected $casts = ['data' => 'array'];
 
+    /**
+     * @return BelongsTo<Workflow, WorkflowAction>
+     */
     public function rule(): BelongsTo
     {
-        $this->belongsTo(Workflow::class);
+        return $this->belongsTo(Workflow::class);
     }
 }

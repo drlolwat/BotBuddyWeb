@@ -9,6 +9,6 @@ class WorkflowActionPolicy
 {
     public function view(User $user, WorkflowAction $workflowAction): bool
     {
-        return $workflowAction->rule->user_id === $user->id;
+        return $workflowAction->rule?->user_id === $user->id;
     }
 }

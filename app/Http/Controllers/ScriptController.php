@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\UserScript;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ScriptController extends Controller
 {
@@ -13,25 +15,25 @@ class ScriptController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         $scripts = UserScript::where('user_id', auth()->id())->paginate(10);
         return view('v1.script.index', compact('scripts'));
     }
 
-    public function show(UserScript $script)
+    public function show(UserScript $script): View|RedirectResponse
     {
         $this->authorize('view', $script);
 
         return view('v1.script.show', compact('script'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('v1.script.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $this->validate($request, [
             'name' => 'required',
@@ -47,7 +49,7 @@ class ScriptController extends Controller
         return redirect(route('script.show', $account))->with('status', 'Script added');
     }
 
-    public function update(Request $request, UserScript $script)
+    public function update(Request $request, UserScript $script): RedirectResponse
     {
         $this->authorize('view', $script);
 
@@ -64,7 +66,7 @@ class ScriptController extends Controller
         return redirect(route('script.show', $script))->with('status', 'Script updated');
     }
 
-    public function destroy(UserScript $script)
+    public function destroy(UserScript $script): RedirectResponse
     {
         $this->authorize('view', $script);
 

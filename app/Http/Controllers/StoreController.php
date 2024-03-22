@@ -6,7 +6,9 @@ use App\BotBuddy\Sellix\SellixService;
 use App\Models\Subscription;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use function Sentry\captureException;
 use Throwable;
 
@@ -18,7 +20,7 @@ class StoreController extends Controller
         $this->middleware('subscription.expire.warning');
     }
 
-    public function index()
+    public function index(): View
     {
         $subscriptions = Subscription::query()
             ->where('name', '!=', 'Founder')
@@ -33,7 +35,7 @@ class StoreController extends Controller
         return view('v1.store', compact('subscriptions'));
     }
 
-    public function checkout($product, SellixService $sellix)
+    public function checkout(string $product, SellixService $sellix): RedirectResponse
     {
         $subscriptions = Subscription::query()
             ->where('name', '!=', 'Founder')
@@ -59,25 +61,25 @@ class StoreController extends Controller
                 'surname' => 'User',
             ];
 
-            if (!$user->sellix_customer_uniqid) {
+            try {
                 try {
-                    try {
-                        $user->sellix_customer_uniqid = $sellix->client->create_customer($customer_payload);
-                        $user->save();
-                    } catch (Throwable $e) {
-                        $customer = $sellix->client->get_customer($user->email);
-                        if ($customer) {
-                            $user->sellix_customer_uniqid = $customer->id;
-                            $user->save();
-                        } else {
-                            captureException(new \Exception("Failed to create customer or get existing customer: {$user->email}"));
-                            return back()->withErrors('Something went wrong. Please try again later.');
-                        }
-                    }
+                    /** @phpstan-ignore-next-line */
+                    $user->sellix_customer_uniqid = $sellix->client->create_customer($customer_payload);
+                    $user->save();
                 } catch (Throwable $e) {
-                    captureException($e);
-                    return back()->withErrors('Something went wrong. Please try again later.');
+                    /** @phpstan-ignore-next-line */
+                    $customer = $sellix->client->get_customer($user->email);
+                    if ($customer) {
+                        $user->sellix_customer_uniqid = $customer->id;
+                        $user->save();
+                    } else {
+                        captureException(new \Exception("Failed to create customer or get existing customer: {$user->email}"));
+                        return back()->withErrors('Something went wrong. Please try again later.');
+                    }
                 }
+            } catch (Throwable $e) {
+                captureException($e);
+                return back()->withErrors('Something went wrong. Please try again later.');
             }
         }
 
@@ -92,6 +94,7 @@ class StoreController extends Controller
         ];
 
         try {
+            /** @phpstan-ignore-next-line */
             $subscription = $sellix->client->create_subscription($subscription_payload);
             // $subscription->uniqid for the subscription id
             if (!$subscription) {
@@ -99,7 +102,7 @@ class StoreController extends Controller
                 return back()->withErrors('Something went wrong. Please try again later.');
             }
             if (!$subscription->url) {
-                captureException(new \Exception("Subscription url not available:", json_encode($subscription)));
+                captureException(new \Exception("Subscription url not available: " . json_encode($subscription)));
                 return back()->withErrors('Something went wrong. Please try again later.');
             }
             return redirect($subscription->url);
@@ -109,7 +112,7 @@ class StoreController extends Controller
         }
     }
 
-    public function webhook(Request $request)
+    public function webhook(Request $request): void
     {
         $payload = $request->all();
 

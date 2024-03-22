@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+
 class NotificationController extends Controller
 {
     public function __construct()
@@ -9,7 +12,7 @@ class NotificationController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         $notifications = auth()->user()->notifications()
             ->orderByDesc('id')
@@ -22,7 +25,7 @@ class NotificationController extends Controller
         return view('v1.notifications', compact('notifications'));
     }
 
-    public function clear()
+    public function clear(): RedirectResponse
     {
         auth()->user()->notifications()->delete();
 

@@ -17,6 +17,9 @@ class AccountStat extends Model
         'skills' => 'collection',
     ];
 
+    /**
+     * @return BelongsTo<Account, AccountStat>
+     */
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
@@ -33,6 +36,6 @@ class AccountStat extends Model
             return round($number / 1000000000, 2) . 'B';
         }
 
-        return $number;
+        return (string) $number;
     }
 }

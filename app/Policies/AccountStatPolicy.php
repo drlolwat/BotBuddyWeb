@@ -9,6 +9,6 @@ class AccountStatPolicy
 {
     public function view(User $user, AccountStat $stats): bool
     {
-        return $stats->account->user_id === $user->id;
+        return $stats->account?->user_id === $user->id;
     }
 }

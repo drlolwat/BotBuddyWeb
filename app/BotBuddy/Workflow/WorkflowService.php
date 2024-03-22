@@ -22,12 +22,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class WorkflowService
 {
-    // the model types allowed to be used in workflows
+    /**
+     * The model types allowed to be used in workflows.
+     * @var array<string, string> $modelTypes
+     */
     public array $modelTypes = [
         'account' => Account::class,
         'account_group' => AccountGroup::class,
     ];
 
+    /**
+     * @var array<string, string> $events
+     */
     public array $events = [
         'script_complete' => ScriptComplete::class,
         'proxy_blocked' => ProxyBlocked::class,
@@ -36,6 +42,9 @@ class WorkflowService
         'stat_goal' => StatGoal::class,
     ];
 
+    /**
+     * @var array<string, string> $actions
+     */
     public array $actions = [
         'change_script' => ChangeScript::class,
         'stop_bot' => StopBot::class,
@@ -81,11 +90,15 @@ class WorkflowService
         $removeProxyAction = $actions->filter(fn($action) => $action->name == 'remove_proxy')->first();
         if ($removeProxyAction) {
             $runner = app()->makeWith($this->actions[$removeProxyAction->name], ['workflow' => $workflow]);
-            $runner->run($model, $action->data ?? []);
+            $runner->run($model, $removeProxyAction->data ?? []);
         }
     }
 
-    public function getWorkflows($modelType, $modelId, $event, $eventData, $operator = '='): Collection
+    /**
+     * @param array<string, mixed> $eventData
+     * @return Collection<int, Workflow>
+     */
+    public function getWorkflows(string $modelType, int $modelId, string $event, ?array $eventData, string $operator = '='): Collection
     {
         $query = Workflow::query()
             ->with('model', 'actions')
@@ -118,7 +131,11 @@ class WorkflowService
         return $query->get();
     }
 
-    public function getWorkflowsNullableAllowed($modelType, $modelId, $event, $eventData, $operator = '='): Collection
+    /**
+     * @param array<string, mixed> $eventData
+     * @return Collection<int, Workflow>
+     */
+    public function getWorkflowsNullableAllowed(string $modelType, int $modelId, string $event, ?array $eventData, string $operator = '='): Collection
     {
         $query = Workflow::query()
             ->with('model', 'actions')

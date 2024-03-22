@@ -7,8 +7,10 @@ use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use App\Models\AccountGroup;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class AccountGroupController extends Controller
 {
@@ -17,7 +19,7 @@ class AccountGroupController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         $accountGroups = AccountGroup::query()
             ->with('script')
@@ -28,7 +30,7 @@ class AccountGroupController extends Controller
         return view('v1.account.group.index', compact('accountGroups'));
     }
 
-    public function show(AccountGroup $group)
+    public function show(AccountGroup $group): View|RedirectResponse
     {
         $this->authorize('view', $group);
 
@@ -37,12 +39,12 @@ class AccountGroupController extends Controller
         return view('v1.account.group.show', compact('group', 'accounts'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('v1.account.group.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $this->validate($request, [
             'name' => 'required',
@@ -75,7 +77,7 @@ class AccountGroupController extends Controller
         return redirect(route('account.group.show', $group))->with('status', 'Account group created');
     }
 
-    public function update(Request $request, AccountGroup $group)
+    public function update(Request $request, AccountGroup $group): RedirectResponse
     {
         $this->authorize('view', $group);
 
@@ -109,7 +111,7 @@ class AccountGroupController extends Controller
         return redirect(route('account.group.show', $group))->with('status', 'Account group updated');
     }
 
-    public function destroy(AccountGroup $group)
+    public function destroy(AccountGroup $group): RedirectResponse
     {
         $this->authorize('view', $group);
 
@@ -124,7 +126,7 @@ class AccountGroupController extends Controller
         return redirect(route('account'))->with('status', 'Account group deleted');
     }
 
-    public function start(AccountGroup $group, SocketService $socket)
+    public function start(AccountGroup $group, SocketService $socket): RedirectResponse
     {
         $this->authorize('view', $group);
 
@@ -193,7 +195,7 @@ class AccountGroupController extends Controller
         return $response->withErrors($errors);
     }
 
-    public function stop(AccountGroup $group, SocketService $socket)
+    public function stop(AccountGroup $group, SocketService $socket): RedirectResponse
     {
         $statuses = [
             'Running', 'Starting', 'Completed',
@@ -230,7 +232,7 @@ class AccountGroupController extends Controller
         return back()->with('status', 'Accounts are being stopped');
     }
 
-    public function queue(AccountGroup $group)
+    public function queue(AccountGroup $group): RedirectResponse
     {
         $this->authorize('view', $group);
 
@@ -300,7 +302,7 @@ class AccountGroupController extends Controller
         return $response->withErrors($errors);
     }
 
-    public function dequeue(AccountGroup $group)
+    public function dequeue(AccountGroup $group): RedirectResponse
     {
         $this->authorize('view', $group);
         $accounts = $group->accounts()->where('status', 'Queued')->get();

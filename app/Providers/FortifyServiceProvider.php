@@ -34,7 +34,9 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            /** @var string $key */
+            $key = $request->input(Fortify::username());
+            $throttleKey = Str::transliterate(Str::lower($key).'|'.$request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });

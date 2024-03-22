@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Agent extends Model
@@ -20,7 +21,10 @@ class Agent extends Model
         'last_agentdata_at' => 'datetime'
     ];
 
-    public function user()
+    /**
+     * @return BelongsTo<User, Agent>
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

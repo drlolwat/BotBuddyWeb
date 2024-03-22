@@ -5,14 +5,22 @@ namespace App\Http\Controllers\Api;
 use App\BotBuddy\Workflow\WorkflowService;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\AccountStat;
 use App\Models\User;
 use App\Models\Workflow;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 
 class AccountController extends Controller
 {
-    public function updateBot(Request $request, WorkflowService $workflowService)
+    /**
+     * @return RedirectResponse|array<string, bool>
+     * @throws ValidationException
+     */
+    public function updateBot(Request $request, WorkflowService $workflowService): RedirectResponse|array
     {
         // todo: improve validation (defined statuses, id exists etc.)
         $validated = $this->validate($request, [
@@ -20,7 +28,7 @@ class AccountController extends Controller
             'Status' => 'required|string'
         ]);
 
-        $account = Account::find($validated['Id']);
+        $account = Account::where('id', $validated['Id'])->first();
 
         if (!$account) {
             return ['success' => false];
@@ -106,7 +114,11 @@ class AccountController extends Controller
         return ['success' => $account->save()];
     }
 
-    public function wrapper(Request $request, WorkflowService $workflowService)
+    /**
+     * @return RedirectResponse|array<string, AccountStat|bool>
+     * @throws ValidationException
+     */
+    public function wrapper(Request $request, WorkflowService $workflowService): RedirectResponse|array
     {
         $validated = $this->validate($request, [
             '*.BB_OUTPUT.BB_GP' => 'filled|int',
@@ -147,7 +159,7 @@ class AccountController extends Controller
             }
             // todo: normalize skills into separate table?
             if (isset($stats['BB_STATS'])) {
-                $data['skills'] = collect($stats['BB_STATS']);
+                $data['skills'] = new Collection($stats['BB_STATS']);
             }
             // todo: store this
             if (isset($stats['BB_MEM_DAYS_LEFT'])) {
@@ -161,7 +173,7 @@ class AccountController extends Controller
             }
 
             if (!$account->user->subscription || $account->user->subscription->name == 'Basic') {
-                return;
+                return back()->withErrors('You need Essential or higher subscription to use this feature');
             }
 
             // create structure to check for stat goals
@@ -226,7 +238,7 @@ class AccountController extends Controller
         return $updated;
     }
 
-    public function allowedClients(Request $request)
+    public function allowedClients(Request $request): int
     {
         $user = User::find($request['customerId']);
         if (!$user) {

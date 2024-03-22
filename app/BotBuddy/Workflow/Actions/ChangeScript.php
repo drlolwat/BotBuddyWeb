@@ -17,13 +17,16 @@ class ChangeScript extends Action
         parent::__construct($workflow);
     }
 
-    /** @var Account $model */
+    /**
+     * @param Account $model
+     * @param array<string, mixed> $data
+     */
     public function run(Model $model, array $data): void
     {
         $script = $model->user->scripts()->find($data['script_id']);
         if (!$script) {
             $model->user->notifications()->create([
-                'message' => "Could not change to script ID {$data['script_id']} for {$model->name} (was it deleted?)",
+                'message' => "Could not change to script ID {$data['script_id']} for {$model->email} (was it deleted?)",
                 'type' => 'error'
             ]);
             return;

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Proxy;
 use App\Models\ProxyGroup;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ProxyController extends Controller
 {
@@ -15,7 +17,7 @@ class ProxyController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         $proxies = auth()->user()
             ->proxies()
@@ -26,7 +28,7 @@ class ProxyController extends Controller
         return view('v1.proxy.index', compact('proxies'));
     }
 
-    public function show(Proxy $proxy)
+    public function show(Proxy $proxy): View|RedirectResponse
     {
         $this->authorize('view', $proxy);
 
@@ -35,12 +37,12 @@ class ProxyController extends Controller
         return view('v1.proxy.show', compact('proxy', 'accounts'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('v1.proxy.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         if ($request['proxy_group_id'] == "0") {
             $request['proxy_group_id'] = null;
@@ -73,7 +75,7 @@ class ProxyController extends Controller
         return redirect(route('proxy.show', $account))->with('status', 'Proxy added');
     }
 
-    public function update(Request $request, Proxy $proxy)
+    public function update(Request $request, Proxy $proxy): RedirectResponse
     {
         $this->authorize('view', $proxy);
 
@@ -107,7 +109,7 @@ class ProxyController extends Controller
         return redirect(route('proxy.show', $proxy))->with('status', 'Proxy updated');
     }
 
-    public function destroy(Proxy $proxy)
+    public function destroy(Proxy $proxy): RedirectResponse
     {
         $this->authorize('view', $proxy);
 
@@ -122,12 +124,12 @@ class ProxyController extends Controller
         return redirect(route('proxy'))->with('status', 'Proxy deleted');
     }
 
-    public function import()
+    public function import(): View
     {
         return view('v1.proxy.import');
     }
 
-    public function importStore(Request $request)
+    public function importStore(Request $request): RedirectResponse
     {
         if ($request['proxy_group_id'] == "0") {
             $request['proxy_group_id'] = null;
@@ -150,8 +152,10 @@ class ProxyController extends Controller
         $linesFile = [];
         $linesTextarea = [];
 
-        if (isset($validated['proxy_file'])) {
-            $linesFile = explode("\n", file_get_contents($validated['proxy_file']));
+        $file = file_get_contents($validated['proxy_file']);
+
+        if (isset($validated['proxy_file']) && $file) {
+            $linesFile = explode("\n", $file);
         }
         if (isset($validated['proxy_textarea'])) {
             $linesTextarea = explode("\n", $validated['proxy_textarea']);

@@ -8,7 +8,7 @@ class SellixService
 {
     public Sellix $client;
 
-    public function __construct($apiKey, $shopName)
+    public function __construct(string $apiKey, ?string $shopName = null)
     {
         $this->client = new Sellix($apiKey, $shopName);
     }

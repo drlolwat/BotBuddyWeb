@@ -2,15 +2,21 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Auth\MustVerifyEmail as VerifiableEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property ?Carbon $subscription_expires_at
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, VerifiableEmail, SoftDeletes;
@@ -27,7 +33,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'dreambot_username',
         'dreambot_password',
         'sellix_customer_uniqid',
-        'subscription_id', 'subscription_expires_at',
+        'subscription_id',
+        'subscription_expires_at',
     ];
 
     /**
@@ -51,42 +58,66 @@ class User extends Authenticatable implements MustVerifyEmail
         'subscription_expires_at' => 'datetime',
     ];
 
-    public function account_groups()
+    /**
+     * @return HasMany<AccountGroup>
+     */
+    public function account_groups(): HasMany
     {
         return $this->hasMany(AccountGroup::class);
     }
 
-    public function proxy_groups()
+    /**
+     * @return HasMany<ProxyGroup>
+     */
+    public function proxy_groups(): HasMany
     {
         return $this->hasMany(ProxyGroup::class);
     }
 
-    public function scripts()
+    /**
+     * @return HasMany<UserScript>
+     */
+    public function scripts(): HasMany
     {
         return $this->hasMany(UserScript::class);
     }
 
-    public function accounts()
+    /**
+     * @return HasMany<Account>
+     */
+    public function accounts(): HasMany
     {
         return $this->hasMany(Account::class);
     }
 
-    public function proxies()
+    /**
+     * @return HasMany<Proxy>
+     */
+    public function proxies(): HasMany
     {
         return $this->hasMany(Proxy::class);
     }
 
-    public function agents()
+    /**
+     * @return HasMany<Agent>
+     */
+    public function agents(): HasMany
     {
         return $this->hasMany(Agent::class);
     }
 
-    public function workflows()
+    /**
+     * @return HasMany<Workflow>
+     */
+    public function workflows(): HasMany
     {
         return $this->hasMany(Workflow::class);
     }
 
-    public function subscription()
+    /**
+     * @return BelongsTo<Subscription, User>
+     */
+    public function subscription(): BelongsTo
     {
         // if they have never had a subscription or their subscription has expired
         if (!($this->subscription_expires_at && $this->subscription_expires_at->isFuture())) {
@@ -95,7 +126,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Subscription::class);
     }
 
-    public function notifications()
+    /**
+     * @return HasMany<Notification>
+     */
+    public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
     }

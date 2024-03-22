@@ -6,8 +6,11 @@ use App\Models\Account;
 use App\Models\Agent;
 use App\Models\Proxy;
 use App\Models\ProxyGroup;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AgentController extends Controller
 {
@@ -16,25 +19,25 @@ class AgentController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         $agents = Agent::where('user_id', auth()->id())->paginate(10);
         return view('v1.agent.index', compact('agents'));
     }
 
-    public function show(Agent $agent)
+    public function show(Agent $agent): View|RedirectResponse
     {
         $this->authorize('view', $agent);
 
         return view('v1.agent.show', compact('agent'));
     }
 
-    public function create()
+    public function create():View
     {
         return view('v1.agent.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $agentCount = Agent::query()
             ->where('user_id', auth()->id())
@@ -69,7 +72,7 @@ class AgentController extends Controller
         return redirect(route('agent.show', $agent))->with('status', 'Agent created');
     }
 
-    public function update(Request $request, Agent $agent)
+    public function update(Request $request, Agent $agent): RedirectResponse
     {
         $this->authorize('view', $agent);
 
@@ -93,7 +96,7 @@ class AgentController extends Controller
         return redirect(route('agent.show', $agent))->with('status', 'Agent updated');
     }
 
-    public function destroy(Agent $agent)
+    public function destroy(Agent $agent): RedirectResponse
     {
         $this->authorize('view', $agent);
 
@@ -108,7 +111,7 @@ class AgentController extends Controller
         return redirect(route('agent'))->with('status', 'Agent deleted');
     }
 
-    public function download(Agent $agent)
+    public function download(Agent $agent): BinaryFileResponse|RedirectResponse
     {
         $this->authorize('view', $agent);
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Proxy extends Model
@@ -12,17 +14,27 @@ class Proxy extends Model
 
     protected $fillable = ['host', 'port', 'username', 'password', 'user_id', 'proxy_group_id'];
 
-    public function user()
+    /**
+     * @return BelongsTo<User, Proxy>
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function proxy_group()
+    /**
+     * @return BelongsTo<ProxyGroup, Proxy>
+
+     */
+    public function proxy_group(): BelongsTo
     {
         return $this->belongsTo(ProxyGroup::class);
     }
 
-    public function accounts()
+    /**
+     * @return HasMany<Account>
+     */
+    public function accounts(): HasMany
     {
         return $this->hasMany(Account::class);
     }

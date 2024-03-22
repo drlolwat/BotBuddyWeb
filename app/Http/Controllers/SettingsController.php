@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class SettingsController extends Controller
 {
@@ -11,12 +13,12 @@ class SettingsController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         return view('v1.settings');
     }
 
-    public function dark_mode(Request $request)
+    public function dark_mode(Request $request): RedirectResponse
     {
         //dd($request->all());
         $this->validate($request, [
@@ -33,7 +35,7 @@ class SettingsController extends Controller
         return back()->with('status', "Dark mode " . ($darkMode ? 'enabled' : 'disabled'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $validated = $this->validate($request, [
             'dreambot_username' => '',

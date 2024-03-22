@@ -15,13 +15,16 @@ class ChangeAccountGroup extends Action
         parent::__construct($workflow);
     }
 
-    /** @var Account $model */
+    /**
+     * @param Account $model
+     * @param array<string, mixed> $data
+     */
     public function run(Model $model, array $data): void
     {
         $accountGroup = $model->user->account_groups()->find($data['account_group_id']);
         if (!$accountGroup) {
             $model->user->notifications()->create([
-                'message' => "Could not change to account group ID {$data['account_group_id']} for {$model->name} (was it deleted?)",
+                'message' => "Could not change to account group ID {$data['account_group_id']} for {$model->email} (was it deleted?)",
                 'type' => 'error'
             ]);
             return;

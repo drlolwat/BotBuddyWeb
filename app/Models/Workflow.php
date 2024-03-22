@@ -16,11 +16,17 @@ class Workflow extends Model
 
     protected $casts = ['data' => 'array'];
 
+    /**
+     * @return MorphTo<Model, Workflow>
+     */
     public function model(): MorphTo
     {
         return $this->morphTo('model');
     }
 
+    /**
+     * @return HasMany<WorkflowAction>
+     */
     public function actions(): HasMany
     {
         return $this->hasMany(WorkflowAction::class);

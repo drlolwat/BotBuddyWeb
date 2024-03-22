@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Account extends Model
@@ -17,32 +19,50 @@ class Account extends Model
         'world', 'fps', 'start_queued_at',
     ];
 
-    public function proxy()
+    /**
+     * @return BelongsTo<Proxy, Account>
+     */
+    public function proxy(): BelongsTo
     {
         return $this->belongsTo(Proxy::class);
     }
 
-    public function script()
+    /**
+     * @return BelongsTo<UserScript, Account>
+     */
+    public function script(): BelongsTo
     {
         return $this->belongsTo(UserScript::class);
     }
 
-    public function user()
+    /**
+     * @return BelongsTo<User, Account>
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function account_group()
+    /**
+     * @return BelongsTo<AccountGroup, Account>
+     */
+    public function account_group(): BelongsTo
     {
         return $this->belongsTo(AccountGroup::class);
     }
 
-    public function agent()
+    /**
+     * @return BelongsTo<Agent, Account>
+     */
+    public function agent(): BelongsTo
     {
         return $this->belongsTo(Agent::class);
     }
 
-    public function stats()
+    /**
+     * @return HasOne<AccountStat>
+     */
+    public function stats(): HasOne
     {
         return $this->hasOne(AccountStat::class);
     }

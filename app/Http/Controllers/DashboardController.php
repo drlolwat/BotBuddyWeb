@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
@@ -11,7 +11,7 @@ class DashboardController extends Controller
         $this->middleware(['auth', 'subscription.expire.warning']);
     }
 
-    public function index()
+    public function index(): View
     {
         $yesterday = now()->subDay();
 

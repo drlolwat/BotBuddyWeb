@@ -19,7 +19,10 @@ class StopAndReplenishFrom extends Action
         parent::__construct($workflow);
     }
 
-    /** @var Account $model */
+    /**
+     * @param Account $model
+     * @param array<string, mixed> $data
+     */
     public function run(Model $model, array $data): void
     {
         $this->socket->dispatch(new StopBotCommand($model));

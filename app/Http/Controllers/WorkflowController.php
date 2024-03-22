@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\BotBuddy\Workflow\Events\Event;
+use App\BotBuddy\Workflow\Events\PermBanned;
+use App\BotBuddy\Workflow\Events\ProxyBlocked;
+use App\BotBuddy\Workflow\Events\ScriptComplete;
+use App\BotBuddy\Workflow\Events\StatGoal;
+use App\BotBuddy\Workflow\Events\TempBanned;
 use App\BotBuddy\Workflow\WorkflowService;
 use App\Models\Workflow;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class WorkflowController extends Controller
 {
@@ -16,7 +25,7 @@ class WorkflowController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(): View
     {
         $workflows = Workflow::query()
             ->with('actions')
@@ -26,12 +35,12 @@ class WorkflowController extends Controller
         return view('v1.workflow.index', compact('workflows'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('v1.workflow.create');
     }
 
-    public function store(Request $request, WorkflowService $workflowService)
+    public function store(Request $request, WorkflowService $workflowService): RedirectResponse
     {
         $workflowCount = Workflow::query()
             ->where('user_id', auth()->id())
@@ -93,7 +102,7 @@ class WorkflowController extends Controller
         $eventData = Arr::mapWithKeys(Arr::where($validated, function ($value, $key) {
             return Str::startsWith($key, 'event_');
         }), function ($value, $key) {
-            return [Str::replaceFirst('event_', '', $key) => $value];
+            return [Str::replaceFirst('event_', '', (string)$key) => $value];
         });
 
         if (auth()->user()->subscription->name == 'Basic' && in_array($validated['event'], ['temp_banned', 'stat_goal'])) {
@@ -104,13 +113,12 @@ class WorkflowController extends Controller
             return back()->withErrors('You have not provided any stat goals');
         }
 
-        /** @var FormRequest $eventDataValidated */
+        /** @var PermBanned|ProxyBlocked|ScriptComplete|StatGoal|TempBanned $eventValidator */
         $eventValidator = new $workflowService->events[$validated['event']]();
         $eventValidator->replace($eventData);
-        /** @var array $eventDataValidated */
         $eventDataValidated = $eventValidator->validate($eventValidator->rules());
 
-        $actions = collect($validated['action'])
+        $actions = (new Collection($validated['action']))
             ->mapWithKeys(fn ($action) => [$action => $validated[$action] ?? null])
             ->toArray();
 
@@ -146,15 +154,18 @@ class WorkflowController extends Controller
         return redirect(route('workflow'))->with('status','Workflow created');
     }
 
-    public function destroy(Workflow $workflow)
+    public function destroy(Workflow $workflow): RedirectResponse
     {
         $this->authorize('view', $workflow);
         $workflow->delete();
         return redirect(route('workflow'))->with('status','Workflow deleted');
     }
 
-    // returns the workflow events the user is allowed to use
-    public function events(WorkflowService $workflowService)
+    /**
+     * Returns the workflow events the user is allowed to use.
+     * @return array<string>
+     */
+    public function events(WorkflowService $workflowService): array
     {
         $subscription = auth()->user()->subscription;
         if (!$subscription) {

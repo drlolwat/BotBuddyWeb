@@ -31,10 +31,12 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         $this->app->singleton(SellixService::class, function () {
-            return new SellixService(
-                config('sellix.api_key'),
-                config('sellix.shop_name'),
-            );
+            /** @var string $apiKey */
+            $apiKey = config('sellix.api_key');
+            /** @var string $shopName */
+            $shopName = config('sellix.shop_name');
+
+            return new SellixService($apiKey, $shopName);
         });
 
         $this->app->bind('sellix', SellixService::class);
