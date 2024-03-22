@@ -438,6 +438,7 @@ class AccountController extends Controller
         }
 
         $account->status = 'Starting';
+        $account->queue_start_at = null;
         $account->save();
 
         return back()->with('status', 'Account is being started');
