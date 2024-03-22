@@ -239,7 +239,7 @@ class AccountGroupController extends Controller
         $minutesValidated = request()->validate([
             'minutes' => 'required|int|min:1|max:120',
         ]);
-        $minutes = $minutesValidated['minutes'];
+        $minutes = (int)$minutesValidated['minutes'];
 
         $accounts = $group->accounts()
             ->with('agent', 'script')

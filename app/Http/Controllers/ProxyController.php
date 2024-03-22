@@ -152,9 +152,7 @@ class ProxyController extends Controller
         $linesFile = [];
         $linesTextarea = [];
 
-        $file = file_get_contents($validated['proxy_file']);
-
-        if (isset($validated['proxy_file']) && $file) {
+        if (isset($validated['proxy_file']) && $file = file_get_contents($validated['proxy_file'])) {
             $linesFile = explode("\n", $file);
         }
         if (isset($validated['proxy_textarea'])) {

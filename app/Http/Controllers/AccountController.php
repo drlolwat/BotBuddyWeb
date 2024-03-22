@@ -145,7 +145,7 @@ class AccountController extends Controller
             $minutesValidated = request()->validate([
                 'minutes' => 'required|int|min:1|max:120',
             ]);
-            $minutes = $minutesValidated['minutes'];
+            $minutes = (int) $minutesValidated['minutes'];
 
             $user = auth()->user();
 
@@ -511,9 +511,7 @@ class AccountController extends Controller
         $linesFile = [];
         $linesTextarea = [];
 
-        $file = file_get_contents($validated['account_file']);
-
-        if (isset($validated['account_file']) && $file) {
+        if (isset($validated['account_file']) && $file = file_get_contents($validated['account_file'])) {
             $linesFile = explode("\n", $file);
         }
         if (isset($validated['account_textarea'])) {
