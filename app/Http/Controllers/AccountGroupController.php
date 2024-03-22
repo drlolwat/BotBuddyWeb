@@ -195,8 +195,15 @@ class AccountGroupController extends Controller
 
     public function stop(AccountGroup $group, SocketService $socket)
     {
+        $statuses = [
+            'Running', 'Starting', 'Completed',
+            'NoScript', 'ProxyBlocked', 'Banned',
+        ];
+
         $this->authorize('view', $group);
-        $accounts = $group->accounts()->whereIn('status', ['Running', 'Starting', 'Completed'])->get();
+        $accounts = $group->accounts()
+            ->whereIn('status', $statuses)
+            ->get();
 
         $stop_count = 0;
 
