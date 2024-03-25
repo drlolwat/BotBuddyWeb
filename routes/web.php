@@ -25,6 +25,7 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
         Route::post('/stop/{group}', [App\Http\Controllers\AccountGroupController::class, 'stop'])->name('account.group.stop');
         Route::post('/queue/{group}', [App\Http\Controllers\AccountGroupController::class, 'queue'])->name('account.group.queue');
         Route::post('/dequeue/{group}', [App\Http\Controllers\AccountGroupController::class, 'dequeue'])->name('account.group.dequeue');
+        Route::post('/export/{group}', [App\Http\Controllers\AccountGroupController::class, 'export'])->name('account.group.export');
     });
 
     Route::group(['prefix' => 'account'], function () {

@@ -62,6 +62,9 @@
                                             <form method="post" action="{{ route('account.group.stop', $accountGroup->id) }}">@csrf
                                                 <button class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Stop all</button>
                                             </form>
+                                            <form method="post" action="{{ route('account.group.export', $accountGroup->id) }}">@csrf
+                                                <button class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Export</button>
+                                            </form>
                                             <li>
                                                 <a id="queue-{{ $accountGroup->id }}" data-modal-target="default-modal" data-modal-toggle="default-modal" class="cursor-pointer block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Queue start all</a>
                                             </li>

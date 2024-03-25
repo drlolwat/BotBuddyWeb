@@ -327,4 +327,29 @@ class AccountGroupController extends Controller
 
         return $response->with('status', "$queued_count accounts have been dequeued");
     }
+
+    public function export(AccountGroup $group)
+    {
+        $this->authorize('view', $group);
+
+        $accounts = $group->accounts()
+            ->select('email', 'password', 'password_2fa')
+            ->get();
+
+        if ($accounts->isEmpty()) {
+            return back()->withErrors('No accounts in group');
+        }
+
+        return response()->streamDownload(function () use ($accounts) {
+            $file = fopen('php://output', 'w');
+            foreach ($accounts as $account) {
+                $fields = array_filter($account->attributesToArray(), function ($field) {
+                    return $field !== null;
+                });
+                fputcsv($file, $fields, ':');
+            }
+
+            fclose($file);
+        }, 'account_group_' . $group->id . '_'.now()->unix().'.csv');
+    }
 }

@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AccountController extends Controller
 {
@@ -30,7 +31,7 @@ class AccountController extends Controller
         return view('v1.account.index', compact('accounts'));
     }
 
-    public function bulkAction(SocketService $socket): RedirectResponse
+    public function bulkAction(SocketService $socket): RedirectResponse|StreamedResponse
     {
         $validated = request()->validate([
             'action' => 'required',
@@ -217,6 +218,32 @@ class AccountController extends Controller
             }
 
             return $response->withErrors($errors);
+        }
+
+        if ($validated['action'] == 'export') {
+            $accounts = $accounts->map(function ($account) {
+                return [
+                    'email' => $account->email,
+                    'password' => $account->password,
+                    'password_2fa' => $account->password_2fa,
+                ];
+            });
+
+            if ($accounts->isEmpty()) {
+                return back()->withErrors('No accounts in group');
+            }
+
+            return response()->streamDownload(function () use ($accounts) {
+                $file = fopen('php://output', 'w');
+                foreach ($accounts as $account) {
+                    $fields = array_filter($account, function ($field) {
+                        return $field !== null;
+                    });
+                    fputcsv($file, $fields, ':');
+                }
+
+                fclose($file);
+            }, 'accounts_'.now()->unix().'.csv');
         }
 
         return back()->withErrors('Invalid action');
