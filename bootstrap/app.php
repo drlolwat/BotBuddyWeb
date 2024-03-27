@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             remove: [\Illuminate\Routing\Middleware\ThrottleRequests::class.':api']
         );
 
+        $middleware->validateCsrfTokens(except: [
+            'store/webhook',
+        ]);
+
         $middleware->trustProxies(at: '*');
 
         $middleware->alias([
