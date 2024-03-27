@@ -141,7 +141,7 @@ class AccountGroupController extends Controller
 
         $group->delete();
 
-        return redirect(route('account'))->with('status', 'Account group deleted');
+        return redirect(route('account.group'))->with('status', 'Account group deleted');
     }
 
     public function start(AccountGroup $group, SocketService $socket): RedirectResponse
