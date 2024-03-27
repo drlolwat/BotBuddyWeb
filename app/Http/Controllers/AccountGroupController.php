@@ -48,6 +48,14 @@ class AccountGroupController extends Controller
     {
         $validated = $this->validate($request, [
             'name' => 'required',
+            'agent_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('agents', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'script_id' => [
                 'required',
                 'integer',
@@ -68,6 +76,7 @@ class AccountGroupController extends Controller
         $group = AccountGroup::create([
             'name' => $validated['name'],
             'user_id' => auth()->id(),
+            'agent_id' => $validated['agent_id'] ?? null,
             'script_id' => $validated['script_id'],
             'script_params' => $validated['script_params'] ?? null,
             'fps' => $validated['fps'],
@@ -83,6 +92,14 @@ class AccountGroupController extends Controller
 
         $validated = $this->validate($request, [
             'name' => 'required',
+            'agent_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('agents', 'id')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'script_id' => [
                 'required',
                 'integer',
@@ -102,6 +119,7 @@ class AccountGroupController extends Controller
 
         $group->update([
             'name' => $validated['name'],
+            'agent_id' => $validated['agent_id'] ?? null,
             'script_id' => $validated['script_id'],
             'script_params' => $validated['script_params'] ?? null,
             'fps' => $validated['fps'],

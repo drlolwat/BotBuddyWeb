@@ -440,7 +440,7 @@ class AccountController extends Controller
                 ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
         }
 
-        if(!$account->agent) {
+        if(!$account->agent && (!$account->account_group || !$account->account_group->agent)) {
             return back()->withErrors('Account is not assigned to an agent');
         }
 

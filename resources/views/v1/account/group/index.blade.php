@@ -23,6 +23,7 @@
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-4 py-3">Name</th>
+                            <th scope="col" class="px-4 py-3">Agent</th>
                             <th scope="col" class="px-4 py-3">Script</th>
                             <th scope="col" class="px-4 py-3">Accounts</th>
                             <th scope="col" class="px-4 py-3">World</th>
@@ -38,6 +39,13 @@
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     <a href="{{ route('account.group.show', $accountGroup->id) }}">{{ $accountGroup->name }}</a>
                                 </th>
+                                <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
+                                    @if($accountGroup->agent)
+                                        <a class="font-medium" href="{{ route('agent.show', $accountGroup->agent_id) }}">{{ $accountGroup->agent->name }}</a>
+                                    @else
+                                        <span>-</span>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
                                     @if($accountGroup->script)
                                         <a class="font-medium" href="{{ route('script.show', $accountGroup->script_id) }}">{{ $accountGroup->script->name }}</a>

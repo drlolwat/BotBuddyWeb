@@ -12,7 +12,7 @@ class AccountGroup extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'user_id', 'script_id', 'script_params', 'world', 'fps'];
+    protected $fillable = ['name', 'user_id', 'agent_id', 'script_id', 'script_params', 'world', 'fps'];
 
     /**
      * @return BelongsTo<User, AccountGroup>
@@ -36,5 +36,13 @@ class AccountGroup extends Model
     public function script(): BelongsTo
     {
         return $this->belongsTo(UserScript::class);
+    }
+
+    /**
+     * @return BelongsTo<Agent, AccountGroup>
+     */
+    public function agent(): BelongsTo
+    {
+        return $this->belongsTo(Agent::class);
     }
 }

@@ -16,7 +16,7 @@ class StartBotCommand extends Command
     public function dispatchUsing(): array
     {
         return [
-            'serverId' => $this->account->agent->uuid,
+            'serverId' => $this->account->agent->uuid ?? $this->account->account_group->agent->uuid,
             'internalId' => $this->account->id,
             'jarLocation' => $this->account->agent->dreambot_client_path ?? '',
             'scriptsLocation' => $this->account->agent->dreambot_scripts_path ?? '',
