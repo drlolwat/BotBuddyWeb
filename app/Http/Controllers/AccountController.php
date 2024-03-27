@@ -10,6 +10,7 @@ use App\Models\AccountGroup;
 use App\Models\Proxy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -244,6 +245,31 @@ class AccountController extends Controller
 
                 fclose($file);
             }, 'accounts_'.now()->unix().'.csv');
+        }
+
+        if ($validated['action'] == 'change_agent') {
+            $request = request()->all();
+            if ($request['agent_id'] == "0") {
+                $request['agent_id'] = null;
+            }
+
+            $agentId = Validator::make($request, [
+                'agent_id' => [
+                    'nullable',
+                    'integer',
+                    Rule::exists('agents', 'id')
+                        ->where(function ($query) {
+                            $query->where('user_id', auth()->id());
+                        }),
+                ],
+            ])->validate();
+
+            foreach ($accounts as $account) {
+                $account->agent_id = $agentId['agent_id'];
+                $account->save();
+            }
+
+            return back()->with('status', 'Agent changed for selected accounts');
         }
 
         return back()->withErrors('Invalid action');
