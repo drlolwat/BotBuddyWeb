@@ -59,7 +59,10 @@ class AccountController extends Controller
             $started_count = 0;
 
             foreach ($accounts as $account) {
-                if(!$account->agent) {
+
+                $agent = $account->agent ?? $account->account_group->agent ?? null;
+
+                if (!$agent) {
                     $errors[] = "$account->email is not assigned to an agent";
                     continue;
                 }
@@ -69,18 +72,18 @@ class AccountController extends Controller
                     continue;
                 }
 
-                if ($account->agent->client_type != 'DreamBot') {
-                    $errors[] = "Agent \"{$account->agent->name}\" is not using DreamBot client";
+                if ($agent->client_type != 'DreamBot') {
+                    $errors[] = "Agent \"{$agent->name}\" is not using DreamBot client";
                     continue;
                 }
 
-                if (!$account->agent->dreambot_client_path) {
-                    $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot client.jar path configured";
+                if (!$agent->dreambot_client_path) {
+                    $errors[] = "Agent \"{$agent->name}\" does not have DreamBot client.jar path configured";
                     continue;
                 }
 
-                if (!$account->agent->dreambot_scripts_path) {
-                    $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot scripts path configured";
+                if (!$agent->dreambot_scripts_path) {
+                    $errors[] = "Agent \"{$agent->name}\" does not have DreamBot scripts path configured";
                     continue;
                 }
 
@@ -126,7 +129,8 @@ class AccountController extends Controller
 
         if ($validated['action'] == 'stop') {
             foreach ($accounts as $account) {
-                if(!$account->agent) {
+                $agent = $account->agent ?? $account->account_group->agent ?? null;
+                if(!$agent) {
                     // skip this account, not assigned to agent
                     continue;
                 }
@@ -162,7 +166,8 @@ class AccountController extends Controller
             $start_queue = now()->addMinute()->second(0);
 
             foreach ($accounts as $account) {
-                if(!$account->agent) {
+                $agent = $account->agent ?? $account->account_group->agent ?? null;
+                if(!$agent) {
                     $errors[] = "$account->email is not assigned to an agent";
                     continue;
                 }
@@ -172,18 +177,18 @@ class AccountController extends Controller
                     continue;
                 }
 
-                if ($account->agent->client_type != 'DreamBot') {
-                    $errors[] = "Agent \"{$account->agent->name}\" is not using DreamBot client";
+                if ($agent->client_type != 'DreamBot') {
+                    $errors[] = "Agent \"{$agent->name}\" is not using DreamBot client";
                     continue;
                 }
 
-                if (!$account->agent->dreambot_client_path) {
-                    $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot client.jar path configured";
+                if (!$agent->dreambot_client_path) {
+                    $errors[] = "Agent \"{$agent->name}\" does not have DreamBot client.jar path configured";
                     continue;
                 }
 
-                if (!$account->agent->dreambot_scripts_path) {
-                    $errors[] = "Agent \"{$account->agent->name}\" does not have DreamBot scripts path configured";
+                if (!$agent->dreambot_scripts_path) {
+                    $errors[] = "Agent \"{$agent->name}\" does not have DreamBot scripts path configured";
                     continue;
                 }
 
@@ -466,7 +471,9 @@ class AccountController extends Controller
                 ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
         }
 
-        if(!$account->agent && (!$account->account_group || !$account->account_group->agent)) {
+        $agent = $account->agent ?? $account->account_group->agent ?? null;
+
+        if(!$agent) {
             return back()->withErrors('Account is not assigned to an agent');
         }
 
@@ -474,15 +481,15 @@ class AccountController extends Controller
             return back()->withErrors('Select a script for the account');
         }
 
-        if ($account->agent->client_type != 'DreamBot') {
+        if ($agent->client_type != 'DreamBot') {
             return back()->withErrors('Only DreamBot clients are allowed at this stage');
         }
 
-        if (!$account->agent->dreambot_client_path) {
+        if (!$agent->dreambot_client_path) {
             return back()->withErrors('Please configure the agent DreamBot client.jar path');
         }
 
-        if (!$account->agent->dreambot_scripts_path) {
+        if (!$agent->dreambot_scripts_path) {
             return back()->withErrors('Please configure the agent DreamBot scripts path');
         }
 
@@ -503,7 +510,8 @@ class AccountController extends Controller
     {
         $this->authorize('view', $account);
 
-        if(!$account->agent) {
+        $agent = $account->agent ?? $account->account_group->agent ?? null;
+        if(!$agent) {
             return back()->withErrors('Account is not assigned to an agent');
         }
 
