@@ -45,4 +45,12 @@ class AccountGroup extends Model
     {
         return $this->belongsTo(Agent::class);
     }
+
+    /**
+     * @return HasMany<ScheduleEvent>
+     */
+    public function schedule_events(): HasMany
+    {
+        return $this->hasMany(ScheduleEvent::class);
+    }
 }

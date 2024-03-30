@@ -3,6 +3,13 @@ import ChangeScriptAction from "./components/actions/ChangeScriptAction.jsx";
 import Action from "./components/Action.jsx";
 import {EventProvider} from "./providers.jsx";
 import Workflow from "./components/Workflow.jsx";
+import Scheduler from "./components/Scheduler.jsx";
+
+const scheduleApp = document.getElementById('schedule_app');
+if (scheduleApp) {
+    const scheduleRoot = createRoot(scheduleApp);
+    scheduleRoot.render(<Scheduler />);
+}
 
 const app = document.getElementById('app');
 if (app) {

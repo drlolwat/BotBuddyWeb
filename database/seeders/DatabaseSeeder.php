@@ -15,11 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(SubscriptionSeeder::class);
+
         $user = User::create([
             'name' => 'demo',
             'email' => 'demo@botbuddy.net',
             'password' => Hash::make('demo'),
             'email_verified_at' => now(),
+            'subscription_id' => 1,
+            'subscription_expires_at' => now()->addMonth(),
         ]);
 
         $agent1 = $user->agents()->create([
@@ -122,7 +126,5 @@ class DatabaseSeeder extends Seeder
             'script_id' => $script2->id,
             'agent_id' => $agent2->id,
         ]);
-
-        $this->call(SubscriptionSeeder::class);
     }
 }

@@ -372,4 +372,35 @@ class AccountGroupController extends Controller
             fclose($file);
         }, 'account_group_' . $group->id . '_'.now()->unix().'.csv');
     }
+
+    public function schedule(AccountGroup $group): View
+    {
+        $events = $group->schedule_events()->get();
+
+        foreach ($events as $event) {
+            $startMinutes = intval($event->start_at->format('G')) * 60 + intval($event->start_at->format('i'));
+            $finishMinutes = intval($event->finish_at->format('G')) * 60 + intval($event->finish_at->format('i'));
+            $durationMinutes = $finishMinutes - $startMinutes;
+            $event->start = $startMinutes * 12 / 60;
+            $event->duration = (int) ceil($durationMinutes / 6 + (ceil($durationMinutes / 32)));
+        }
+
+        $events = $events->map(function ($event) {
+            return [
+                'id' => $event->id,
+                'name' => $event->name,
+                'color' => $event->color,
+                'day' => $event->day,
+                'start' => $event->start,
+                'duration' => $event->duration,
+            ];
+        });
+
+        return view('v1.account.group.schedule', ['group' => $group, 'events' => $events]);
+    }
+
+    public function schedule_create_event(): RedirectResponse
+    {
+        return back()->with('warning', 'Coming soon!');
+    }
 }
