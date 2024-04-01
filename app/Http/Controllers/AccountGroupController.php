@@ -474,12 +474,16 @@ class AccountGroupController extends Controller
         $validated = collect($validated);
 
         $withinRange = $group->schedule_events()
-            ->where(function ($query) {
+            ->where(function ($query) use($event) {
                 $query->where('start_at', '<', now()->setTimeFromTimeString(request('start_time')))
-                    ->where('finish_at', '>', now()->setTimeFromTimeString(request('start_time')))->where('day', request('day'));
-            })->orWhere(function ($query) {
+                    ->where('finish_at', '>', now()->setTimeFromTimeString(request('start_time')))
+                    ->where('day', request('day'))
+                    ->whereNot('id', $event->id);
+            })->orWhere(function ($query) use($event) {
                 $query->where('start_at', '<', now()->setTimeFromTimeString(request('finish_time')))
-                    ->where('finish_at', '>', now()->setTimeFromTimeString(request('finish_time')))->where('day', request('day'));
+                    ->where('finish_at', '>', now()->setTimeFromTimeString(request('finish_time')))
+                    ->where('day', request('day'))
+                    ->whereNot('id', $event->id);
             })->exists();
 
         if ($withinRange) {
