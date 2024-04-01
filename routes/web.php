@@ -28,6 +28,9 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
         Route::post('/export/{group}', [App\Http\Controllers\AccountGroupController::class, 'export'])->name('account.group.export');
         Route::get('/{group}/schedule', [App\Http\Controllers\AccountGroupController::class, 'schedule'])->name('account.group.schedule');
         Route::get('/{group}/schedule/create', [App\Http\Controllers\AccountGroupController::class, 'schedule_create_event'])->name('account.group.schedule.create');
+        Route::post('/{group}/schedule/create', [App\Http\Controllers\AccountGroupController::class, 'schedule_create_event_submit']);
+        Route::get('/{group}/schedule/{event}', [App\Http\Controllers\AccountGroupController::class, 'schedule_event'])->name('account.group.schedule.event.show');
+        Route::put('/{group}/schedule/{event}', [App\Http\Controllers\AccountGroupController::class, 'schedule_event_update'])->name('account.group.schedule.event.update');
     });
 
     Route::group(['prefix' => 'account'], function () {
