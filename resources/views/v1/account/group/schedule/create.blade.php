@@ -1,6 +1,6 @@
 <x-v1.layout page="Add schedule event">
     <div class="max-w-2xl px-4 mx-auto">
-        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Add schedule event to {{ $group->name }} schedule</h2>
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Add event to {{ $group->name }} schedule</h2>
         <form method="post" action="{{ route('account.group.schedule.create', $group->id) }}">
             @csrf
             <div class="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5">
@@ -43,7 +43,7 @@
                 <div class="sm:col-span-2">
                     <label for="color" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color</label>
                     <select name="color" id="color" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        @foreach(['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue'] as $k => $v)
+                        @foreach(['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue', 'purple' => 'Purple', 'pink' => 'Pink', 'yellow' => 'Yellow', 'orange' => 'Orange'] as $k => $v)
                             <option value="{{ $k }}">{{ $v }}</option>
                         @endforeach
                     </select>

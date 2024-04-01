@@ -9,12 +9,7 @@ const Scheduler = ({day: defaultDay}) => {
         <>
             <div
                 className="hidden sm:col-start-1 sm:col-start-2 sm:col-start-3 sm:col-start-4 sm:col-start-5 sm:col-start-6 sm:col-start-7"></div>
-            <div className="hidden dark:text-red-300 dark:text-green-300 dark:text-blue-300"></div>
-            <div className="hidden text-red-500 text-green-500 text-blue-500"></div>
-            <div className="hidden bg-red-50 bg-green-50 bg-blue-50"></div>
-            <div className="hidden dark:bg-red-800 dark:bg-green-800 dark:bg-blue-800"></div>
-            <div
-                className="hidden group-hover:text-red-700 group-hover:text-green-700 group-hover:text-blue-700"></div>
+            <div className="hidden bg-red-200 bg-green-200 bg-blue-200 bg-purple-200 bg-pink-200 bg-yellow-200 bg-orange-200"></div>
         </>
     )
 
@@ -270,11 +265,10 @@ const Scheduler = ({day: defaultDay}) => {
                                         <li className={`relative mt-px flex ${(event.day === day) ? "" : "hidden sm:block"} sm:col-start-${event.day}`}
                                             style={{gridRow: `${2 + event.start} / span ${event.duration}`}}>
                                             <a href={event.url}
-                                               className={`group absolute inset-1 flex flex-col rounded-lg bg-${event.color}-50 dark:bg-${event.color}-800 p-2 text-xs hover:bg-${event.color}-100 dark:hover:bg-${event.color}-900`}>
-                                                <p className={`order-1 font-semibold text-${event.color}-700 dark:text-${event.color}-300`}>{event.name}</p>
-                                                <p className={`text-${event.color}-500 group-hover:text-${event.color}-700`}>
-                                                    <time
-                                                        dateTime="2022-01-12T06:00">{formatTimeRange(event.start, event.duration)}</time>
+                                               className={`group absolute inset-1 flex flex-col rounded-lg bg-${event.color}-200 p-2 text-xs`}>
+                                                <p className={`order-1 font-semibold`}>{event.name}</p>
+                                                <p className={`text-${event.color}-500`}>
+                                                    <time dateTime="2022-01-12T06:00">{formatTimeRange(event.start, event.duration)}</time>
                                                 </p>
                                             </a></li>
                                     ))}

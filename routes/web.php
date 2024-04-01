@@ -31,6 +31,7 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
         Route::post('/{group}/schedule/create', [App\Http\Controllers\AccountGroupController::class, 'schedule_create_event_submit']);
         Route::get('/{group}/schedule/{event}', [App\Http\Controllers\AccountGroupController::class, 'schedule_event'])->name('account.group.schedule.event.show');
         Route::put('/{group}/schedule/{event}', [App\Http\Controllers\AccountGroupController::class, 'schedule_event_update'])->name('account.group.schedule.event.update');
+        Route::delete('/{group}/schedule/{event}', [App\Http\Controllers\AccountGroupController::class, 'schedule_event_destroy'])->name('account.group.schedule.event.destroy');
     });
 
     Route::group(['prefix' => 'account'], function () {

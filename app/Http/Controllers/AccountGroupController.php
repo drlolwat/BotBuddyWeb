@@ -416,7 +416,7 @@ class AccountGroupController extends Controller
 
         $this->validate(request(), [
             'name' => 'required',
-            'color' => 'required|in:red,green,blue',
+            'color' => 'required|in:red,green,blue,pink,purple,yellow,orange',
             'day' => 'required|int|between:1,7',
             'start_time' => 'required|date_format:H:i',
             'finish_time' => 'required|date_format:H:i',
@@ -465,7 +465,7 @@ class AccountGroupController extends Controller
 
         $validated = $this->validate(request(), [
             'name' => 'required',
-            'color' => 'required|in:red,green,blue',
+            'color' => 'required|in:red,green,blue,pink,purple,yellow,orange',
             'day' => 'required|int|between:1,7',
             'start_time' => 'required|date_format:H:i',
             'finish_time' => 'required|date_format:H:i',
@@ -500,5 +500,14 @@ class AccountGroupController extends Controller
         ]);
 
         return back()->with('status', 'Schedule event updated');
+    }
+
+    public function schedule_event_destroy(AccountGroup $group, ScheduleEvent $event): RedirectResponse
+    {
+        $this->authorize('view', $group);
+
+        $event->delete();
+
+        return redirect(route('account.group.schedule', $group))->with('status', 'Schedule event deleted');
     }
 }

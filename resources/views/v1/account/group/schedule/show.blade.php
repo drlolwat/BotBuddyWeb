@@ -1,6 +1,10 @@
 <x-v1.layout page="Edit {{ $event->name }}">
     <div class="max-w-2xl px-4 mx-auto">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Edit schedule event {{ $event->name }}</h2>
+        <form id="delete" class="hidden" method="post" action="{{ route('account.group.schedule.event.destroy', [$group->id, $event->id]) }}">
+            @csrf
+            <input type="hidden" name="_method" value="DELETE">
+        </form>
         <form method="post" action="{{ route('account.group.schedule.event.update', [$group->id, $event->id]) }}">
             @csrf
             <input type="hidden" name="_method" value="PUT">
@@ -44,7 +48,7 @@
                 <div class="sm:col-span-2">
                     <label for="color" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color</label>
                     <select name="color" id="color" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        @foreach(['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue'] as $k => $v)
+                        @foreach(['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue', 'purple' => 'Purple', 'pink' => 'Pink', 'yellow' => 'Yellow', 'orange' => 'Orange'] as $k => $v)
                             <option value="{{ $k }}" @if($event->color == $k) selected @endif >{{ $v }}</option>
                         @endforeach
                     </select>
@@ -53,6 +57,9 @@
             <div class="flex items-center space-x-4">
                 <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                     Update
+                </button>
+                <button form="delete" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                    Delete
                 </button>
             </div>
         </form>
