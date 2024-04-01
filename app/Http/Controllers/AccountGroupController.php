@@ -396,6 +396,7 @@ class AccountGroupController extends Controller
                 'day' => $event->day,
                 'start' => $event->start,
                 'duration' => $event->duration,
+                'url' => route('account.group.schedule.event.show', ['group' => $event->account_group, 'event' => $event]),
             ];
         });
 
@@ -470,6 +471,8 @@ class AccountGroupController extends Controller
             'finish_time' => 'required|date_format:H:i',
         ]);
 
+        $validated = collect($validated);
+
         $withinRange = $group->schedule_events()
             ->where(function ($query) {
                 $query->where('start_at', '<', now()->setTimeFromTimeString(request('start_time')))
@@ -487,7 +490,10 @@ class AccountGroupController extends Controller
             return back()->withErrors('Start time must be before finish time');
         }
 
-        $event->update($validated);
+        $event->update([...$validated->except('start_time', 'finish_time'),
+            'start_at' => now()->setTimeFromTimeString(request('start_time')),
+            'finish_at' => now()->setTimeFromTimeString(request('finish_time')),
+        ]);
 
         return back()->with('status', 'Schedule event updated');
     }

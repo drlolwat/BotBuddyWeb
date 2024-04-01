@@ -269,7 +269,7 @@ const Scheduler = ({day: defaultDay}) => {
                                     {events.map(event => (
                                         <li className={`relative mt-px flex ${(event.day === day) ? "" : "hidden sm:block"} sm:col-start-${event.day}`}
                                             style={{gridRow: `${2 + event.start} / span ${event.duration}`}}>
-                                            <a href="#"
+                                            <a href={event.url}
                                                className={`group absolute inset-1 flex flex-col rounded-lg bg-${event.color}-50 dark:bg-${event.color}-800 p-2 text-xs hover:bg-${event.color}-100 dark:hover:bg-${event.color}-900`}>
                                                 <p className={`order-1 font-semibold text-${event.color}-700 dark:text-${event.color}-300`}>{event.name}</p>
                                                 <p className={`text-${event.color}-500 group-hover:text-${event.color}-700`}>
