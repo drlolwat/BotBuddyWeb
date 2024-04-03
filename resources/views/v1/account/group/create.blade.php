@@ -38,6 +38,10 @@
                     <label for="fps" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">FPS</label>
                     <input type="number" name="fps" id="fps" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="5" placeholder="Type the group name">
                 </div>
+                <div class="flex items-center space-x-4 mb-4">
+                    <input type="checkbox" name="disable_browser_proxy" id="disable_browser_proxy" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50">
+                    <label for="disable_browser_proxy" class="text-gray-900 dark:text-white">Disable browser proxy</label>
+                </div>
             </div>
             <div class="flex items-center space-x-4">
                 <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">

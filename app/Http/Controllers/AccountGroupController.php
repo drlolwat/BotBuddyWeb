@@ -68,6 +68,7 @@ class AccountGroupController extends Controller
             'script_params' => 'nullable',
             'fps' => 'required|int',
             'world' => 'required',
+            'disable_browser_proxy' => 'nullable',
         ]);
 
         if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || filter_var($validated['world'], FILTER_VALIDATE_INT))) {
@@ -82,6 +83,7 @@ class AccountGroupController extends Controller
             'script_params' => $validated['script_params'] ?? null,
             'fps' => $validated['fps'],
             'world' => $validated['world'],
+            'disable_browser_proxy' => isset($validated['disable_browser_proxy']) && $validated['disable_browser_proxy'] == "on",
         ]);
 
         return redirect(route('account.group.show', $group))->with('status', 'Account group created');
@@ -112,6 +114,7 @@ class AccountGroupController extends Controller
             'script_params' => 'nullable',
             'fps' => 'required|int',
             'world' => 'required',
+            'disable_browser_proxy' => 'nullable',
         ]);
 
         if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || filter_var($validated['world'], FILTER_VALIDATE_INT))) {
@@ -125,6 +128,7 @@ class AccountGroupController extends Controller
             'script_params' => $validated['script_params'] ?? null,
             'fps' => $validated['fps'],
             'world' => $validated['world'],
+            'disable_browser_proxy' => isset($validated['disable_browser_proxy']) && $validated['disable_browser_proxy'] == "on",
         ]);
 
         return redirect(route('account.group.show', $group))->with('status', 'Account group updated');

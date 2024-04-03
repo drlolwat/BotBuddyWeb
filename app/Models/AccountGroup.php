@@ -12,7 +12,10 @@ class AccountGroup extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'user_id', 'agent_id', 'script_id', 'script_params', 'world', 'fps'];
+    protected $fillable = [
+        'name', 'user_id', 'agent_id', 'script_id',
+        'script_params', 'world', 'fps', 'disable_browser_proxy',
+    ];
 
     /**
      * @return BelongsTo<User, AccountGroup>
