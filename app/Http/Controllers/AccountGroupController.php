@@ -37,7 +37,29 @@ class AccountGroupController extends Controller
 
         $accounts = $group->accounts()->with('agent', 'script', 'stats')->paginate(10);
 
-        return view('v1.account.group.show', compact('group', 'accounts'));
+        $events = $group->schedule_events()->get();
+
+        foreach ($events as $event) {
+            $startMinutes = intval($event->start_at->format('G')) * 60 + intval($event->start_at->format('i'));
+            $finishMinutes = intval($event->finish_at->format('G')) * 60 + intval($event->finish_at->format('i'));
+            $durationMinutes = $finishMinutes - $startMinutes;
+            $event->start = $startMinutes * 12 / 60;
+            $event->duration = (int) ceil($durationMinutes / 6 + (ceil($durationMinutes / 32)));
+        }
+
+        $events = $events->map(function ($event) {
+            return [
+                'id' => $event->id,
+                'name' => $event->name,
+                'color' => $event->color,
+                'day' => $event->day,
+                'start' => $event->start,
+                'duration' => $event->duration,
+                'url' => route('account.group.schedule.event.show', ['group' => $event->account_group, 'event' => $event]),
+            ];
+        });
+
+        return view('v1.account.group.show', compact('group', 'accounts', 'events'));
     }
 
     public function create(): View
@@ -384,10 +406,6 @@ class AccountGroupController extends Controller
 
         $events = $group->schedule_events()->get();
 
-        foreach ($events as $event) {
-            $startMinutes = intval($event->start_at->format('G')) * 60 + intval($event->start_at->format('i'));
-            $finishMinutes = intval($event->finish_at->format('G')) * 60 + intval($event->finish_at->format('i'));
-            $durationMinutes = $finishMinutes - $startMinutes;
             $event->start = $startMinutes * 12 / 60;
             $event->duration = (int) ceil($durationMinutes / 6 + (ceil($durationMinutes / 32)));
         }
@@ -436,19 +454,21 @@ class AccountGroupController extends Controller
             })->exists();
 
         if ($withinRange) {
-            return back()->withErrors('You have an event within this time range.');
-        }
 
         if (now()->setTimeFromTimeString(request('start_time')) > now()->setTimeFromTimeString(request('finish_time'))) {
             return back()->withErrors('Start time must be before finish time');
+            $withinRange = $group->schedule_events()
+                        ->where('finish_at', '>', now()->setTimeFromTimeString(request('finish_time')))->where('day', request('day'));
+            $group->schedule_events()->create([
+                'day' => $day,
+                'action' => request('action') ?? 'test',
+                'data' => request('data') ?? [],
+                'start_at' => now()->setTimeFromTimeString(request('start_time')),
+                'finish_at' => now()->setTimeFromTimeString(request('finish_time')),
+            ]);
+
         }
 
-        $group->schedule_events()->create([
-            'name' => request('name'),
-            'color' => request('color'),
-            'day' => request('day'),
-            'action' => request('action') ?? 'test',
-            'data' => request('data') ?? [],
             'start_at' => now()->setTimeFromTimeString(request('start_time')),
             'finish_at' => now()->setTimeFromTimeString(request('finish_time')),
         ]);
@@ -481,7 +501,6 @@ class AccountGroupController extends Controller
             ->where(function ($query) use($event) {
                 $query->where('start_at', '<', now()->setTimeFromTimeString(request('start_time')))
                     ->where('finish_at', '>', now()->setTimeFromTimeString(request('start_time')))
-                    ->where('day', request('day'))
                     ->whereNot('id', $event->id);
             })->orWhere(function ($query) use($event) {
                 $query->where('start_at', '<', now()->setTimeFromTimeString(request('finish_time')))
@@ -490,20 +509,36 @@ class AccountGroupController extends Controller
                     ->whereNot('id', $event->id);
             })->exists();
 
-        if ($withinRange) {
             return back()->withErrors('You have an event within this time range.');
         }
+            $withinRange = $group->schedule_events()
+                ->where(function ($query) use($event, $day) {
+                    $query->where('start_at', '<', now()->setTimeFromTimeString(request('start_time')))
+                        ->where('finish_at', '>', now()->setTimeFromTimeString(request('start_time')))
+                        ->where('day', $day)
+                        ->whereNot('id', $event->id);
+                })->orWhere(function ($query) use($event, $day) {
+                    $query->where('start_at', '<', now()->setTimeFromTimeString(request('finish_time')))
+                        ->where('finish_at', '>', now()->setTimeFromTimeString(request('finish_time')))
+                        ->where('day', request('day'))
+                        ->whereNot('id', $event->id);
+                })->exists();
 
-        if (now()->setTimeFromTimeString(request('start_time')) > now()->setTimeFromTimeString(request('finish_time'))) {
-            return back()->withErrors('Start time must be before finish time');
+            if ($withinRange) {
+                return back()->withErrors('You have an event within this time range.');
+            }
+
+            if (now()->setTimeFromTimeString(request('start_time')) > now()->setTimeFromTimeString(request('finish_time'))) {
+                return back()->withErrors('Start time must be before finish time');
+            }
+
+            $event->update([...$validated->except('start_time', 'finish_time'),
+                'start_at' => now()->setTimeFromTimeString(request('start_time')),
+                'finish_at' => now()->setTimeFromTimeString(request('finish_time')),
+            ]);
+
+            return back()->with('status', 'Schedule event updated');
         }
-
-        $event->update([...$validated->except('start_time', 'finish_time'),
-            'start_at' => now()->setTimeFromTimeString(request('start_time')),
-            'finish_at' => now()->setTimeFromTimeString(request('finish_time')),
-        ]);
-
-        return back()->with('status', 'Schedule event updated');
     }
 
     public function schedule_event_destroy(AccountGroup $group, ScheduleEvent $event): RedirectResponse
@@ -512,6 +547,6 @@ class AccountGroupController extends Controller
 
         $event->delete();
 
-        return redirect(route('account.group.schedule', $group))->with('status', 'Schedule event deleted');
+        return redirect(route('account.group.show', $group))->with('status', 'Schedule event deleted');
     }
 }
