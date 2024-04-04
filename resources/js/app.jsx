@@ -4,11 +4,18 @@ import Action from "./components/Action.jsx";
 import {EventProvider} from "./providers.jsx";
 import Workflow from "./components/Workflow.jsx";
 import Scheduler from "./components/Scheduler.jsx";
+import MultiSelect from "./components/MultiSelect.jsx";
 
 const scheduleApp = document.getElementById('schedule_app');
 if (scheduleApp) {
     const scheduleRoot = createRoot(scheduleApp);
     scheduleRoot.render(<Scheduler />);
+}
+
+const scheduleMultiSelect = document.getElementById('schedule_multiselect');
+if (scheduleMultiSelect) {
+    const scheduleMultiSelectRoot = createRoot(scheduleMultiSelect);
+    scheduleMultiSelectRoot.render(<MultiSelect />);
 }
 
 const app = document.getElementById('app');
