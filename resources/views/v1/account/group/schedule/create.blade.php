@@ -8,13 +8,18 @@
                     <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
                     <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type the event name">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="day" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Day</label>
-                    <select name="day" id="day" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        @foreach([1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday'] as $k => $v)
-                            <option value="{{ $k }}">{{ $v }}</option>
+                <div>
+                    <label for="script_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Script</label>
+                    <select name="script_id" id="script_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="0">None</option>
+                        @foreach(auth()->user()->scripts as $script)
+                            <option value="{{ $script->id }}">{{ $script->name }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div>
+                    <label for="script_params" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Script params</label>
+                    <input type="text" name="script_params" id="script_params" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter script params (optional)">
                 </div>
                 <div class="sm:col-span-2" id="schedule_multiselect"></div>
                 <div class="sm:col-span-1">
