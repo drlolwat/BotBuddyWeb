@@ -383,7 +383,7 @@
 
         const masterCheckbox = document.getElementById('checkbox-all-search');
         if (masterCheckbox) {
-            const rowCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+            const rowCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="accounts["]');
             masterCheckbox.addEventListener('change', function() {
                 rowCheckboxes.forEach(function(checkbox) {
                     if (checkbox !== masterCheckbox) {
