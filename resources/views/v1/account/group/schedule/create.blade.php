@@ -28,10 +28,10 @@
                         @foreach([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23] as $h)
                             @php($ampm = $h >= 12 ? 'PM' : 'AM')
                             @php($h = $h < 10 ? '0'.$h : $h)
-                            @php($h_formatted = $h == '00' ? '12' : $h))
+                            @php($h_formatted = $h == '00' ? '12' : $h)
                             <option value="{{ $h }}:00">{{ $h_formatted > 12 ? ($h_formatted - 12) : $h_formatted }}:00 {{ $ampm }}</option>
                             <option value="{{ $h }}:30">{{ $h_formatted > 12 ? ($h_formatted - 12) : $h_formatted }}:30 {{ $ampm }}</option>
-                            @endforeach
+                        @endforeach
                     </select>
                 </div>
                 <div class="sm:col-span-1">
@@ -40,9 +40,9 @@
                         @foreach([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23] as $h)
                             @php($ampm = $h >= 12 ? 'PM' : 'AM')
                             @php($h = $h < 10 ? '0'.$h : $h)
-                            @php($h = $h == '00' ? '12' : $h))
-                            <option value="{{ $h }}:00">{{ $h > 12 ? ($h - 12) : $h }}:00 {{ $ampm }}</option>
-                            <option value="{{ $h }}:30">{{ $h > 12 ? ($h - 12) : $h }}:30 {{ $ampm }}</option>
+                            @php($h_formatted = $h == '00' ? '12' : $h)
+                            <option value="{{ $h }}:00">{{ $h_formatted > 12 ? ($h_formatted - 12) : $h_formatted }}:00 {{ $ampm }}</option>
+                            <option value="{{ $h }}:30">{{ $h_formatted > 12 ? ($h_formatted - 12) : $h_formatted }}:30 {{ $ampm }}</option>
                         @endforeach
                     </select>
                 </div>
