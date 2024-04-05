@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
 use App\Models\ScheduleEvent;
@@ -63,6 +64,45 @@ class PerformScheduleActions implements ShouldQueue
             ->where('start_at', $time)
             ->get();
 
-        // todo: perform configurable starting actions
+        foreach ($startingSchedules as $schedule) {
+
+            $errors = [];
+
+            foreach ($schedule->account_group->accounts as $account) {
+
+                if (!$account->user->dreambot_username || !$account->user->dreambot_password) {
+                    $errors[] = 'Please configure your DreamBot credentials to start accounts via schedule';
+                    break;
+                }
+
+                $agent = $account->agent ?? $account->account_group->agent ?? null;
+
+                if(!$agent) {
+                    $errors[] = "Account $account->email is not assigned to an agent and could not be started via schedule";
+                    continue;
+                }
+
+                $started = $socket->dispatch(new StartBotCommand(
+                    $account,
+                    $schedule->script->script,
+                    $schedule->script_params,
+                ));
+
+                if ($started != "true") {
+                    $errors[] = "Failed to start $account->email via schedule";
+                    continue;
+                }
+
+                $account->status = 'Starting';
+                $account->save();
+            }
+
+            foreach ($errors as $error) {
+                $schedule->account_group->user->notifications()->create([
+                    'message' => $error,
+                    'type' => 'error'
+                ]);
+            }
+        }
     }
 }

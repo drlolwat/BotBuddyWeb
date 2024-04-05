@@ -28,8 +28,16 @@ class ScheduleEvent extends Model
     /**
      * @return BelongsTo<AccountGroup, ScheduleEvent>
      */
-    public function account_group()
+    public function account_group(): BelongsTo
     {
         return $this->belongsTo(AccountGroup::class);
+    }
+
+    /**
+     * @return BelongsTo<UserScript, ScheduleEvent>
+     */
+    public function script(): BelongsTo
+    {
+        return $this->belongsTo(UserScript::class);
     }
 }

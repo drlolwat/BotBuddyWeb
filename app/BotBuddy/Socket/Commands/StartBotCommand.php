@@ -8,7 +8,7 @@ class StartBotCommand extends Command
 {
     public string $header = 'startBot';
 
-    public function __construct(public Account $account) {}
+    public function __construct(public Account $account, public $script = null, public $script_params = null) {}
 
     /**
      * @return array<string, int|string>
@@ -20,8 +20,8 @@ class StartBotCommand extends Command
             'internalId' => $this->account->id,
             'jarLocation' => $this->account->agent->dreambot_client_path ?? '',
             'scriptsLocation' => $this->account->agent->dreambot_scripts_path ?? '',
-            'scriptName' => $this->account->script->script ?? $this->account->account_group->script->script,
-            'scriptParams' => $this->account->script_params ?? $this->account->account_group->script_params ?? "",
+            'scriptName' => $this->script ?? $this->account->script->script ?? $this->account->account_group->script->script,
+            'scriptParams' => $this->script_params ?? $this->account->script_params ?? $this->account->account_group->script_params ?? "",
             'clientName' => $this->account->user->dreambot_username,
             'clientPassword' => $this->account->user->dreambot_password,
             'accountUsername' => $this->account->email,
