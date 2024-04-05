@@ -55,7 +55,7 @@ class PerformScheduleActions implements ShouldQueue
             }
         }
 
-        $offlineStatuses = ['Stopped', 'Queued'];
+        $offlineStatuses = ['Stopping', 'Stopped'];
 
         $startingSchedules = ScheduleEvent::query()
             ->with(['account_group' => function($query) use ($offlineStatuses) {
