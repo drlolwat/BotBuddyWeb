@@ -45,11 +45,13 @@ class PerformScheduleActions implements ShouldQueue
             ->where('finish_at', $time)
             ->get();
 
-        foreach($finishingSchedules->account_group->accounts as $account) {
-            $stopped = $socket->dispatch(new StopBotCommand($account));
-            if ($stopped == "true") {
-                $account->status = 'Stopping';
-                $account->save();
+        foreach ($finishingSchedules as $schedule) {
+            foreach ($schedule->account_group->accounts as $account) {
+                $stopped = $socket->dispatch(new StopBotCommand($account));
+                if ($stopped == "true") {
+                    $account->status = 'Stopping';
+                    $account->save();
+                }
             }
         }
 
