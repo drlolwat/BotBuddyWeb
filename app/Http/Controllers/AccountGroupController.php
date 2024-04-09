@@ -8,6 +8,7 @@ use App\BotBuddy\Socket\SocketService;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\ScheduleEvent;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -30,6 +31,14 @@ class AccountGroupController extends Controller
 
         return view('v1.account.group.index', compact('accountGroups'));
     }
+
+
+    private function countIntervals(Carbon $start, Carbon $finish): int
+    {
+        $diffInMinutes = $start->diffInMinutes($finish);
+        return intdiv($diffInMinutes, 30);
+    }
+
 
     public function show(AccountGroup $group): View|RedirectResponse
     {
@@ -55,7 +64,7 @@ class AccountGroupController extends Controller
                     'color' => $event->color,
                     'day' => $event->day,
                     'start' => $event->start,
-                    'duration' => $event->duration,
+                    'duration' => $this->countIntervals($event->start_at, $event->finish_at),
                     'url' => route('account.group.schedule.event.show', ['group' => $event->account_group, 'event' => $event]),
                 ];
             });
@@ -442,6 +451,10 @@ class AccountGroupController extends Controller
         $status = [];
 
         foreach ($validated['days'] as $day) {
+            if (now()->setTimeFromTimeString(request('start_time')) == now()->setTimeFromTimeString(request('finish_time'))) {
+                return back()->withErrors('Start time must be before finish time');
+            }
+
             if (now()->setTimeFromTimeString(request('start_time')) > now()->setTimeFromTimeString(request('finish_time'))) {
                 return back()->withErrors('Start time must be before finish time');
             }
@@ -452,7 +465,7 @@ class AccountGroupController extends Controller
                         ->where('finish_at', '>', now()->setTimeFromTimeString(request('start_time')))->where('day', $day);
                 })->orWhere(function ($query) use($day) {
                     $query->where('start_at', '<', now()->setTimeFromTimeString(request('finish_time')))
-                        ->where('finish_at', '>', now()->setTimeFromTimeString(request('finish_time')))->where('day', request('day'));
+                        ->where('finish_at', '>', now()->setTimeFromTimeString(request('finish_time')))->where('day', $day);
                 })->exists();
 
             if ($withinRange) {

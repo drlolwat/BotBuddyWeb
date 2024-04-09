@@ -324,8 +324,7 @@
                     </div>
                 </div>
             </header>
-            @if(auth()->user()->subscription && auth()->user()->subscription->name == 'Founder')
-            {{-- temp hack --}}
+            @if(auth()->user()->subscription && in_array(auth()->user()->subscription->name, ['Founder', 'Farm']))
             <script>Window.schedule_events = {!! json_encode($events) !!};</script>
             <div id="schedule_app"></div>
             @endif

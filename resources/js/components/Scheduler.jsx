@@ -20,29 +20,34 @@ const Scheduler = ({day: defaultDay}) => {
         // {id: 3, title: '!!!', start: 24, duration: 12, day: 2, color: 'red'},
     ];
 
-    function formatTimeRange(start, duration) {
-        const startHours = Math.floor(start / 12);
-        const startMinutes = (start % 12) * 5;
+    function formatTimeRange(startTimeIncrements, intervals) {
+        function formatTime(date) {
+            let hours = date.getHours();
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
 
-        const totalStartMinutes = startHours * 60 + startMinutes;
-        const totalEndMinutes = totalStartMinutes + (duration / 12) * 60;
-        const endHours = Math.floor(totalEndMinutes / 60);
-        const endMinutes = totalEndMinutes % 60;
+            hours = hours % 12;
+            hours = hours ? hours : 12;
 
-        const formattedStartTime = formatHoursAndMinutes(startHours, startMinutes);
-        const formattedEndTime = formatHoursAndMinutes(endHours, endMinutes);
+            return `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+        }
+
+        const startHours = Math.floor((startTimeIncrements * 30) / 60);
+        const startMinutes = (startTimeIncrements * 30) % 60;
+        const startSeconds = 0; // Assuming seconds are 0 for numeric input
+
+        const startDate = new Date(0, 0, 0, startHours, startMinutes, startSeconds);
+
+        const minutesToAdd = intervals * 30;
+
+        const endDate = new Date(startDate.getTime());
+        endDate.setMinutes(startDate.getMinutes() + minutesToAdd);
+
+        const formattedStartTime = formatTime(startDate);
+        const formattedEndTime = formatTime(endDate);
 
         return `${formattedStartTime} - ${formattedEndTime}`;
-    }
-
-    function formatHoursAndMinutes(hours, minutes) {
-        const adjustedHours = hours % 24;
-        const ampm = adjustedHours < 12 || adjustedHours === 24 ? 'AM' : 'PM';
-        const adjustedHours12 = adjustedHours % 12 === 0 ? 12 : adjustedHours % 12;
-
-        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-
-        return `${adjustedHours12}:${formattedMinutes}${ampm}`;
     }
 
     return (
@@ -263,7 +268,7 @@ const Scheduler = ({day: defaultDay}) => {
                                     style={{gridTemplateRows: "1.75rem repeat(288, minmax(0px, 1fr)) auto"}}>
                                     {events.map(event => (
                                         <li className={`relative mt-px flex ${(event.day === day) ? "" : "hidden sm:block"} sm:col-start-${event.day}`}
-                                            style={{gridRow: `${2 + event.start} / span ${event.duration}`}}>
+                                            style={{gridRow: `${2 + event.start} / span ${event.duration*6}`}}>
                                             <a href={event.url}
                                                className={`group absolute inset-1 flex flex-col rounded-lg bg-${event.color}-200 p-2 text-xs`}>
                                                 <p className={`order-1 font-semibold`}>{event.name}</p>
