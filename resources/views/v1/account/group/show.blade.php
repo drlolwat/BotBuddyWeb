@@ -317,6 +317,7 @@
                 <h1 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">{{ $group->name }} Schedule</h1>
                 <div class="flex items-center">
                     <div class="md:ml-4 md:flex md:items-center">
+                        <p class="hidden md:block text-base leading-6 text-gray-900 dark:text-gray-100"><span class="font-semibold">Server Time:</span> {{ now()->__toString() }}</p>
                         <a href="{{ route('account.group.schedule.create', $group->id) }}"
                            class="ml-6 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
                             Add event
