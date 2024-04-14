@@ -23,18 +23,10 @@ class ChangeScript extends Action
      */
     public function run(Model $model, array $data): void
     {
-        $script = $model->user->scripts()->find($data['script_id']);
-        if (!$script) {
-            $model->user->notifications()->create([
-                'message' => "Could not change to script ID {$data['script_id']} for {$model->email} (was it deleted?)",
-                'type' => 'error'
-            ]);
-            return;
-        }
-
-        $model->script_id = $data['script_id'];
-        $model->script_params = $data['script_params'] ?? $model->script_params;
-        $model->save();
+        $model->user->notifications()->create([
+            'message' => "The \"Change script\" workflow action has been removed. Please use the \"Change account group\" workflow action instead and configure the script via the account group.",
+            'type' => 'error'
+        ]);
     }
 
     public static function rules(): array
