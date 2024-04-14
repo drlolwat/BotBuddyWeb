@@ -23,11 +23,7 @@ class RestartBotWithScriptParams extends Action
     public function run(Model $model, array $data): void
     {
         $this->socket->dispatch(new StopBotCommand($model));
-
-        $model->script_params = $data['script_params'];
-        $model->save();
-
-        $this->socket->dispatch(new StartBotCommand($model));
+        $this->socket->dispatch(new StartBotCommand($model, script_params: $data['script_params']));
     }
 
     public static function rules(): array

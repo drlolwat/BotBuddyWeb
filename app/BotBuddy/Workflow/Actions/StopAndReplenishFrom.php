@@ -56,8 +56,6 @@ class StopAndReplenishFrom extends Action
 
         if ($replenishAccount->account_group_id != $model->account_group_id) {
             $replenishAccount->account_group_id = $model->account_group_id;
-            $replenishAccount->script_id = $model->script_id;
-            $replenishAccount->script_params = $model->script_params;
             $replenishAccount->save();
         }
 
