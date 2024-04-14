@@ -16,12 +16,12 @@ class StartBotCommand extends Command
     public function dispatchUsing(): array
     {
         return [
-            'serverId' => $this->account->agent->uuid ?? $this->account->account_group->agent->uuid,
+            'serverId' => $this->account->account_group->agent->uuid,
             'internalId' => $this->account->id,
-            'jarLocation' => $this->account->agent->dreambot_client_path ?? '',
-            'scriptsLocation' => $this->account->agent->dreambot_scripts_path ?? '',
-            'scriptName' => $this->script ?? $this->account->script->script ?? $this->account->account_group->script->script,
-            'scriptParams' => $this->script_params ?? $this->account->script_params ?? $this->account->account_group->script_params ?? "",
+            'jarLocation' => $this->account->account_group->agent->dreambot_client_path ?? '',
+            'scriptsLocation' => $this->account->account_group->agent->dreambot_scripts_path ?? '',
+            'scriptName' => $this->script ?? $this->account->account_group->script->script,
+            'scriptParams' => $this->script_params ?? $this->account->account_group->script_params ?? "",
             'clientName' => $this->account->user->dreambot_username,
             'clientPassword' => $this->account->user->dreambot_password,
             'accountUsername' => $this->account->email,
@@ -31,11 +31,11 @@ class StartBotCommand extends Command
             'proxyUsername' => $this->account->proxy?->username ?? '',
             'proxyPassword' => $this->account->proxy?->password ?? '',
             'accountTotp' => $this->account->password_2fa ?? '',
-            'fps' => $this->account->fps,
-            'world' => $this->account->world,
+            'fps' => $this->account->account_group->fps,
+            'world' => $this->account->account_group->world,
             'disableBrowserProxy' => (bool) $this->account->account_group->disable_browser_proxy,
-            'javaXmx' => $this->agent->dreambot_max_heap ?? '512M',
-            'javaXms' => $this->agent->dreambot_min_heap ?? '256M',
+            'javaXmx' => $this->account->account_group->agent->dreambot_max_heap ?? '512M',
+            'javaXms' => $this->account->account_group->agent->dreambot_min_heap ?? '256M',
         ];
     }
 }
