@@ -502,9 +502,6 @@ class AccountController extends Controller
         if ($request['proxy_id'] == "0") {
             $request['proxy_id'] = null;
         }
-        if ($request['agent_id'] == "0") {
-            $request['agent_id'] = null;
-        }
 
         $validated = $this->validate($request, [
             'account_file' => 'nullable|file|mimes:txt',
@@ -519,13 +516,6 @@ class AccountController extends Controller
             'proxy_id' => [
                 'nullable',
                 Rule::exists('proxies', 'id')
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id());
-                    }),
-            ],
-            'agent_id' => [
-                'nullable',
-                Rule::exists('agents', 'id')
                     ->where(function ($query) {
                         $query->where('user_id', auth()->id());
                     }),
@@ -664,7 +654,6 @@ class AccountController extends Controller
                 'password' => $account['account_password'],
                 'password_2fa' => $account['account_2fa_password'] ?? null,
                 'account_group_id' => $request->get('account_group_id') ?? null,
-                'agent_id' => $request->get('agent_id'),
                 'proxy_id' => $newProxy?->id ?? $request->get('proxy_id'),
                 'script_id' => $accountGroup->script_id,
                 'script_params' => $accountGroup->script_params,
