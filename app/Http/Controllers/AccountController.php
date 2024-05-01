@@ -333,9 +333,6 @@ class AccountController extends Controller
         if ($request['proxy_id'] == "0") {
             $request['proxy_id'] = null;
         }
-        if ($request['agent_id'] == "0") {
-            $request['agent_id'] = null;
-        }
         if ($request['account_group_id'] == "0") {
             $request['account_group_id'] = null;
         }
@@ -358,28 +355,7 @@ class AccountController extends Controller
                         $query->where('user_id', auth()->id());
                     }),
             ],
-            'script_id' => [
-                'required',
-                Rule::exists('user_scripts', 'id')
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id());
-                    }),
-            ],
-            'script_params' => 'nullable',
-            'agent_id' => [
-                'nullable',
-                Rule::exists('agents', 'id')
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id());
-                    }),
-            ],
-            'fps' => 'required|int',
-            'world' => 'required',
         ]);
-
-        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || filter_var($validated['world'], FILTER_VALIDATE_INT))) {
-            return back()->withErrors('Invalid world provided');
-        }
 
         $account = Account::create([
             'email' => $validated['email'],
@@ -387,12 +363,8 @@ class AccountController extends Controller
             'password_2fa' => $validated['password_2fa'] ?? null,
             'account_group_id' => $validated['account_group_id'] ?? null,
             'proxy_id' => $validated['proxy_id'],
-            'script_id' => $validated['script_id'],
-            'script_params' => $validated['script_params'] ?? null,
-            'agent_id' => $validated['agent_id'] ?? null,
+            'script_id' => 1, // todo: remove once column is removed
             'user_id' => auth()->id(),
-            'fps' => $validated['fps'],
-            'world' => $validated['world'],
         ]);
 
         return redirect(route('account.show', $account))->with('status', 'Account created');
@@ -405,9 +377,6 @@ class AccountController extends Controller
         if ($request['proxy_id'] == "0") {
             $request['proxy_id'] = null;
         }
-        if ($request['agent_id'] == "0") {
-            $request['agent_id'] = null;
-        }
         if ($request['account_group_id'] == "0") {
             $request['account_group_id'] = null;
         }
@@ -430,28 +399,7 @@ class AccountController extends Controller
                         $query->where('user_id', auth()->id());
                     }),
             ],
-            'script_id' => [
-                'required',
-                Rule::exists('user_scripts', 'id')
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id());
-                    }),
-            ],
-            'script_params' => 'nullable',
-            'agent_id' => [
-                'nullable',
-                Rule::exists('agents', 'id')
-                    ->where(function ($query) {
-                        $query->where('user_id', auth()->id());
-                    }),
-            ],
-            'fps' => 'required|int',
-            'world' => 'required',
         ]);
-
-        if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || filter_var($validated['world'], FILTER_VALIDATE_INT))) {
-            return back()->withErrors('Invalid world provided');
-        }
 
         $account->update([
             'email' => $validated['email'],
@@ -459,11 +407,6 @@ class AccountController extends Controller
             'password_2fa' => $validated['password_2fa'] ?? null,
             'account_group_id' => $validated['account_group_id'] ?? null,
             'proxy_id' => $validated['proxy_id'],
-            'script_id' => $validated['script_id'],
-            'agent_id' => $validated['agent_id'] ?? null,
-            'script_params' => $validated['script_params'] ?? null,
-            'fps' => $validated['fps'],
-            'world' => $validated['world'],
         ]);
 
         return redirect(route('account.show', $account))->with('status', 'Account updated');
