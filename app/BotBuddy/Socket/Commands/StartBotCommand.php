@@ -8,10 +8,10 @@ class StartBotCommand extends Command
 {
     public string $header = 'startBot';
 
-    public function __construct(public Account $account, public $script = null, public $script_params = null) {}
+    public function __construct(public Account $account, public ?string $script = null, public ?string $script_params = null) {}
 
     /**
-     * @return array<string, int|string>
+     * @return array<string, bool|int|string|null>
      */
     public function dispatchUsing(): array
     {

@@ -240,6 +240,7 @@ class AccountController extends Controller
             }
 
             return response()->streamDownload(function () use ($accounts) {
+                /** @var resource $file */
                 $file = fopen('php://output', 'w');
                 foreach ($accounts as $account) {
                     $fields = array_filter($account, function ($field) {

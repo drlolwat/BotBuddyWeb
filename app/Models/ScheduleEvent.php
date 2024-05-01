@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $start
+ * @property int $duration
+ */
 class ScheduleEvent extends Model
 {
     protected $fillable = [

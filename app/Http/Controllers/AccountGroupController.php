@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AccountGroupController extends Controller
 {
@@ -35,7 +36,7 @@ class AccountGroupController extends Controller
 
     private function countIntervals(Carbon $start, Carbon $finish): int
     {
-        $diffInMinutes = $start->diffInMinutes($finish);
+        $diffInMinutes = (int) $start->diffInMinutes($finish);
         return intdiv($diffInMinutes, 30);
     }
 
@@ -46,7 +47,7 @@ class AccountGroupController extends Controller
 
         $accounts = $group->accounts()->with('agent', 'script', 'stats')->paginate(10);
 
-        $events = $group->schedule_events()->get();
+        $events = $group->schedule_events;
 
         foreach ($events as $event) {
             $startMinutes = intval($event->start_at->format('G')) * 60 + intval($event->start_at->format('i'));
@@ -56,7 +57,7 @@ class AccountGroupController extends Controller
             $event->duration = (int) ceil($durationMinutes / 6 + (ceil($durationMinutes / 32)));
         }
 
-        if ($events && $events->isNotEmpty()) {
+        if ($events->isNotEmpty()) {
             $events = $events->map(function ($event) {
                 return [
                     'id' => $event->id,
@@ -386,7 +387,7 @@ class AccountGroupController extends Controller
         return $response->with('status', "$queued_count accounts have been dequeued");
     }
 
-    public function export(AccountGroup $group)
+    public function export(AccountGroup $group): RedirectResponse|StreamedResponse
     {
         $this->authorize('view', $group);
 
@@ -399,6 +400,7 @@ class AccountGroupController extends Controller
         }
 
         return response()->streamDownload(function () use ($accounts) {
+            /** @var resource $file */
             $file = fopen('php://output', 'w');
             foreach ($accounts as $account) {
                 $fields = array_filter($account->attributesToArray(), function ($field) {
