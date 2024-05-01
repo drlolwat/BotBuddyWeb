@@ -7,7 +7,6 @@ use App\Models\Account;
 use App\Models\Agent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use function Sentry\captureException;
 
 class AgentController extends Controller
 {
@@ -89,7 +88,7 @@ class AgentController extends Controller
             foreach ($accounts as $accountData) {
                 foreach ($accountData as $accountId => $accountStatus) {
                     if (!isset($accountModelsById[$accountId])) {
-                        captureException(new \Exception("Account ID $accountId received via agentData, not found (was it deleted?)"));
+                        //captureException(new \Exception("Account ID $accountId received via agentData, not found (was it deleted?)"));
                         continue;
                     }
                     $account = $accountModelsById[$accountId];
