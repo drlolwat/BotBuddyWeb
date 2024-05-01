@@ -20,27 +20,30 @@ const workflowFormOptions = {
     modelTypeSelect: {
         name: "model_type",
         className,
-        options: [{label: "Select a model type"}, {
-            label: "Account",
-            value: "account",
-            render: (parent, callback) => {
-                return <DynamicSelect
-                    parent={parent} callback={callback}
-                    {...workflowFormOptions.accountIdSelect}
-                />
-            }
-        }, {
+        options: [{label: "Select a model type"},
+            // {
+            //     label: "Account",
+            //     value: "account",
+            //     render: (parent, callback) => (
+            //         <DynamicSelect
+            //             parent={parent} callback={callback}
+            //             {...workflowFormOptions.accountIdSelect}
+            //         />
+            //     )
+            // },
+            {
             label: "Account Group",
-            value: "account_group",
-            render: (parent, callback) => (
-                <Fragment key="account_group">
-                    <DynamicSelect
-                        parent={parent} callback={callback}
-                        {...workflowFormOptions.accountGroupIdSelect}
-                    />
-                </Fragment>
-            )
-        }],
+                value: "account_group",
+                render: (parent, callback) => (
+                    <Fragment key="account_group">
+                        <DynamicSelect
+                            parent={parent} callback={callback}
+                            {...workflowFormOptions.accountGroupIdSelect}
+                        />
+                    </Fragment>
+                )
+            }
+            ],
     },
     accountIdSelect: {
         name: "model_id",
@@ -70,7 +73,7 @@ const workflowFormOptions = {
     accountGroupIdSelect: {
         name: "model_id",
         className,
-        options: [{label: "Select a model"}],
+        options: [{label: "Select an account group"}],
         optionsCallback: async () => {
             const accountGroups = await fetchAccountGroups();
             const workflowEvents =  await fetchWorkflowEvents();

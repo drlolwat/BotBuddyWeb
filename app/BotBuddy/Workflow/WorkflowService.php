@@ -27,7 +27,7 @@ class WorkflowService
      * @var array<string, string> $modelTypes
      */
     public array $modelTypes = [
-        'account' => Account::class,
+        //'account' => Account::class,
         'account_group' => AccountGroup::class,
     ];
 

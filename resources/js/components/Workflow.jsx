@@ -153,7 +153,7 @@ const Workflow = () => {
 
     return (
         <>
-            <Select {...workflowFormOptions.modelTypeSelect} callback={callback}/>
+            <DynamicSelect {...workflowFormOptions.accountGroupIdSelect} callback={callback}/>
             <div className={`py-2 font-bold ${textClassNames}`}>Actions</div>
             {!event && <div className={textClassNames}>Select an event to see the possible actions</div>}
             <div className="grid gap-2">
