@@ -52,7 +52,10 @@ class AgentController extends Controller
             $agent = Agent::query()
                 ->with('user')
                 ->where('uuid', $agentUUid)
-                ->first();
+                ->where([
+                    ['uuid', $agentUUid],
+                    ['last_agentdata_at', '<', now()->subMinutes(1)],
+                ])->first();
 
             if (!$agent) {
                 continue;
