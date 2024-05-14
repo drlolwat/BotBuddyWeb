@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $agent1 = $user->agents()->create([
             'name' => 'Local machine',
             'user_id' => $user->id,
+            'client_type' => 'DreamBot',
             'uuid' => Str::uuid()->toString(),
             'agent_key' => trim(bin2hex(random_bytes(32))),
         ]);
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
         $agent2 = $user->agents()->create([
             'name' => 'OVH box',
             'user_id' => $user->id,
+            'client_type' => 'DreamBot',
             'uuid' => Str::uuid()->toString(),
             'agent_key' => trim(bin2hex(random_bytes(32))),
         ]);
@@ -100,8 +102,8 @@ class DatabaseSeeder extends Seeder
             'password' => 'test123',
             'user_id' => $user->id,
             'proxy_id' => $proxy1->id,
-            'script_id' => $script3->id,
-            'agent_id' => $agent1->id,
+//            'script_id' => $script3->id,
+//            'agent_id' => $agent1->id,
         ]);
 
         $account2 = $accountGroup1->accounts()->create([
@@ -109,7 +111,7 @@ class DatabaseSeeder extends Seeder
             'password' => 'mypassword23',
             'user_id' => $user->id,
             'proxy_id' => $proxy2->id,
-            'script_id' => $script3->id,
+//            'script_id' => $script3->id,
         ]);
 
         $accountGroup2 = $user->account_groups()->create([
@@ -123,8 +125,8 @@ class DatabaseSeeder extends Seeder
             'password' => 'lol123',
             'user_id' => $user->id,
             'proxy_id' => $proxy3->id,
-            'script_id' => $script2->id,
-            'agent_id' => $agent2->id,
+//            'script_id' => $script2->id,
+//            'agent_id' => $agent2->id,
         ]);
     }
 }
