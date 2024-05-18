@@ -272,9 +272,7 @@ const Scheduler = ({day: defaultDay}) => {
                                             <a href={event.url}
                                                className={`group absolute inset-1 flex flex-col rounded-lg bg-${event.color}-200 p-2 text-xs`}>
                                                 <p className={`order-1 font-semibold`}>{event.name}</p>
-                                                <p className={`text-${event.color}-500`}>
-                                                    <time dateTime="2022-01-12T06:00">{formatTimeRange(event.start, event.duration)}</time>
-                                                </p>
+                                                <p className={`text-${event.color}-500`}>{event.start_formatted} - {event.finish_formatted}</p>
                                             </a></li>
                                     ))}
                                 </ol>

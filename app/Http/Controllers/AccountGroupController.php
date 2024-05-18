@@ -65,6 +65,8 @@ class AccountGroupController extends Controller
                     'color' => $event->color,
                     'day' => $event->day,
                     'start' => $event->start,
+                    'start_formatted' => $event->start_at->format('h:i A'),
+                    'finish_formatted' => $event->finish_at->format('h:i A'),
                     'duration' => $this->countIntervals($event->start_at, $event->finish_at),
                     'url' => route('account.group.schedule.event.show', ['group' => $event->account_group, 'event' => $event]),
                 ];
