@@ -53,7 +53,7 @@ class AgentController extends Controller
                 ->where('uuid', $agentUUid)
                 ->where([
                     ['uuid', $agentUUid],
-                    ['last_agentdata_at', '<', now()->subMinutes(1)],
+                //    ['last_agentdata_at', '<', now()->subMinutes(1)], // disabling temporarily
                 ])->first();
 
             if (!$agent) {
