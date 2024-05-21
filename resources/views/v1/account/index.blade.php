@@ -17,8 +17,8 @@
                     <li><form id="bulk_stop" method="post" action="{{ route('account.bulkAction') }}">@csrf<input type="hidden" name="action" value="stop" /><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Stop</button></form></li>
                     <li><form id="bulk_export" method="post" action="{{ route('account.bulkAction') }}">@csrf<input type="hidden" name="action" value="export" /><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Export</button></form></li>
                     <li><button data-modal-target="default-modal" data-modal-toggle="default-modal" class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Queue start</button></li>
-                    <li><button data-modal-target="change-agent-modal" data-modal-toggle="change-agent-modal" class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Change agent</button></li>
-                    <li><button data-modal-target="change-script-modal" data-modal-toggle="change-script-modal" class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Change script</button></li>
+{{--                    <li><button data-modal-target="change-agent-modal" data-modal-toggle="change-agent-modal" class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Change agent</button></li>--}}
+{{--                    <li><button data-modal-target="change-script-modal" data-modal-toggle="change-script-modal" class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Change script</button></li>--}}
 {{--                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update proxy</a></li>--}}
 {{--                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update agent</a></li>--}}
                 </ul>

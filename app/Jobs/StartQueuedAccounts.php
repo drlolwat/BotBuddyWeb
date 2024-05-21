@@ -29,14 +29,14 @@ class StartQueuedAccounts implements ShouldQueue
     public function handle(SocketService $socket): void
     {
         $accounts = Account::query()
-            ->with(['agent', 'account_group.agent', 'user'])
+            ->with(['account_group.agent', 'user'])
             ->where('status', 'Queued')
             ->where('start_queued_at', '<', now())
             ->get();
 
         foreach ($accounts as $account) {
             // todo: make common function to check if account can be started
-            $agent = $account->agent ?? $account->account_group->agent ?? null;
+            $agent = $account->account_group->agent ?? null;
             if (
                 !$agent ||
                 !$account->script ||

@@ -29,7 +29,13 @@ class HeartbeatAccounts implements ShouldQueue
      */
     public function handle(SocketService $socket): void
     {
-        foreach (User::where('subscription_expires_at', '>', now())->get() as $user) {
+        $users = User::where('subscription_expires_at', '>', now())
+            ->whereHas('accounts', function ($query) {
+                $query->where('status', 'Running');
+            })
+            ->get();
+
+        foreach ($users as $user) {
             $socket->dispatch(new GetRunningBotsByClient($user));
         }
     }

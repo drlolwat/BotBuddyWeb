@@ -16,7 +16,7 @@ class StopBotCommand extends Command
     public function dispatchUsing(): array
     {
         return [
-            'serverId' => $this->account->agent->uuid,
+            'serverId' => $this->account->account_group->agent->uuid,
             'internalId' => $this->account->id,
         ];
     }
