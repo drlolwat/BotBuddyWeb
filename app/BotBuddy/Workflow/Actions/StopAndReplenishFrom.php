@@ -42,7 +42,6 @@ class StopAndReplenishFrom extends Action
         $replenishAccount = $group->accounts()->whereNot('id', $model->id)
             ->where('status', 'Stopped')
             ->whereNull(['perm_banned_at', 'temp_banned_at'])
-            ->whereNotNull('agent_id')
             ->inRandomOrder()
             ->first();
 
