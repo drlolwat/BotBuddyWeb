@@ -77,7 +77,7 @@ class PerformScheduleActions implements ShouldQueue
                     break;
                 }
 
-                $agent = $account->agent ?? $account->account_group->agent ?? null;
+                $agent = $account->account_group->agent ?? null;
 
                 if(!$agent) {
                     $errors[] = "Account $account->email is not assigned to an agent and could not be started via schedule";
