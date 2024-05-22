@@ -145,6 +145,16 @@ const workflowFormOptions = {
                         <StatGoalForm />
                     </div>
                 </Fragment>,
+            },
+            {
+                label: "Is locked",
+                value: "locked",
+                render: (parent, callback) => <CallbackRunner
+                    parent={parent}
+                    callback={callback}
+                    name="event"
+                    value="locked"
+                />,
             }
         ],
     },

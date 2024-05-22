@@ -107,6 +107,16 @@ class AccountController extends Controller
             }
         }
 
+        if ($validated['Status'] == 'Locked') {
+            // specific account not necessary, as this was removed from workflow creation prior
+            if ($account->account_group_id) {
+                $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'locked', null);
+                foreach ($workflows as $workflow) {
+                    $workflowService->handle($account, $workflow);
+                }
+            }
+        }
+
         if ($validated['Status'] != 'ProxyBlocked') {
             $account->status = $validated['Status'];
         }

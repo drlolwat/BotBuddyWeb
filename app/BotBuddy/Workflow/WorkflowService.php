@@ -9,6 +9,7 @@ use App\BotBuddy\Workflow\Actions\RemoveProxy;
 use App\BotBuddy\Workflow\Actions\RestartBot;
 use App\BotBuddy\Workflow\Actions\StopAndReplenishFrom;
 use App\BotBuddy\Workflow\Actions\StopBot;
+use App\BotBuddy\Workflow\Events\Locked;
 use App\BotBuddy\Workflow\Events\PermBanned;
 use App\BotBuddy\Workflow\Events\ProxyBlocked;
 use App\BotBuddy\Workflow\Events\ScriptComplete;
@@ -40,6 +41,7 @@ class WorkflowService
         'temp_banned' => TempBanned::class,
         'perm_banned' => PermBanned::class,
         'stat_goal' => StatGoal::class,
+        'locked' => Locked::class,
     ];
 
     /**

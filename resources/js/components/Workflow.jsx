@@ -143,6 +143,7 @@ const Workflow = () => {
             || hasSelected(parent, "event", "temp_banned")
             || hasSelected(parent, "event", "perm_banned")
             || hasSelected(parent, "event", "proxy_blocked")
+            || hasSelected(parent, "event", "locked")
             || (selectedValue === "stat_goal" && defaultValue === "Select an event")
         ) {
             updateEvent("script_complete");
