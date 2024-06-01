@@ -39,8 +39,14 @@ class StopAndReplenishFrom extends Action
             return;
         }
 
+        $statuses = ['Stopped'];
+
+        if (str_contains(strtolower($group->name), 'banned')) {
+            $statuses[] = 'Banned';
+        }
+
         $replenishAccount = $group->accounts()->whereNot('id', $model->id)
-            ->where('status', 'Stopped')
+            ->whereIn('status', $statuses)
             ->whereNull(['perm_banned_at', 'temp_banned_at'])
             ->inRandomOrder()
             ->first();
