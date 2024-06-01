@@ -46,6 +46,7 @@ class PerformScheduleActions implements ShouldQueue
             ->get();
 
         foreach ($finishingSchedules as $schedule) {
+            if (!$schedule->account_group) { continue; }
             foreach ($schedule->account_group->accounts as $account) {
                 $stopped = $socket->dispatch(new StopBotCommand($account));
                 if ($stopped == "true") {
