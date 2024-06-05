@@ -1,6 +1,6 @@
 <x-v1.guest-layout page="Confirm password">
     <div class="max-w-2xl px-4 mx-auto">
-    <section class="bg-gray-50 dark:bg-gray-900">
+    <section>
         <div class="flex flex-col items-center justify-center px-6 mx-auto md:h-screen lg:py-0">
             <div class="flex justify-start items-center">
                 <a href="{{ route('index') }}" class="flex items-center justify-between mr-4 py-6">

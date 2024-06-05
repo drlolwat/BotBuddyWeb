@@ -1,5 +1,5 @@
 <x-v1.layout>
-    <div class="bg-white dark:bg-gray-900 py-6 sm:py-8">
+    <div class="py-6 sm:py-8">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="mx-auto max-w-4xl text-center">
                 <p class="mt-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">Choose the right plan for you</p>
@@ -19,7 +19,7 @@
                 </fieldset>
             </div>
             <div class="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-                <div class="rounded-3xl p-8 xl:p-10 ring-1 ring-gray-200 dark:ring-white/10">
+                <div class="rounded-3xl bg-gray-50 p-8 xl:p-10 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-white/10">
                     <div class="flex items-center justify-between gap-x-4">
                         <h3 id="tier-basic" class="text-lg font-semibold leading-8 text-gray-900 dark:text-white">{{ $subscriptions['basic-monthly']->name }}</h3>
                     </div>
@@ -58,7 +58,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="rounded-3xl p-8 xl:p-10 bg-white/5 ring-2 ring-blue-500">
+                <div class="rounded-3xl bg-white p-8 xl:p-10 dark:bg-white/5 ring-2 ring-blue-500">
                     <div class="flex items-center justify-between gap-x-4">
                         <h3 id="tier-essential" class="text-lg font-semibold leading-8 text-blue-600 dark:text-white">{{ $subscriptions['essential-monthly']->name }}</h3>
                         <p class="rounded-full bg-blue-600/10 dark:bg-blue-500 px-2.5 py-1 text-xs font-semibold leading-5 text-blue-600 dark:text-white">Most popular</p>
@@ -110,7 +110,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="rounded-3xl p-8 xl:p-10 ring-1 ring-gray-200 dark:ring-white/10">
+                <div class="rounded-3xl bg-gray-50 p-8 xl:p-10 dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-white/10">
                     <div class="flex items-center justify-between gap-x-4">
                         <h3 id="tier-farm" class="text-lg font-semibold leading-8 text-gray-900 dark:text-white">{{ $subscriptions['farm-monthly']->name }}</h3>
                     </div>

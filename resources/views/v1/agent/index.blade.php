@@ -2,7 +2,7 @@
     <section>
         <div class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Agent Management</div>
     </section>
-    <section class="bg-gray-50 dark:bg-gray-900">
+    <section>
         <div class="mx-auto">
             <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
                 <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">

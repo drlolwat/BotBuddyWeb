@@ -10,7 +10,7 @@
     @endif
     @vite('resources/css/app.css')
 </head>
-<body class="antialiased bg-gray-50 dark:bg-gray-900">
+<body class="antialiased bg-gray-100 dark:bg-gray-900">
 {{--<x-v1.nav />--}}
 <main class="h-auto">
     {{ $slot }}
