@@ -115,13 +115,18 @@ class ProxyController extends Controller
 
         $groupInUse = Account::where('proxy_id', $proxy->id)->count();
 
-        if ($groupInUse > 0) {
-            return redirect(route('proxy.show', $proxy))->withErrors(['Cannot delete proxy as it is in use']);
-        }
+        // unassign from accounts where in use
+        Account::query()
+            ->where('proxy_id', $proxy->id)
+            ->update(['proxy_id' => null]);
 
         $proxy->delete();
 
-        return redirect(route('proxy'))->with('status', 'Proxy deleted');
+        $message = ($groupInUse > 0)
+            ? "Proxy deleted and unassigned from $groupInUse accounts"
+            : 'Proxy deleted';
+
+        return redirect(route('proxy'))->with('status', $message);
     }
 
     public function import(): View
