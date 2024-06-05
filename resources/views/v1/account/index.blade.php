@@ -86,7 +86,7 @@
                                     </div>
                                 </td>
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <a href="{{ route('account.show', $account->id) }}">{{ $account->email }}</a>
+                                    <a title="{{ $account->email }}" href="{{ route('account.show', $account->id) }}">{{ $account->stats?->name ?? $account->email }}</a>
                                 </th>
                                 <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
                                     @if($account->stats?->gp)
