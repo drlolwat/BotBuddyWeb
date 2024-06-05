@@ -59,6 +59,24 @@ class StopAndReplenishFrom extends Action
             return;
         }
 
+        $replenishAccount->refresh();
+
+        if (!$replenishAccount->account_group) {
+            $model->user->notifications()->create([
+                'message' => "{$group->name} needs to be assigned to an account group to start",
+                'type' => 'error'
+            ]);
+            return;
+        }
+
+        if (!$replenishAccount->account_group->agent) {
+            $model->user->notifications()->create([
+                'message' => "{$group->name} needs to be assigned to an agent to start",
+                'type' => 'error'
+            ]);
+            return;
+        }
+
         if ($replenishAccount->account_group_id != $model->account_group_id) {
             $replenishAccount->account_group_id = $model->account_group_id;
             $replenishAccount->save();
