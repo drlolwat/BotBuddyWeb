@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class SettingsController extends Controller
@@ -55,5 +56,42 @@ class SettingsController extends Controller
         $user->save();
 
         return redirect(route('settings'))->with('status', 'DreamBot settings updated');
+    }
+
+    public function email(Request $request): RedirectResponse
+    {
+        $validated = $this->validate($request, [
+            'email' => 'required|email',
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        if ($validated['email'] == $user->email) {
+            return redirect(route('settings'))->withErrors('You must provide a new email address');
+        }
+
+        $user->email = $validated['email'];
+        //$user->email_verified_at = null;
+        $user->save();
+
+        //$user->sendEmailVerificationNotification();
+
+        return redirect(route('settings'))->with('status', 'Email address updated');
+    }
+
+    public function password(Request $request): RedirectResponse
+    {
+        $validated = $this->validate($request, [
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        return redirect(route('settings'))->with('status', 'Password updated');
     }
 }

@@ -13,6 +13,8 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/dark_mode', [SettingsController::class, 'dark_mode'])->name('settings.dark_mode');
+    Route::post('/settings/email', [SettingsController::class, 'email'])->name('settings.email');
+    Route::post('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
 
     Route::group(['prefix' => 'account/group'], function () {
         Route::get('/', [App\Http\Controllers\AccountGroupController::class, 'index'])->name('account.group');
