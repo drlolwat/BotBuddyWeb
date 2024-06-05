@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
+use App\Models\AccountGroup;
 use App\Models\Proxy;
 use App\Models\ProxyGroup;
 use Illuminate\Http\RedirectResponse;
@@ -72,14 +74,31 @@ class ProxyGroupController extends Controller
     {
         $this->authorize('view', $group);
 
-        $groupInUse = Proxy::where('proxy_group_id', $group->id)->count();
+        // unassign proxies in use from group
+        Account::query()
+            ->whereIn('proxy_id', $group->proxies->pluck('id'))
+            ->update(['proxy_id' => null]);
 
-        if ($groupInUse > 0) {
-            return back()->withErrors(['Cannot delete proxy group as it is in use']);
-        }
+        // soft delete proxies
+        $group->proxies()->update(['deleted_at' => now()]);
 
+        // soft delete group
         $group->delete();
 
         return redirect(route('proxy.group'))->with('status', 'Proxy group deleted');
+    }
+
+    public function delete_confirm(ProxyGroup $group): View
+    {
+        $this->authorize('view', $group);
+
+        $group->loadCount('proxies');
+        $group->load('proxies.accounts');
+
+        $totalAccounts = $group->proxies->sum(function ($proxy) {
+            return $proxy->accounts->count();
+        });
+
+        return view('v1.proxy.group.delete_confirm', compact('group', 'totalAccounts'));
     }
 }

@@ -174,11 +174,8 @@ class AccountGroupController extends Controller
     {
         $this->authorize('view', $group);
 
-        $groupInUse = Account::where('account_group_id', $group->id)->count();
-
-        if ($groupInUse > 0) {
-            return redirect(route('account.group.show', $group))->withErrors(['Cannot delete account group as it is in use']);
-        }
+        $group->schedule_events()->delete(); // no soft delete setup for schedule events
+        $group->accounts()->update(['deleted_at' => now()]); // soft delete query
 
         $group->delete();
 
@@ -563,5 +560,14 @@ class AccountGroupController extends Controller
         $event->delete();
 
         return redirect(route('account.group.show', $group))->with('status', 'Schedule event deleted');
+    }
+
+    public function delete_confirm(AccountGroup $group): View
+    {
+        $this->authorize('view', $group);
+
+        $group->loadCount('accounts', 'schedule_events');
+
+        return view('v1.account.group.delete_confirm', compact('group'));
     }
 }

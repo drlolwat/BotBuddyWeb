@@ -52,14 +52,10 @@
                                 <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                     Update
                                 </button>
-                                <button form="delete" type="submit" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                <a href="{{ route('account.group.delete_confirm', $group->id) }}" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                                     Delete
-                                </button>
+                                </a>
                             </div>
-                        </form>
-                        <form id="delete" method="post" action="{{ route('account.group.destroy', $group->id) }}">
-                            @csrf
-                            <input type="hidden" name="_method" value="DELETE">
                         </form>
                     </div>
                 </div>

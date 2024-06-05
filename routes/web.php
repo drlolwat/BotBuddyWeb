@@ -23,6 +23,7 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
         Route::get('/{group}', [App\Http\Controllers\AccountGroupController::class, 'show'])->name('account.group.show');
         Route::put('/{group}', [App\Http\Controllers\AccountGroupController::class, 'update'])->name('account.group.update');
         Route::delete('/{group}', [App\Http\Controllers\AccountGroupController::class, 'destroy'])->name('account.group.destroy');
+        Route::get('/{group}/delete_confirm', [App\Http\Controllers\AccountGroupController::class, 'delete_confirm'])->name('account.group.delete_confirm');
         Route::post('/start/{group}', [App\Http\Controllers\AccountGroupController::class, 'start'])->name('account.group.start');
         Route::post('/stop/{group}', [App\Http\Controllers\AccountGroupController::class, 'stop'])->name('account.group.stop');
         Route::post('/queue/{group}', [App\Http\Controllers\AccountGroupController::class, 'queue'])->name('account.group.queue');
@@ -57,6 +58,7 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
         Route::get('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'show'])->name('proxy.group.show');
         Route::put('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'update'])->name('proxy.group.update');
         Route::delete('/{group}', [App\Http\Controllers\ProxyGroupController::class, 'destroy'])->name('proxy.group.destroy');
+        Route::get('/{group}/delete_confirm', [App\Http\Controllers\ProxyGroupController::class, 'delete_confirm'])->name('proxy.group.delete_confirm');
     });
 
     Route::group(['prefix' => 'proxy'], function () {
