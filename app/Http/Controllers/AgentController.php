@@ -89,8 +89,8 @@ class AgentController extends Controller
             'client_type' => 'DreamBot',
             'dreambot_client_path' => $validated['dreambot_client_path'] ?? $agent->dreambot_client_path,
             'dreambot_scripts_path' => $validated['dreambot_scripts_path'] ?? $agent->dreambot_scripts_path,
-            'dreambot_min_heap' => $validated['dreambot_heap_min'] ?? $agent->dreambot_min_heap,
-            'dreambot_max_heap' => $validated['dreambot_heap_max'] ?? $agent->dreambot_max_heap,
+            'dreambot_min_heap' => $validated['dreambot_min_heap'] ?? $agent->dreambot_min_heap,
+            'dreambot_max_heap' => $validated['dreambot_max_heap'] ?? $agent->dreambot_max_heap,
         ]);
 
         return redirect(route('agent.show', $agent))->with('status', 'Agent updated');
