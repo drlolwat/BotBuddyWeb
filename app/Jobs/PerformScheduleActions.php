@@ -71,6 +71,8 @@ class PerformScheduleActions implements ShouldQueue
 
             $errors = [];
 
+            if (!$schedule->account_group) { continue; }
+
             foreach ($schedule->account_group->accounts as $account) {
 
                 if (!$account->user->dreambot_username || !$account->user->dreambot_password) {
