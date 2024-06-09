@@ -253,6 +253,13 @@ class AccountController extends Controller
             }, 'accounts_'.now()->unix().'.csv');
         }
 
+        if ($validated['action'] == 'delete') {
+            foreach ($accounts as $account) {
+                $account->delete();
+            }
+            return back()->with('status', sprintf('%d accounts have been deleted', $accounts->count()));
+        }
+
         return back()->withErrors('Invalid action');
     }
 
