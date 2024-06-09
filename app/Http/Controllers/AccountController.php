@@ -253,53 +253,6 @@ class AccountController extends Controller
             }, 'accounts_'.now()->unix().'.csv');
         }
 
-        if ($validated['action'] == 'change_script') {
-            $request = request()->all();
-
-            $scriptId = Validator::make($request, [
-                'script_id' => [
-                    'required',
-                    'integer',
-                    Rule::exists('user_scripts', 'id')
-                        ->where(function ($query) {
-                            $query->where('user_id', auth()->id());
-                        }),
-                ],
-            ])->validate();
-
-            foreach ($accounts as $account) {
-                $account->script_id = $scriptId['script_id'];
-                $account->save();
-            }
-
-            return back()->with('status', 'Script changed for selected accounts');
-        }
-
-        if ($validated['action'] == 'change_agent') {
-            $request = request()->all();
-            if ($request['agent_id'] == "0") {
-                $request['agent_id'] = null;
-            }
-
-            $agentId = Validator::make($request, [
-                'agent_id' => [
-                    'nullable',
-                    'integer',
-                    Rule::exists('agents', 'id')
-                        ->where(function ($query) {
-                            $query->where('user_id', auth()->id());
-                        }),
-                ],
-            ])->validate();
-
-            foreach ($accounts as $account) {
-                $account->agent_id = $agentId['agent_id'];
-                $account->save();
-            }
-
-            return back()->with('status', 'Agent changed for selected accounts');
-        }
-
         return back()->withErrors('Invalid action');
     }
 

@@ -377,36 +377,6 @@
             closeButton.addEventListener('click', toggleModal);
         });
 
-        const changeAgentModalToggleButton = document.querySelector('[data-modal-toggle="change-agent-modal"]');
-        const changeAgentModal = document.getElementById('change-agent-modal');
-
-        function toggleChangeAgentModal() {
-            changeAgentModal.classList.toggle('hidden');
-            changeAgentModal.classList.toggle('flex');
-            changeAgentModal.setAttribute('aria-hidden', String(changeAgentModal.classList.contains('hidden')));
-        }
-
-        changeAgentModalToggleButton.addEventListener('click', toggleChangeAgentModal);
-
-        document.querySelectorAll('[data-modal-hide="change-agent-modal"]').forEach(closeButton => {
-            closeButton.addEventListener('click', toggleChangeAgentModal);
-        });
-
-        const changeScriptModalToggleButton = document.querySelector('[data-modal-toggle="change-script-modal"]');
-        const changeScriptModal = document.getElementById('change-script-modal');
-
-        function toggleChangeScriptModal() {
-            changeScriptModal.classList.toggle('hidden');
-            changeScriptModal.classList.toggle('flex');
-            changeScriptModal.setAttribute('aria-hidden', String(changeScriptModal.classList.contains('hidden')));
-        }
-
-        changeScriptModalToggleButton.addEventListener('click', toggleChangeScriptModal);
-
-        document.querySelectorAll('[data-modal-hide="change-script-modal"]').forEach(closeButton => {
-            closeButton.addEventListener('click', toggleChangeScriptModal);
-        });
-
         const masterCheckbox = document.getElementById('checkbox-all-search');
         if (masterCheckbox) {
             const rowCheckboxes = document.querySelectorAll('input[type="checkbox"]');
