@@ -41,7 +41,9 @@ class StopAndReplenishFrom extends Action
 
         $statuses = ['Stopped'];
 
-        if (str_contains(strtolower($group->name), 'banned')) {
+        // todo: document this feature on site OR allow them to choose
+        // if they want it to include banned accounts
+        if (str_contains(strtolower($group->name), 'ban')) {
             $statuses[] = 'Banned';
         }
 
