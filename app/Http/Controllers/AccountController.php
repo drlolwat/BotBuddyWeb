@@ -111,6 +111,7 @@ class AccountController extends Controller
 
                 $account->status = 'Starting';
                 $account->start_queued_at = null; // in case it was formerly queued
+                $account->last_started_at = now();
                 $account->save();
 
                 $started_count++;
@@ -427,6 +428,7 @@ class AccountController extends Controller
 
         $account->status = 'Starting';
         $account->start_queued_at = null;
+        $account->last_started_at = now();
         $account->save();
 
         return back()->with('status', 'Account is being started');

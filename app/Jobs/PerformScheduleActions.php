@@ -99,6 +99,8 @@ class PerformScheduleActions implements ShouldQueue
                 }
 
                 $account->status = 'Starting';
+                $account->start_queued_at = null;
+                $account->last_started_at = now();
                 $account->save();
             }
 

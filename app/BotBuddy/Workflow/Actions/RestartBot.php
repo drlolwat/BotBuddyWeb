@@ -24,5 +24,7 @@ class RestartBot extends Action
     {
         $this->socket->dispatch(new StopBotCommand($model));
         $this->socket->dispatch(new StartBotCommand($model));
+        $model->last_started_at = now();
+        $model->save();
     }
 }

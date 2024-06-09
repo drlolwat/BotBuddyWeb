@@ -55,6 +55,7 @@ class StartQueuedAccounts implements ShouldQueue
             $socket->dispatch(new StartBotCommand($account));
             $account->status = 'Starting';
             $account->start_queued_at = null;
+            $account->last_started_at = now();
             $account->save();
         }
     }

@@ -87,11 +87,15 @@ class StopAndReplenishFrom extends Action
         switch ($data['type']) {
             case 'existing':
                 $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                $replenishAccount->last_started_at = now();
+                $replenishAccount->save();
                 break;
             case 'triggered':
                 $replenishAccount->proxy_id = $model->proxy_id;
                 $replenishAccount->save();
                 $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                $replenishAccount->last_started_at = now();
+                $replenishAccount->save();
                 break;
             case 'random':
                 $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
@@ -115,6 +119,8 @@ class StopAndReplenishFrom extends Action
                 $replenishAccount->proxy_id = $newProxy->id;
                 $replenishAccount->save();
                 $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                $replenishAccount->last_started_at = now();
+                $replenishAccount->save();
                 break;
             case 'random_unused':
                 $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
@@ -139,6 +145,8 @@ class StopAndReplenishFrom extends Action
                 $replenishAccount->proxy_id = $newProxy->id;
                 $replenishAccount->save();
                 $this->socket->dispatch(new StartBotCommand($replenishAccount));
+                $replenishAccount->last_started_at = now();
+                $replenishAccount->save();
                 break;
         }
     }
