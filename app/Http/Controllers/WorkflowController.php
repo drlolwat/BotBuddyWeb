@@ -129,6 +129,9 @@ class WorkflowController extends Controller
 
         // todo: handle via a workflow event class
         if ($validated['event'] == 'stat_goal') {
+            if (!isset($eventDataValidated['stat'])) {
+                return back()->withErrors('You have not provided any stat goals');
+            }
             $eventDataValidated = [...$eventDataValidated['stat']];
         }
 
