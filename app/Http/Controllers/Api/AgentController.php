@@ -50,7 +50,6 @@ class AgentController extends Controller
 
             $agent = Agent::query()
                 ->with('user')
-                ->where('uuid', $agentUUid)
                 ->where([
                     ['uuid', $agentUUid],
                 //    ['last_agentdata_at', '<', now()->subMinutes(1)], // disabling temporarily
@@ -75,8 +74,10 @@ class AgentController extends Controller
                 ->get();
 
             foreach ($deadAccounts as $deadAccount) {
-                $deadAccount->status = 'Stopped';
-                $deadAccount->save();
+                // todo: fix the master sending an incomplete account list
+                // so this can be uncommented
+                //$deadAccount->status = 'Stopped';
+                //$deadAccount->save();
             }
 
             $accountModels = Account::query()
