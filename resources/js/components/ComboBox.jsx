@@ -26,28 +26,30 @@ const ComboBox = ({ open, setOpen, value, setValue, options, search, empty, sele
                 {search && <CommandInput placeholder={search} />}
                 <CommandList>
                     <CommandEmpty>{empty || "No options found."}</CommandEmpty>
-                    <ScrollArea className="max-h-[150px]">
-                        <CommandGroup>
-                            {options.map((option) => (
-                                <CommandItem
-                                    key={option.value}
-                                    value={option.value}
-                                    onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue)
-                                        setOpen(false)
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            value === option.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {option.label}
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </ScrollArea>
+                    <div className="max-h-[100px]">
+                    <div className="max-h-[100px] overflow-y-auto">
+                            <CommandGroup>
+                                {options.map((option) => (
+                                    <CommandItem
+                                        key={option.value}
+                                        value={option.value}
+                                        onSelect={(currentValue) => {
+                                            setValue(currentValue === value ? "" : currentValue)
+                                            setOpen(false)
+                                        }}
+                                    >
+                                        <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                value === option.value ? "opacity-100" : "opacity-0"
+                                            )}
+                                        />
+                                        {option.label}
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                    </div>
+                    </div>
                 </CommandList>
             </Command>
         </PopoverContent>
