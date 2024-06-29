@@ -5,11 +5,18 @@ import {EventProvider} from "./providers.jsx";
 import Workflow from "./components/Workflow.jsx";
 import Scheduler from "./components/Scheduler.jsx";
 import MultiSelect from "./components/MultiSelect.jsx";
+import DashboardSearchFilter from "./components/DashboardSearchFilter.jsx";
 
 const scheduleApp = document.getElementById('schedule_app');
 if (scheduleApp) {
     const scheduleRoot = createRoot(scheduleApp);
     scheduleRoot.render(<Scheduler />);
+}
+
+const dashboardSearchFilter = document.getElementById('dashboard_table_header');
+if (dashboardSearchFilter) {
+    const dashboardSearchFilterRoot = createRoot(dashboardSearchFilter);
+    dashboardSearchFilterRoot.render(<DashboardSearchFilter status={true} account_group_id={true} />);
 }
 
 const scheduleMultiSelect = document.getElementById('schedule_multiselect');
