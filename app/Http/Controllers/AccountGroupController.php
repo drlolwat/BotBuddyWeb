@@ -268,6 +268,14 @@ class AccountGroupController extends Controller
         $stop_count = 0;
 
         foreach ($accounts as $account) {
+
+            // edge case for people who have removed the agent for some reason
+            if (!isset($this->account->account_group->agent->uuid)) {
+                $account->status = 'Stopped';
+                $account->save();
+                $stop_count++;
+                continue;
+            }
             $stopped = $socket->dispatch(new StopBotCommand($account));
 
             if ($stopped != "true") {
