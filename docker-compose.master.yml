@@ -18,13 +18,6 @@ services:
 #        depends_on:
 #            - mysql
 #            - redis
-    cron:
-        build:
-            context: ./build/cron
-        networks:
-            - sail
-        volumes:
-            - ./:/var/www/html
 networks:
     sail:
         external: true
