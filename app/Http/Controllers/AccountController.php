@@ -24,10 +24,21 @@ class AccountController extends Controller
 
     public function index(): View
     {
-        $accounts = auth()->user()
+        $query = auth()->user()
             ->accounts()
-            ->with('account_group', 'account_group.script', 'proxy', 'script', 'agent', 'stats')
-            ->paginate(25);
+            ->with('account_group', 'account_group.script', 'proxy', 'script', 'agent', 'stats');
+
+        if (request()->get('status')) {
+            $query = $query->where('status', request()->get('status'));
+        } else {
+            $query = $query->where('status', ['Running', 'NoScript', 'Completed', 'ProxyBlocked']);
+        }
+
+        if (request()->get('account_group_id')) {
+            $query = $query->where('account_group_id', request()->get('account_group_id'));
+        }
+
+        $accounts = $query->paginate(25, ['*']);
 
         return view('v1.account.index', compact('accounts'));
     }
