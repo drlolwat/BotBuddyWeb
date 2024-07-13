@@ -38,7 +38,7 @@ class AccountController extends Controller
             $query = $query->where('account_group_id', request()->get('account_group_id'));
         }
 
-        $accounts = $query->paginate(25, ['*']);
+        $accounts = $query->paginate(25);
 
         return view('v1.account.index', compact('accounts'));
     }

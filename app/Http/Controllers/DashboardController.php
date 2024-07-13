@@ -38,7 +38,7 @@ class DashboardController extends Controller
             $query = $query->where('account_group_id', request()->get('account_group_id'));
         }
 
-        $accounts = $query->paginate(25, ['*']);
+        $accounts = $query->paginate(25, ['*'], 'accounts');
 
         return view('v1.dashboard', compact('online', 'offline', 'bannedLast24h', 'accounts'));
     }
