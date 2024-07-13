@@ -1,0 +1,19 @@
+services:
+    nginx:
+        build:
+            context: ./build/nginx
+        ports:
+            - '${APP_PORT:-80}:80'
+        networks:
+            - sail
+            - proxy
+        volumes:
+            - ./:/var/www/html
+            - ./build/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - php
+networks:
+    sail:
+        external: true
+    proxy:
+        external: true

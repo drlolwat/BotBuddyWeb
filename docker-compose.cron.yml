@@ -1,0 +1,13 @@
+services:
+    cron:
+        build:
+            context: ./build/cron
+        networks:
+            - sail
+        volumes:
+            - ./:/var/www/html
+networks:
+    sail:
+        external: true
+    proxy:
+        external: true

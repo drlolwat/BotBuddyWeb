@@ -1,0 +1,32 @@
+services:
+    gomaster:
+        build: ./gomaster
+        ports:
+            - "7888:7888"
+            - "8888:8888"
+        networks:
+            - sail
+        restart: unless-stopped
+#    api:
+#        build:
+#            context: ./build/php
+#        networks:
+#            - sail
+#        volumes:
+#            - ./:/var/www/html
+#            - ./build/php/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
+#        depends_on:
+#            - mysql
+#            - redis
+    cron:
+        build:
+            context: ./build/cron
+        networks:
+            - sail
+        volumes:
+            - ./:/var/www/html
+networks:
+    sail:
+        external: true
+    proxy:
+        external: true
