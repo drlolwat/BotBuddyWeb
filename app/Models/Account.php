@@ -16,7 +16,7 @@ class Account extends Model
         'email', 'password', 'user_id', 'proxy_id', 'script_id',
         'account_group_id', 'agent_id', 'status',
         'script_params', 'password_2fa', 'temp_banned_at','perm_banned_at',
-        'world', 'fps', 'start_queued_at',
+        'world', 'fps', 'start_queued_at', 'last_started_at',
     ];
 
     /**
