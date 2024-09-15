@@ -9,6 +9,16 @@
     <meta name="author" content="BotBuddy">
     <meta property="og:title" content="BotBuddy - Ultimate OSRS Bot Manager Tool">
     <meta property="og:description" content="Optimize your OSRS bot farm with BotBuddy's advanced features, including automations, scheduling, and full support for Jagex accounts.">
+    @if(env('GOOGLE_TAG_MANAGER_ID'))
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ env('GOOGLE_TAG_MANAGER_ID') }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '{{ env('GOOGLE_TAG_MANAGER_ID') }}');
+    </script>
+    @endif
     @vite('resources/css/app.css')
 </head>
 <body class="antialiased bg-gray-50 dark:bg-gray-900">
