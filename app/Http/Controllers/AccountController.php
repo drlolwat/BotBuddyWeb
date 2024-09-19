@@ -30,8 +30,6 @@ class AccountController extends Controller
 
         if (request()->get('status')) {
             $query = $query->where('status', request()->get('status'));
-        } else {
-            $query = $query->where('status', ['Running', 'NoScript', 'Completed', 'ProxyBlocked']);
         }
 
         if (request()->get('account_group_id')) {
