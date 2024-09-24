@@ -270,6 +270,62 @@ class AccountController extends Controller
             return back()->with('status', sprintf('%d accounts have been deleted', $accounts->count()));
         }
 
+        if ($validated['action'] == 'change_proxy') {
+            $req = request()->all()['change_proxy'] ?? null;
+            if (!$req) {
+                return back()->withErrors('Invalid payload');
+            }
+            $proxyGroup = auth()->user()->proxy_groups()->find($req['proxy_group_id']);
+            if (!$proxyGroup) {
+                return back()->withErrors('Proxy group not found');
+            }
+            $success = 0;
+            $fail = 0;
+            foreach ($accounts as $account) {
+                $query = $proxyGroup->proxies();
+
+                switch($req['type']) {
+                    case 'random':
+                        break;
+                    case 'random_unused':
+                        $query->whereDoesntHave('accounts')->where('id', '!=', $account->proxy_id);
+                        break;
+                }
+
+                $proxy = $query->inRandomOrder()->first();
+
+                if (!$proxy) {
+                    $fail++;
+                    continue;
+                }
+
+                $success++;
+
+                $account->proxy_id = $proxy->id;
+                $account->save();
+            }
+
+            $response = back();
+
+            if ($success > 0) {
+                $response->with('status', $success.' accounts have been updated');
+            }
+
+            if ($fail > 0) {
+                $response->withErrors($fail.' accounts could not be updated');
+            }
+
+            return $response;
+        }
+
+        if ($validated['action'] == 'remove_proxy') {
+            foreach ($accounts as $account) {
+                $account->proxy_id = null;
+                $account->save();
+            }
+            return back()->with('status', 'Proxies removed');
+        }
+
         return back()->withErrors('Invalid action');
     }
 
