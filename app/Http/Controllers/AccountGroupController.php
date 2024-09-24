@@ -392,6 +392,67 @@ class AccountGroupController extends Controller
         return $response->with('status', "$updated accounts have been dequeued");
     }
 
+    public function change_proxy(AccountGroup $group): RedirectResponse {
+        $this->authorize('view', $group);
+
+        $req = request()->all()['change_proxy'] ?? null;
+        if (!$req) {
+            return back()->withErrors('Invalid payload');
+        }
+        $proxyGroup = auth()->user()->proxy_groups()->find($req['proxy_group_id']);
+        if (!$proxyGroup) {
+            return back()->withErrors('Proxy group not found');
+        }
+        $success = 0;
+        $fail = 0;
+        foreach ($group->accounts as $account) {
+            $query = $proxyGroup->proxies();
+
+            switch($req['type']) {
+                case 'random':
+                    break;
+                case 'random_unused':
+                    $query->whereDoesntHave('accounts')->where('id', '!=', $account->proxy_id);
+                    break;
+            }
+
+            $proxy = $query->inRandomOrder()->first();
+
+            if (!$proxy) {
+                $fail++;
+                continue;
+            }
+
+            $success++;
+
+            $account->proxy_id = $proxy->id;
+            $account->save();
+        }
+
+        $response = back();
+
+        if ($success > 0) {
+            $response->with('status', $success.' accounts have been updated');
+        }
+
+        if ($fail > 0) {
+            $response->withErrors($fail.' accounts could not be updated');
+        }
+
+        return $response;
+    }
+
+    public function remove_proxy(AccountGroup $group): RedirectResponse
+    {
+        $this->authorize('view', $group);
+
+        foreach ($group->accounts as $account) {
+            $account->proxy_id = null;
+            $account->save();
+        }
+        return back()->with('status', 'Proxies removed');
+    }
+
     public function export(AccountGroup $group): RedirectResponse|StreamedResponse
     {
         $this->authorize('view', $group);

@@ -28,6 +28,8 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
         Route::post('/stop/{group}', [App\Http\Controllers\AccountGroupController::class, 'stop'])->name('account.group.stop');
         Route::post('/queue/{group}', [App\Http\Controllers\AccountGroupController::class, 'queue'])->name('account.group.queue');
         Route::post('/dequeue/{group}', [App\Http\Controllers\AccountGroupController::class, 'dequeue'])->name('account.group.dequeue');
+        Route::post('/change_proxy/{group}', [App\Http\Controllers\AccountGroupController::class, 'change_proxy'])->name('account.group.change_proxy');
+        Route::post('/remove_proxy/{group}', [App\Http\Controllers\AccountGroupController::class, 'remove_proxy'])->name('account.group.remove_proxy');
         Route::post('/export/{group}', [App\Http\Controllers\AccountGroupController::class, 'export'])->name('account.group.export');
         Route::get('/{group}/schedule/create', [App\Http\Controllers\AccountGroupController::class, 'schedule_create_event'])->name('account.group.schedule.create');
         Route::post('/{group}/schedule/create', [App\Http\Controllers\AccountGroupController::class, 'schedule_create_event_submit']);
