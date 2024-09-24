@@ -372,27 +372,24 @@ class AccountGroupController extends Controller
     public function dequeue(AccountGroup $group): RedirectResponse
     {
         $this->authorize('view', $group);
-        $accounts = $group->accounts()->where('status', 'Queued')->get();
+        $updated = $group->accounts()
+            ->where('status', 'Queued')
+            ->update([
+                'status' => 'Stopped',
+                'start_queued_at' => null,
+            ]);
 
         $response = back();
-        $queued_count = 0;
 
-        foreach ($accounts as $account) {
-            $account->status = 'Stopped';
-            $account->start_queued_at = null;
-            $account->save();
-            $queued_count++;
-        }
-
-        if ($queued_count == 0) {
+        if ($updated == 0) {
             return $response->withErrors('No accounts are queued');
         }
 
-        if ($queued_count == 1) {
+        if ($updated == 1) {
             return $response->with('status', '1 account has been dequeued');
         }
 
-        return $response->with('status', "$queued_count accounts have been dequeued");
+        return $response->with('status', "$updated accounts have been dequeued");
     }
 
     public function export(AccountGroup $group): RedirectResponse|StreamedResponse
