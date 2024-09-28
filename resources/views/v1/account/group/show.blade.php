@@ -58,7 +58,7 @@
                                         </div>
                                     </div>
                                     <div class="grid gap-1 mb-4 sm:grid-cols-2 sm:mb-5">
-                                        <div class="flex items-center space-x-4 mb-4">
+                                        <div class="flex items-center space-x-4 mb-2">
                                             <input type="checkbox" name="disable_browser_proxy" id="disable_browser_proxy" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->disable_browser_proxy) checked @endif>
                                             <label for="disable_browser_proxy" class="text-gray-900 dark:text-white">Disable browser proxy</label>
                                         </div>
