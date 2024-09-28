@@ -511,13 +511,13 @@ class AccountController extends Controller
         $stopped = $socket->dispatch(new StopBotCommand($account));
 
         if ($stopped != "true") {
-            return redirect(route('account'))->withErrors(['status' => 'Failed to stop account']);
+            return back()->withErrors(['status' => 'Failed to stop account']);
         }
 
         $account->status = 'Stopping';
         $account->save();
 
-        return redirect(route('account'))->with('status', 'Account stopped');
+        return back()->with('status', 'Account stopped');
     }
 
     public function import(): View
