@@ -36,6 +36,17 @@ class StartBotCommand extends Command
             'disableBrowserProxy' => (bool) $this->account->account_group->disable_browser_proxy,
             'javaXmx' => $this->account->account_group->agent->dreambot_max_heap ?? '512M',
             'javaXms' => $this->account->account_group->agent->dreambot_min_heap ?? '256M',
+            'render' => $this->account->account_group->db_render,
+            'debug' => (bool) $this->account->account_group->db_debug,
+            'disableAnimations' => (bool) $this->account->account_group->db_disable_animations,
+            'disableModels' => (bool) $this->account->account_group->db_disable_models,
+            'beta' => (bool) $this->account->account_group->db_beta,
+            'disableSounds' => (bool) $this->account->account_group->db_disable_sounds,
+            'dismissRandomEvents' => (bool) $this->account->account_group->db_dismiss_random_events,
+            'lowDetail' => (bool) $this->account->account_group->db_low_detail,
+            'menuManipulation' => (bool) $this->account->account_group->db_menu_manipulation,
+            'noClickWalk' => (bool) $this->account->account_group->db_no_click_walk,
+            'minimized' => (bool) $this->account->account_group->db_minimized,
         ];
     }
 }

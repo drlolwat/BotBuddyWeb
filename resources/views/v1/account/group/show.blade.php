@@ -44,10 +44,69 @@
                                     <input type="number" name="fps" id="fps" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{ $group->fps }}" placeholder="Type the group name">
                                 </div>
                             </div>
-                            <div class="flex items-center space-x-4 mb-4">
-                                <input type="checkbox" name="disable_browser_proxy" id="disable_browser_proxy" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->disable_browser_proxy) checked @endif >
-                                <label for="disable_browser_proxy" class="text-gray-900 dark:text-white" >Disable browser proxy</label>
-                            </div>
+                            <details class="mb-4">
+                                <summary class="mb-4 text-lg font-bold text-gray-900 dark:text-white">Advanced options</summary>
+                                <div>
+                                    <div class="grid gap-1 mb-4 sm:grid-cols-2 sm:mb-5">
+                                        <div>
+                                            <label for="db_render" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Render mode</label>
+                                            <select name="db_render" id="db_render" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                                <option value="all" @if($group->db_render == 'all') selected @endif>All</option>
+                                                <option value="script" @if($group->db_render == 'script') selected @endif>Script</option>
+                                                <option value="none" @if($group->db_render == 'none') selected @endif>None</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="grid gap-1 mb-4 sm:grid-cols-2 sm:mb-5">
+                                        <div class="flex items-center space-x-4 mb-4">
+                                            <input type="checkbox" name="disable_browser_proxy" id="disable_browser_proxy" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->disable_browser_proxy) checked @endif>
+                                            <label for="disable_browser_proxy" class="text-gray-900 dark:text-white">Disable browser proxy</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_debug" id="db_debug" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_debug) checked @endif>
+                                            <label for="db_debug" class="text-gray-900 dark:text-white">Debug mode</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_disable_animations" id="db_disable_animations" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_disable_animations) checked @endif>
+                                            <label for="db_disable_animations" class="text-gray-900 dark:text-white">Disable animations</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_disable_models" id="db_disable_models" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_disable_models) checked @endif>
+                                            <label for="db_disable_models" class="text-gray-900 dark:text-white">Disable models</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_disable_sounds" id="db_disable_sounds" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_disable_sounds) checked @endif>
+                                            <label for="db_disable_sounds" class="text-gray-900 dark:text-white">Disable sounds</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_dismiss_random_events" id="db_dismiss_random_events" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_dismiss_random_events) checked @endif>
+                                            <label for="db_dismiss_random_events" class="text-gray-900 dark:text-white">Dismiss random events</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_low_detail" id="db_low_detail" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_low_detail) checked @endif>
+                                            <label for="db_low_detail" class="text-gray-900 dark:text-white">Low detail</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_menu_manipulation" id="db_menu_manipulation" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_menu_manipulation) checked @endif>
+                                            <label for="db_menu_manipulation" class="text-gray-900 dark:text-white">Menu manipulation</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_no_click_walk" id="db_no_click_walk" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_no_click_walk) checked @endif>
+                                            <label for="db_no_click_walk" class="text-gray-900 dark:text-white">No click walk</label>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mb-2">
+                                            <input type="checkbox" name="db_minimized" id="db_minimized" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_minimized) checked @endif>
+                                            <label for="db_minimized" class="text-gray-900 dark:text-white">Minimized</label>
+                                        </div>
+                                        @if(in_array(auth()->user()->subscription->name, ['Farm', 'Founder']))
+                                            <div class="flex items-center space-x-4 mb-2">
+                                                <input type="checkbox" name="db_beta" id="db_beta" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_beta) checked @endif>
+                                                <label for="db_beta" class="text-gray-900 dark:text-white">Beta mode</label>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </details>
                             <div class="flex items-center space-x-4">
                                 <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                     Update

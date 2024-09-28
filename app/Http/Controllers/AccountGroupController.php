@@ -104,8 +104,25 @@ class AccountGroupController extends Controller
             'script_params' => 'nullable',
             'fps' => 'required|int',
             'world' => 'required',
+
             'disable_browser_proxy' => 'nullable',
+
+            'db_debug' => 'nullable',
+            'db_disable_animations' => 'nullable',
+            'db_disable_models' => 'nullable',
+            'db_disable_sounds' => 'nullable',
+            'db_dismiss_random_events' => 'nullable',
+            'db_low_detail' => 'nullable',
+            'db_menu_manipulation' => 'nullable',
+            'db_no_click_walk' => 'nullable',
+            'db_minimized' => 'nullable',
+            'db_beta' => 'nullable',
+            'db_render' => 'required|string',
         ]);
+
+        if (!in_array($validated['db_render'], ['all', 'script', 'none'])) {
+            return back()->withErrors('Invalid render mode');
+        }
 
         if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || filter_var($validated['world'], FILTER_VALIDATE_INT))) {
             return back()->withErrors('Invalid world provided');
@@ -120,6 +137,17 @@ class AccountGroupController extends Controller
             'fps' => $validated['fps'],
             'world' => $validated['world'],
             'disable_browser_proxy' => isset($validated['disable_browser_proxy']) && $validated['disable_browser_proxy'] == "on",
+            'db_debug' => isset($validated['db_debug']) && $validated['db_debug'] == "on",
+            'db_disable_animations' => isset($validated['db_disable_animations']) && $validated['db_disable_animations'] == "on",
+            'db_disable_models' => isset($validated['db_disable_models']) && $validated['db_disable_models'] == "on",
+            'db_disable_sounds' => isset($validated['db_disable_sounds']) && $validated['db_disable_sounds'] == "on",
+            'db_dismiss_random_events' => isset($validated['db_dismiss_random_events']) && $validated['db_dismiss_random_events'] == "on",
+            'db_low_detail' => isset($validated['db_low_detail']) && $validated['db_low_detail'] == "on",
+            'db_menu_manipulation' => isset($validated['db_menu_manipulation']) && $validated['db_menu_manipulation'] == "on",
+            'db_no_click_walk' => isset($validated['db_no_click_walk']) && $validated['db_no_click_walk'] == "on",
+            'db_minimized' => isset($validated['db_minimized']) && $validated['db_minimized'] == "on",
+            'db_beta' => isset($validated['db_beta']) && $validated['db_beta'] == "on" && in_array(auth()->user()->subscription->name, ['Farm', 'Founder']),
+            'db_render' => $validated['db_render'],
         ]);
 
         return redirect(route('account.group.show', $group))->with('status', 'Account group created');
@@ -150,8 +178,25 @@ class AccountGroupController extends Controller
             'script_params' => 'nullable',
             'fps' => 'required|int',
             'world' => 'required',
+
             'disable_browser_proxy' => 'nullable',
+
+            'db_debug' => 'nullable',
+            'db_disable_animations' => 'nullable',
+            'db_disable_models' => 'nullable',
+            'db_disable_sounds' => 'nullable',
+            'db_dismiss_random_events' => 'nullable',
+            'db_low_detail' => 'nullable',
+            'db_menu_manipulation' => 'nullable',
+            'db_no_click_walk' => 'nullable',
+            'db_minimized' => 'nullable',
+            'db_beta' => 'nullable',
+            'db_render' => 'required|string',
         ]);
+
+        if (!in_array($validated['db_render'], ['all', 'script', 'none'])) {
+            return back()->withErrors('Invalid render mode');
+        }
 
         if (!($validated['world'] == 'f2p' || $validated['world'] == 'members' || filter_var($validated['world'], FILTER_VALIDATE_INT))) {
             return back()->withErrors('Invalid world provided');
@@ -165,6 +210,17 @@ class AccountGroupController extends Controller
             'fps' => $validated['fps'],
             'world' => $validated['world'],
             'disable_browser_proxy' => isset($validated['disable_browser_proxy']) && $validated['disable_browser_proxy'] == "on",
+            'db_debug' => isset($validated['db_debug']) && $validated['db_debug'] == "on",
+            'db_disable_animations' => isset($validated['db_disable_animations']) && $validated['db_disable_animations'] == "on",
+            'db_disable_models' => isset($validated['db_disable_models']) && $validated['db_disable_models'] == "on",
+            'db_disable_sounds' => isset($validated['db_disable_sounds']) && $validated['db_disable_sounds'] == "on",
+            'db_dismiss_random_events' => isset($validated['db_dismiss_random_events']) && $validated['db_dismiss_random_events'] == "on",
+            'db_low_detail' => isset($validated['db_low_detail']) && $validated['db_low_detail'] == "on",
+            'db_menu_manipulation' => isset($validated['db_menu_manipulation']) && $validated['db_menu_manipulation'] == "on",
+            'db_no_click_walk' => isset($validated['db_no_click_walk']) && $validated['db_no_click_walk'] == "on",
+            'db_minimized' => isset($validated['db_minimized']) && $validated['db_minimized'] == "on",
+            'db_beta' => isset($validated['db_beta']) && $validated['db_beta'] == "on" && in_array(auth()->user()->subscription->name, ['Farm', 'Founder']),
+            'db_render' => $validated['db_render'],
         ]);
 
         return redirect(route('account.group.show', $group))->with('status', 'Account group updated');

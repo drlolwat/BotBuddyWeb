@@ -15,6 +15,10 @@ class AccountGroup extends Model
     protected $fillable = [
         'name', 'user_id', 'agent_id', 'script_id',
         'script_params', 'world', 'fps', 'disable_browser_proxy',
+
+        'db_debug', 'db_disable_animations', 'db_disable_models', 'db_beta',
+        'db_disable_sounds', 'db_dismiss_random_events', 'db_low_detail',
+        'db_menu_manipulation', 'db_no_click_walk', 'db_minimized', 'db_render'
     ];
 
     /**
