@@ -98,7 +98,7 @@
                                             <input type="checkbox" name="db_minimized" id="db_minimized" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_minimized) checked @endif>
                                             <label for="db_minimized" class="text-gray-900 dark:text-white">Minimized</label>
                                         </div>
-                                        @if(in_array(auth()->user()->subscription->name, ['Farm', 'Founder']))
+                                        @if(in_array(auth()->user()->subscription && auth()->user()->subscription->name, ['Farm', 'Founder']))
                                             <div class="flex items-center space-x-4 mb-2">
                                                 <input type="checkbox" name="db_beta" id="db_beta" class="rounded-lg focus:ring-primary-600 focus:ring-offset-0 focus:ring-2 focus:outline-none focus:ring-offset-gray-50" @if($group->db_beta) checked @endif>
                                                 <label for="db_beta" class="text-gray-900 dark:text-white">Beta mode</label>
