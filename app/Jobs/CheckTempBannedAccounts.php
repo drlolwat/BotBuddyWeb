@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\BotBuddy\Status;
 use App\Models\Account;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -46,7 +47,7 @@ class CheckTempBannedAccounts implements ShouldQueue
 //            ]);
 //            if ($res->status() == 200) {
 //                $account->temp_banned_at = null;
-//                $account->status = 'Stopped';
+//                $account->status = Status::STOPPED;
 //                $account->save();
 //
 //                $account->user->notifications()->create([
@@ -66,7 +67,7 @@ class CheckTempBannedAccounts implements ShouldQueue
         // been over 52h, we can safely assume no longer temp banned
         foreach ($accounts as $account) {
             $account->temp_banned_at = null;
-            $account->status = 'Stopped';
+            $account->status = Status::STOPPED;
             $account->save();
 
             $account->user->notifications()->create([

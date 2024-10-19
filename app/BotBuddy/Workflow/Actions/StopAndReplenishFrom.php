@@ -5,6 +5,7 @@ namespace App\BotBuddy\Workflow\Actions;
 use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
+use App\BotBuddy\Status;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\Workflow;
@@ -39,12 +40,12 @@ class StopAndReplenishFrom extends Action
             return;
         }
 
-        $statuses = ['Stopped'];
+        $statuses = [Status::STOPPED];
 
         // todo: document this feature on site OR allow them to choose
         // if they want it to include banned accounts
         if (str_contains(strtolower($group->name), 'ban')) {
-            $statuses[] = 'Banned';
+            $statuses[] = Status::BANNED;
         }
 
         $replenishAccount = $group->accounts()->whereNot('id', $model->id)

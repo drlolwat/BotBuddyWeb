@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
+use App\BotBuddy\Status;
 use App\Models\ScheduleEvent;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,8 +31,8 @@ class PerformScheduleActions implements ShouldQueue
     public function handle(SocketService $socket): void
     {
         $onlineStatuses = [
-            'Running', 'Starting', 'Completed',
-            'NoScript', 'ProxyBlocked', 'Banned',
+            Status::RUNNING, Status::STARTING, Status::COMPLETED,
+            Status::NO_SCRIPT, Status::PROXY_BLOCKED, Status::BANNED,
         ];
 
         $time = now()->format('H:i') . ":00";
@@ -50,13 +51,13 @@ class PerformScheduleActions implements ShouldQueue
             foreach ($schedule->account_group->accounts as $account) {
                 $stopped = $socket->dispatch(new StopBotCommand($account));
                 if ($stopped == "true") {
-                    $account->status = 'Stopping';
+                    $account->status = Status::STOPPING;
                     $account->save();
                 }
             }
         }
 
-        $offlineStatuses = ['Stopping', 'Stopped'];
+        $offlineStatuses = [Status::STOPPING, Status::STOPPED];
 
         $startingSchedules = ScheduleEvent::query()
             ->with(['account_group' => function($query) use ($offlineStatuses) {
@@ -98,7 +99,7 @@ class PerformScheduleActions implements ShouldQueue
                     continue;
                 }
 
-                $account->status = 'Starting';
+                $account->status = Status::STARTING;
                 $account->start_queued_at = null;
                 $account->last_started_at = now();
                 $account->save();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\BotBuddy\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Agent;
@@ -68,7 +69,7 @@ class AgentController extends Controller
             $deadAccounts = Account::query()
                 ->with('agent')
                 ->whereNotIn('id', $accountIds)
-                ->whereIn('status', ['Running', 'Stopping'])
+                ->whereIn('status', [Status::RUNNING, Status::STOPPING])
                 ->where('user_id', $agent->user_id)
                 ->where('agent_id', $agent->id)
                 ->get();
@@ -76,7 +77,7 @@ class AgentController extends Controller
             foreach ($deadAccounts as $deadAccount) {
                 // todo: fix the master sending an incomplete account list
                 // so this can be uncommented
-                //$deadAccount->status = 'Stopped';
+                //$deadAccount->status = Status::STOPPED;
                 //$deadAccount->save();
             }
 
@@ -112,9 +113,9 @@ class AgentController extends Controller
             ->whereNotIn('agent_id', Agent::query()
                 ->where('last_agentdata_at', '>', now()->subMinutes(5))
                 ->pluck('id'))
-            ->where('status', '!=', 'Stopped')
+            ->where('status', '!=', Status::STOPPED)
             ->where('user_id', $user->id)
-            ->update(['status' => 'Stopped']);
+            ->update(['status' => Status::STOPPED]);
     }
 
     public function customerId(Request $request): RedirectResponse|int|string

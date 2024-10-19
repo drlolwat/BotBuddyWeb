@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\BotBuddy\Socket\Commands\GetRunningBotsByClient;
 use App\BotBuddy\Socket\SocketService;
+use App\BotBuddy\Status;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -31,7 +32,7 @@ class HeartbeatAccounts implements ShouldQueue
     {
         $users = User::where('subscription_expires_at', '>', now())
             ->whereHas('accounts', function ($query) {
-                $query->where('status', 'Running');
+                $query->where('status', Status::RUNNING);
             })
             ->get();
 

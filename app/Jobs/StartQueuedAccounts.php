@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\SocketService;
+use App\BotBuddy\Status;
 use App\Models\Account;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,7 +31,7 @@ class StartQueuedAccounts implements ShouldQueue
     {
         $accounts = Account::query()
             ->with(['account_group.agent', 'user'])
-            ->where('status', 'Queued')
+            ->where('status', Status::QUEUED)
             ->where('start_queued_at', '<', now())
             ->get();
 
@@ -46,14 +47,14 @@ class StartQueuedAccounts implements ShouldQueue
                 !$account->user->dreambot_username ||
                 !$account->user->dreambot_password
             ) {
-                $account->status = 'Stopped';
+                $account->status = Status::STOPPED;
                 $account->start_queued_at = null;
                 $account->save();
                 continue;
             }
 
             $socket->dispatch(new StartBotCommand($account));
-            $account->status = 'Starting';
+            $account->status = Status::STARTING;
             $account->start_queued_at = null;
             $account->last_started_at = now();
             $account->save();

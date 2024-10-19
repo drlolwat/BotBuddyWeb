@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BotBuddy\Socket\Commands\StartBotCommand;
 use App\BotBuddy\Socket\Commands\StopBotCommand;
 use App\BotBuddy\Socket\SocketService;
+use App\BotBuddy\Status;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\Proxy;
@@ -96,17 +97,17 @@ class AccountController extends Controller
                     continue;
                 }
 
-                if ($account->status == 'Running') {
+                if ($account->status == Status::RUNNING) {
                     $errors[] = "$account->email is already running";
                     continue;
                 }
 
-                if ($account->status == 'Starting') {
+                if ($account->status == Status::STARTING) {
                     $errors[] = "$account->email is already starting";
                     continue;
                 }
 
-                if ($account->status == 'Completed') {
+                if ($account->status == Status::COMPLETED) {
                     $errors[] = "$account->email is already running";
                     continue;
                 }
@@ -118,7 +119,7 @@ class AccountController extends Controller
                     continue;
                 }
 
-                $account->status = 'Starting';
+                $account->status = Status::STARTING;
                 $account->start_queued_at = null; // in case it was formerly queued
                 $account->last_started_at = now();
                 $account->save();
@@ -150,7 +151,7 @@ class AccountController extends Controller
                     continue;
                 }
 
-                $account->status = 'Stopping';
+                $account->status = Status::STOPPING;
                 $account->save();
             }
 
@@ -202,24 +203,24 @@ class AccountController extends Controller
                     continue;
                 }
 
-                if ($account->status == 'Running') {
+                if ($account->status == Status::RUNNING) {
                     $errors[] = "$account->email is already running";
                     continue;
                 }
 
-                if ($account->status == 'Starting') {
+                if ($account->status == Status::STARTING) {
                     $errors[] = "$account->email is already starting";
                     continue;
                 }
 
-                if ($account->status == 'Queued') {
+                if ($account->status == Status::QUEUED) {
                     $errors[] = "$account->email is already queued";
                     continue;
                 }
 
                 $start_queue->addMinutes($minutes);
                 $account->start_queued_at = $start_queue;
-                $account->status = 'Queued';
+                $account->status = Status::QUEUED;
                 $account->save();
 
                 $queued_count++;
@@ -451,7 +452,7 @@ class AccountController extends Controller
     {
         $this->authorize('view', $account);
 
-        if ($account->status == 'Starting' || $account->status == 'Running' || $account->status == 'Stopping') {
+        if ($account->status == Status::STARTING || $account->status == Status::RUNNING || $account->status == Status::STOPPING) {
             return back()->withErrors('Account is currently running');
         }
 
@@ -499,7 +500,7 @@ class AccountController extends Controller
             return back()->withErrors(['status' => 'Failed to start account']);
         }
 
-        $account->status = 'Starting';
+        $account->status = Status::STARTING;
         $account->start_queued_at = null;
         $account->last_started_at = now();
         $account->save();
@@ -522,7 +523,7 @@ class AccountController extends Controller
             return back()->withErrors(['status' => 'Failed to stop account']);
         }
 
-        $account->status = 'Stopping';
+        $account->status = Status::STOPPING;
         $account->save();
 
         return back()->with('status', 'Account stopped');
@@ -725,11 +726,11 @@ class AccountController extends Controller
     {
         $this->authorize('view', $account);
 
-        if ($account->status != 'Queued') {
+        if ($account->status != Status::QUEUED) {
             return back()->withErrors('Account is not queued');
         }
 
-        $account->status = 'Stopped';
+        $account->status = Status::STOPPED;
         $account->start_queued_at = null;
         $account->save();
 
