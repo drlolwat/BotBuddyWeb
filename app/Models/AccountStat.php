@@ -11,7 +11,10 @@ class AccountStat extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['account_id', 'gp', 'ttl', 'qp', 'skills', 'name', 'world_id', 'type'];
+    protected $fillable = [
+        'account_id','gp', 'ttl', 'qp', 'skills',
+        'name', 'world_id', 'type', 'membership_days_left',
+    ];
 
     protected $casts = [
         'skills' => 'collection',

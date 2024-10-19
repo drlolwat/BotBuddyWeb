@@ -173,7 +173,7 @@ class AccountController extends Controller
             }
             // todo: store this
             if (isset($stats['BB_MEM_DAYS_LEFT'])) {
-                //$data['membership_days_left'] = $stats['BB_MEM_DAYS_LEFT'];
+                $data['membership_days_left'] = $stats['BB_MEM_DAYS_LEFT'];
             }
 
             if (!$account->stats) {
