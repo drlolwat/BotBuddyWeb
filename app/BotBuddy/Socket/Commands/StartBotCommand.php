@@ -29,7 +29,7 @@ class StartBotCommand extends Command
             'internalId' => $this->account->id,
             'jarLocation' => $this->account->account_group->agent->dreambot_client_path ?? '',
             'scriptsLocation' => $this->account->account_group->agent->dreambot_scripts_path ?? '',
-            'scriptName' => $this->account->account_group->script->script,
+            'scriptName' => $this->script ?? $this->account->account_group->script->script,
             'scriptParams' => $this->script_params ?? $this->account->account_group->script_params ?? "",
             'clientName' => $this->account->user->dreambot_username,
             'clientPassword' => $this->account->user->dreambot_password,
