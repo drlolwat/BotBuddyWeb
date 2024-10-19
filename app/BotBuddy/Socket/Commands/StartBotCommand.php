@@ -47,7 +47,7 @@ class StartBotCommand extends Command
             'menuManipulation' => (bool) $this->account->account_group->db_menu_manipulation,
             'noClickWalk' => (bool) $this->account->account_group->db_no_click_walk,
             'minimized' => (bool) $this->account->account_group->db_minimized,
-            'accountPin' => (bool) $this->account->bank_pin ?? '',
+            'accountPin' => $this->account->bank_pin ?? '',
         ];
     }
 }
