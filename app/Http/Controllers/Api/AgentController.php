@@ -107,6 +107,10 @@ class AgentController extends Controller
             ->whereIn('uuid', $uuids)
             ->update(['last_agentdata_at' => now()]);
 
+        if (!$user) {
+            return;
+        }
+
         // update accounts on agents not running
         Account::query()
             ->with('agent')

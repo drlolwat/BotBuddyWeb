@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\Agent;
 use App\Models\Proxy;
 use App\Models\ProxyGroup;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -43,7 +44,14 @@ class AgentController extends Controller
             ->where('user_id', auth()->id())
             ->count();
 
-        $maxAgents = auth()->user()->subscription->max_agents;
+        /** @var User $user */
+        $user = auth()->user();
+
+        if (!$user->subscription) {
+            return back()->withErrors('You need to subscribe to create agents');
+        }
+
+        $maxAgents = $user->subscription->max_agents;
 
         if ($agentCount >= $maxAgents) {
             return back()->withErrors("You are not allowed to create more than $maxAgents agents");

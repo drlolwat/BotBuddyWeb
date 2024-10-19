@@ -9,6 +9,7 @@ use App\BotBuddy\Status;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\ScheduleEvent;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -129,6 +130,9 @@ class AccountGroupController extends Controller
             return back()->withErrors('Invalid world provided');
         }
 
+        /** @var User $user */
+        $user = auth()->user();
+
         $group = AccountGroup::create([
             'name' => $validated['name'],
             'user_id' => auth()->id(),
@@ -147,7 +151,7 @@ class AccountGroupController extends Controller
             'db_menu_manipulation' => isset($validated['db_menu_manipulation']) && $validated['db_menu_manipulation'] == "on",
             'db_no_click_walk' => isset($validated['db_no_click_walk']) && $validated['db_no_click_walk'] == "on",
             'db_minimized' => isset($validated['db_minimized']) && $validated['db_minimized'] == "on",
-            'db_beta' => isset($validated['db_beta']) && $validated['db_beta'] == "on" && in_array(auth()->user()->subscription->name, ['Farm', 'Founder']),
+            'db_beta' => isset($validated['db_beta']) && $validated['db_beta'] == "on" && in_array($user->subscription?->name, ['Farm', 'Founder']),
             'db_render' => $validated['db_render'],
         ]);
 
@@ -203,6 +207,9 @@ class AccountGroupController extends Controller
             return back()->withErrors('Invalid world provided');
         }
 
+        /** @var User $user */
+        $user = auth()->user();
+
         $group->update([
             'name' => $validated['name'],
             'agent_id' => $validated['agent_id'] ?? null,
@@ -220,7 +227,7 @@ class AccountGroupController extends Controller
             'db_menu_manipulation' => isset($validated['db_menu_manipulation']) && $validated['db_menu_manipulation'] == "on",
             'db_no_click_walk' => isset($validated['db_no_click_walk']) && $validated['db_no_click_walk'] == "on",
             'db_minimized' => isset($validated['db_minimized']) && $validated['db_minimized'] == "on",
-            'db_beta' => isset($validated['db_beta']) && $validated['db_beta'] == "on" && in_array(auth()->user()->subscription->name, ['Farm', 'Founder']),
+            'db_beta' => isset($validated['db_beta']) && $validated['db_beta'] == "on" && in_array($user->subscription?->name, ['Farm', 'Founder']),
             'db_render' => $validated['db_render'],
         ]);
 
@@ -246,6 +253,8 @@ class AccountGroupController extends Controller
         $accounts = $group->accounts()
             ->with('agent', 'script')
             ->whereIn('status', [Status::STOPPED, Status::QUEUED])->get();
+
+        /** @var User $user */
         $user = auth()->user();
 
         if (!$user->dreambot_username || !$user->dreambot_password) {
@@ -368,6 +377,7 @@ class AccountGroupController extends Controller
             ->with('agent', 'script')
             ->whereIn('status', [Status::STOPPED, Status::STOPPING])->get();
 
+        /** @var User $user */
         $user = auth()->user();
 
         if (!$user->dreambot_username || !$user->dreambot_password) {
@@ -456,7 +466,11 @@ class AccountGroupController extends Controller
         if (!$req) {
             return back()->withErrors('Invalid payload');
         }
-        $proxyGroup = auth()->user()->proxy_groups()->find($req['proxy_group_id']);
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        $proxyGroup = $user->proxy_groups()->find($req['proxy_group_id']);
         if (!$proxyGroup) {
             return back()->withErrors('Proxy group not found');
         }

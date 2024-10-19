@@ -3,6 +3,7 @@
 namespace App\BotBuddy\Socket\Commands;
 
 use App\Models\Account;
+use Exception;
 
 class StartBotCommand extends Command
 {
@@ -15,12 +16,20 @@ class StartBotCommand extends Command
      */
     public function dispatchUsing(): array
     {
+        if ($this->account->account_group === null) {
+            throw new Exception('Cannot start bot with no account group');
+        }
+
+        if ($this->account->account_group->agent === null) {
+            throw new Exception('Cannot start bot with no agent');
+        }
+
         return [
             'serverId' => $this->account->account_group->agent->uuid,
             'internalId' => $this->account->id,
             'jarLocation' => $this->account->account_group->agent->dreambot_client_path ?? '',
             'scriptsLocation' => $this->account->account_group->agent->dreambot_scripts_path ?? '',
-            'scriptName' => $this->script ?? $this->account->account_group->script->script,
+            'scriptName' => $this->account->account_group->script->script,
             'scriptParams' => $this->script_params ?? $this->account->account_group->script_params ?? "",
             'clientName' => $this->account->user->dreambot_username,
             'clientPassword' => $this->account->user->dreambot_password,

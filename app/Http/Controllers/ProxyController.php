@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Proxy;
 use App\Models\ProxyGroup;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -19,7 +20,10 @@ class ProxyController extends Controller
 
     public function index(): View
     {
-        $proxies = auth()->user()
+        /** @var User $user */
+        $user = auth()->user();
+
+        $proxies = $user
             ->proxies()
             ->with('proxy_group')
             ->withCount('accounts')

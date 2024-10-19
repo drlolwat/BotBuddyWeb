@@ -16,7 +16,7 @@ class HasNeverSubscribed
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && !auth()->user()->subscription_expires_at) {
+        if (auth()->check() && auth()->user() && !auth()->user()->subscription_expires_at) {
             return redirect()->route('store');
         }
 

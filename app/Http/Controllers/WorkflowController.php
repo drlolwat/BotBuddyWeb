@@ -9,6 +9,7 @@ use App\BotBuddy\Workflow\Events\ScriptComplete;
 use App\BotBuddy\Workflow\Events\StatGoal;
 use App\BotBuddy\Workflow\Events\TempBanned;
 use App\BotBuddy\Workflow\WorkflowService;
+use App\Models\User;
 use App\Models\Workflow;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\RedirectResponse;
@@ -46,7 +47,14 @@ class WorkflowController extends Controller
             ->where('user_id', auth()->id())
             ->count();
 
-        $maxWorkflows = auth()->user()->subscription->max_workflows;
+        /** @var User $user */
+        $user = auth()->user();
+
+        if (!$user->subscription) {
+            return back()->withErrors('You are not allowed to create workflows');
+        }
+
+        $maxWorkflows = $user->subscription->max_workflows;
 
         if ($workflowCount >= $maxWorkflows) {
             return back()->withErrors("You are not allowed to create more than $maxWorkflows workflows");
@@ -105,7 +113,7 @@ class WorkflowController extends Controller
             return [Str::replaceFirst('event_', '', (string)$key) => $value];
         });
 
-        if (auth()->user()->subscription->name == 'Basic' && in_array($validated['event'], ['temp_banned', 'stat_goal'])) {
+        if ($user->subscription->name == 'Basic' && in_array($validated['event'], ['temp_banned', 'stat_goal'])) {
             return back()->withErrors('You are not allowed to use this workflow event');
         }
 
@@ -137,7 +145,7 @@ class WorkflowController extends Controller
 
         $workflow = Workflow::create([
             'name' => $validated['name'],
-            'user_id' => auth()->user()->id,
+            'user_id' => $user->id,
             'model_type' => $validated['model_type'],
             'model_id' => $validated['model_id'],
             'event' => $validated['event'],
@@ -170,7 +178,9 @@ class WorkflowController extends Controller
      */
     public function events(WorkflowService $workflowService): array
     {
-        $subscription = auth()->user()->subscription;
+        /** @var User $user */
+        $user = auth()->user();
+        $subscription = $user->subscription;
         if (!$subscription) {
             return [];
         }

@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\BotBuddy\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property Status $status
+ * @property User $user
+ */
 class Account extends Model
 {
     use HasFactory, SoftDeletes;

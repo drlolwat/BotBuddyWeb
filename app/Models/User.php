@@ -16,6 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property ?Carbon $subscription_expires_at
+ * @property ?Subscription $subscription
  */
 class User extends Authenticatable implements MustVerifyEmail
 {

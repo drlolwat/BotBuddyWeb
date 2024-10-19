@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -14,11 +15,14 @@ class NotificationController extends Controller
 
     public function index(): View
     {
-        $notifications = auth()->user()->notifications()
+        /** @var User $user */
+        $user = auth()->user();
+
+        $notifications = $user->notifications()
             ->orderByDesc('id')
             ->paginate(10);
 
-        auth()->user()
+        $user
             ->notifications()
             ->update(['opened_at' => now()]);
 
@@ -27,7 +31,10 @@ class NotificationController extends Controller
 
     public function clear(): RedirectResponse
     {
-        auth()->user()->notifications()->delete();
+        /** @var User $user */
+        $user = auth()->user();
+
+        $user->notifications()->delete();
 
         return redirect()->back()->with('status', 'Notifications cleared');
     }

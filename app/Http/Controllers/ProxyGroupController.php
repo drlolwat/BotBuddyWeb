@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\Proxy;
 use App\Models\ProxyGroup;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -19,7 +20,10 @@ class ProxyGroupController extends Controller
 
     public function index(): View
     {
-        $proxyGroups = auth()->user()
+        /** @var User $user */
+        $user = auth()->user();
+
+        $proxyGroups = $user
             ->proxy_groups()
             ->withCount('proxies')
             ->paginate(10);

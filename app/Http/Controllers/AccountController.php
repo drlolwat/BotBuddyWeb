@@ -9,6 +9,7 @@ use App\BotBuddy\Status;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\Proxy;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +26,10 @@ class AccountController extends Controller
 
     public function index(): View
     {
-        $query = auth()->user()
+        /** @var User $user */
+        $user = auth()->user();
+
+        $query = $user
             ->accounts()
             ->with('account_group', 'account_group.script', 'proxy', 'script', 'agent', 'stats');
 
@@ -57,6 +61,7 @@ class AccountController extends Controller
 
         if ($validated['action'] == 'start') {
 
+            /** @var User $user */
             $user = auth()->user();
 
             if (!$user->dreambot_username || !$user->dreambot_password) {
@@ -164,6 +169,7 @@ class AccountController extends Controller
             ]);
             $minutes = (int) $minutesValidated['minutes'];
 
+            /** @var User $user */
             $user = auth()->user();
 
             if (!$user->dreambot_username || !$user->dreambot_password) {
@@ -276,7 +282,11 @@ class AccountController extends Controller
             if (!$req) {
                 return back()->withErrors('Invalid payload');
             }
-            $proxyGroup = auth()->user()->proxy_groups()->find($req['proxy_group_id']);
+
+            /** @var User $user */
+            $user = auth()->user();
+
+            $proxyGroup = $user->proxy_groups()->find($req['proxy_group_id']);
             if (!$proxyGroup) {
                 return back()->withErrors('Proxy group not found');
             }
@@ -336,7 +346,7 @@ class AccountController extends Controller
 
         $chunkedSkills = [];
 
-        if ($account->stats) {
+        if ($account->stats && $account->stats->skills) {
             foreach ($account->stats->skills->chunk(2)->toArray() as $skills) {
                 $chunk = [];
                 foreach ($skills as $skillName => $skillLevel) {
@@ -346,7 +356,10 @@ class AccountController extends Controller
             }
         }
 
-        $proxies = auth()->user()->proxies()->withCount('accounts')->get();
+        /** @var User $user */
+        $user = auth()->user();
+
+        $proxies = $user->proxies()->withCount('accounts')->get();
 
         return view('v1.account.show', compact('account', 'chunkedSkills', 'proxies'));
     }
@@ -465,6 +478,7 @@ class AccountController extends Controller
     {
         $this->authorize('view', $account);
 
+        /** @var User $user */
         $user = auth()->user();
 
         if (!$user->dreambot_username || !$user->dreambot_password) {
@@ -559,6 +573,7 @@ class AccountController extends Controller
             ],
         ]);
 
+        /** @var AccountGroup $accountGroup */
         $accountGroup = AccountGroup::where('id', $validated['account_group_id'])->first();
 
         $linesFile = [];

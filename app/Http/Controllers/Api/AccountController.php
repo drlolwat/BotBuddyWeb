@@ -56,7 +56,7 @@ class AccountController extends Controller
         }
 
         if ($validated['Status'] == Status::BANNED) {
-            if ($account->user->subscription->name != 'Basic' && $account->stats?->name) {
+            if ($account->user->subscription && $account->user->subscription->name != 'Basic' && $account->stats?->name) {
                 // check if account is temp banned or perm banned via hiscores
                 $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
                     'player' => $account->stats->name
@@ -209,7 +209,14 @@ class AccountController extends Controller
                     ->where('model_type', 'account')
                     ->where('model_id', $account->id)
                     ->where('event', 'stat_goal')
-                    ->get()->filter(function ($workflow) use ($data, $keys) {$match = 0;foreach ($keys as $key) {if (isset($workflow->data[$key]) && !isset($data[$key])) {continue;}if (isset($data[$key]) && isset($workflow->data[$key]) && $workflow->data[$key] <= $data[$key]) {$match++;}}return count($workflow->data) == $match;});
+                    ->get()->filter(function ($workflow) use ($data, $keys) {
+                        $match = 0;
+                        foreach ($keys as $key) {
+                            if (isset($workflow->data[$key]) && !isset($data[$key])) {continue;}
+                            if (isset($data[$key]) && isset($workflow->data[$key]) && $workflow->data[$key] <= $data[$key]) {$match++;}
+                        }
+                        return count($workflow->data) == $match;
+                    });
 
                 // handle for specific account
                 foreach ($workflows as $workflow) {

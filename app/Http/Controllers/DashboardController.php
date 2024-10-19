@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\BotBuddy\Status;
+use App\Models\User;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -16,17 +17,20 @@ class DashboardController extends Controller
     {
         $yesterday = now()->subDay();
 
-        $online = auth()->user()->accounts()->where('status', Status::RUNNING)->count();
-        $offline = auth()->user()->accounts()->where('status', '!=', Status::RUNNING)->count();
+        /** @var User $user */
+        $user = auth()->user();
 
-        $bannedLast24h = auth()->user()->accounts()
+        $online = $user->accounts()->where('status', Status::RUNNING)->count();
+        $offline = $user->accounts()->where('status', '!=', Status::RUNNING)->count();
+
+        $bannedLast24h = $user->accounts()
             ->where(function ($query) use ($yesterday) {
                 $query->where('perm_banned_at', '>=', $yesterday)
                     ->orWhere('temp_banned_at', '>=', $yesterday);
             })
             ->count();
 
-        $query = auth()->user()->accounts()
+        $query = $user->accounts()
             ->with('account_group', 'stats', 'agent', 'script');
 
         if (request()->get('status')) {

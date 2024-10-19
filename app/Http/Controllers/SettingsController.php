@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +31,7 @@ class SettingsController extends Controller
         // convert checkbox value to bool
         $darkMode = $request->input('dark_mode') === 'on';
 
+        /** @var User $user */
         $user = auth()->user();
         $user->dark_mode = $darkMode;
         $user->save();
@@ -44,6 +46,7 @@ class SettingsController extends Controller
             'dreambot_password' => '',
         ]);
 
+        /** @var User $user */
         $user = auth()->user();
 
         if ($validated['dreambot_username'] != $user->dreambot_username) {

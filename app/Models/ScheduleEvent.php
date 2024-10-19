@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $start
  * @property int $duration
+ * @property UserScript $script
+ * @property ?AccountGroup $account_group
  */
 class ScheduleEvent extends Model
 {
