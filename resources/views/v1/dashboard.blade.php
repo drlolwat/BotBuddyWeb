@@ -77,8 +77,8 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
-                                @if($account->script)
-                                    <a class="font-medium" href="{{ route('script.show', $account->script_id) }}">{{ $account->script->name }}</a>
+                                @if($account->account_group?->script)
+                                    <a class="font-medium" href="{{ route('script.show', $account->account_group->script_id) }}">{{ $account->account_group->script->name }}</a>
                                 @else
                                     <span>-</span>
                                 @endif
