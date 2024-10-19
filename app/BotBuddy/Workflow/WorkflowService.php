@@ -18,6 +18,7 @@ use App\BotBuddy\Workflow\Events\TempBanned;
 use App\Models\Account;
 use App\Models\AccountGroup;
 use App\Models\Workflow;
+use App\Models\WorkflowLog;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -93,6 +94,13 @@ class WorkflowService
         if ($removeProxyAction) {
             $runner = app()->makeWith($this->actions[$removeProxyAction->name], ['workflow' => $workflow]);
             $runner->run($model, $removeProxyAction->data ?? []);
+        }
+
+        if ($model instanceof Account) {
+            WorkflowLog::create([
+                'account_id' => $model->id,
+                'workflow_id' => $workflow->id,
+            ]);
         }
     }
 
