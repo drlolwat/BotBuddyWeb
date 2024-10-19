@@ -347,9 +347,9 @@ class AccountController extends Controller
         $chunkedSkills = [];
 
         if ($account->stats && $account->stats->skills) {
-            /** @var array<string, array<string, int>> $chunkedSkills */
-            $chunkedSkills = $account->stats->skills->chunk(2)->toArray();
-            foreach ($chunkedSkills as $skills) {
+            /** @var array<int, array<string, int>> $chunkedSkills */
+            $chunkedSkillsArr = $account->stats->skills->chunk(2)->toArray();
+            foreach ($chunkedSkillsArr as $skills) {
                 $chunk = [];
                 foreach ($skills as $skillName => $skillLevel) {
                     $chunk[] = ['skill' => $skillName, 'level' => $skillLevel];
