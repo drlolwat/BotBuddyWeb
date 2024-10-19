@@ -126,6 +126,7 @@ class WorkflowController extends Controller
         $eventValidator->replace($eventData);
         $eventDataValidated = $eventValidator->validate($eventValidator->rules());
 
+        /** @var array<string, array<string, mixed>|null> $actions */
         $actions = (new Collection($validated['action']))
             ->mapWithKeys(fn ($action) => [$action => $validated[$action] ?? null])
             ->toArray();

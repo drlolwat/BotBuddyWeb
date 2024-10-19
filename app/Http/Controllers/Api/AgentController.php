@@ -6,6 +6,7 @@ use App\BotBuddy\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Agent;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -42,6 +43,10 @@ class AgentController extends Controller
                 ? json_decode($encoded, true)
                 : [];
             $accountStatusById = [];
+
+            if (!is_array($decodedArray)) {
+                throw new Exception("Invalid agentData received: $encoded");
+            }
 
             foreach ($decodedArray as $item) {
                 foreach ($item as $key => $value) {

@@ -25,10 +25,12 @@ class ChangeProxy extends Action
      */
     public function run(Model $model, array $data): void
     {
-        $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
+        /** @var int $proxyGroupId */
+        $proxyGroupId = $data['proxy_group_id'];
+        $proxyGroup = $model->user->proxy_groups()->find($proxyGroupId);
         if (!$proxyGroup) {
             $model->user->notifications()->create([
-                'message' => "{$model->email} could not be restarted, could not find proxy group ID: {$data['proxy_group_id']} (was it deleted?)",
+                'message' => "{$model->email} could not be restarted, could not find proxy group ID: {$proxyGroupId} (was it deleted?)",
                 'type' => 'error'
             ]);
             return;

@@ -33,8 +33,10 @@ class StopAndReplenishFrom extends Action
             ->first();
 
         if (!$group) {
+            /** @var int $accountGroupId */
+            $accountGroupId = $data['account_group_id'];
             $model->user->notifications()->create([
-                'message' => "Could not change to account group ID {$data['account_group_id']} to replenish from (was it deleted?)",
+                'message' => "Could not change to account group ID {$accountGroupId} to replenish from (was it deleted?)",
                 'type' => 'error'
             ]);
             return;
@@ -99,10 +101,12 @@ class StopAndReplenishFrom extends Action
                 $replenishAccount->save();
                 break;
             case 'random':
-                $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
+                /** @var int $proxyGroupId */
+                $proxyGroupId = $data['proxy_group_id'];
+                $proxyGroup = $model->user->proxy_groups()->find($proxyGroupId);
                 if (!$proxyGroup) {
                     $model->user->notifications()->create([
-                        'message' => "Replenish account could not be started, could not find proxy group ID: {$data['proxy_group_id']} (was it deleted?)",
+                        'message' => "Replenish account could not be started, could not find proxy group ID: {$proxyGroupId} (was it deleted?)",
                         'type' => 'error'
                     ]);
                     return;
@@ -124,10 +128,12 @@ class StopAndReplenishFrom extends Action
                 $replenishAccount->save();
                 break;
             case 'random_unused':
-                $proxyGroup = $model->user->proxy_groups()->find($data['proxy_group_id']);
+                /** @var int $proxyGroupId */
+                $proxyGroupId = $data['proxy_group_id'];
+                $proxyGroup = $model->user->proxy_groups()->find($proxyGroupId);
                 if (!$proxyGroup) {
                     $model->user->notifications()->create([
-                        'message' => "Replenish account could not be started, could not find proxy group ID: {$data['proxy_group_id']} (was it deleted?)",
+                        'message' => "Replenish account could not be started, could not find proxy group ID: {$proxyGroupId} (was it deleted?)",
                         'type' => 'error'
                     ]);
                     return;

@@ -21,16 +21,18 @@ class ChangeAccountGroup extends Action
      */
     public function run(Model $model, array $data): void
     {
-        $accountGroup = $model->user->account_groups()->find($data['account_group_id']);
+        /** @var int $accountGroupId */
+        $accountGroupId = $data['account_group_id'];
+        $accountGroup = $model->user->account_groups()->find($accountGroupId);
         if (!$accountGroup) {
             $model->user->notifications()->create([
-                'message' => "Could not change to account group ID {$data['account_group_id']} for {$model->email} (was it deleted?)",
+                'message' => "Could not change to account group ID {$accountGroupId} for {$model->email} (was it deleted?)",
                 'type' => 'error'
             ]);
             return;
         }
 
-        $model->account_group_id = $data['account_group_id'];
+        $model->account_group_id = $accountGroupId;
         $model->save();
     }
 

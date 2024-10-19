@@ -590,21 +590,21 @@ class AccountGroupController extends Controller
         $status = [];
 
         foreach ($validated['days'] as $day) {
-            if (now()->setTimeFromTimeString(request('start_time')) == now()->setTimeFromTimeString(request('finish_time'))) {
+            if (now()->setTimeFromTimeString($validated['start_time']) == now()->setTimeFromTimeString($validated['finish_time'])) {
                 return back()->withErrors('Start time must be before finish time');
             }
 
-            if (now()->setTimeFromTimeString(request('start_time')) > now()->setTimeFromTimeString(request('finish_time'))) {
+            if (now()->setTimeFromTimeString($validated['start_time']) > now()->setTimeFromTimeString($validated['finish_time'])) {
                 return back()->withErrors('Start time must be before finish time');
             }
 
             $withinRange = $group->schedule_events()
-                ->where(function ($query) use($day) {
-                    $query->where('start_at', '<', now()->setTimeFromTimeString(request('start_time')))
-                        ->where('finish_at', '>', now()->setTimeFromTimeString(request('start_time')))->where('day', $day);
-                })->orWhere(function ($query) use($day) {
-                    $query->where('start_at', '<', now()->setTimeFromTimeString(request('finish_time')))
-                        ->where('finish_at', '>', now()->setTimeFromTimeString(request('finish_time')))->where('day', $day);
+                ->where(function ($query) use($day, $validated) {
+                    $query->where('start_at', '<', now()->setTimeFromTimeString($validated['start_time']))
+                        ->where('finish_at', '>', now()->setTimeFromTimeString($validated['start_time']))->where('day', $day);
+                })->orWhere(function ($query) use($day, $validated) {
+                    $query->where('start_at', '<', now()->setTimeFromTimeString($validated['finish_time']))
+                        ->where('finish_at', '>', now()->setTimeFromTimeString($validated['finish_time']))->where('day', $day);
                 })->exists();
 
             if ($withinRange) {
@@ -618,8 +618,8 @@ class AccountGroupController extends Controller
                 'script_id' => request('script_id'),
                 'script_params' => request('script_params') ?? null,
                 'data' => request('data') ?? [],
-                'start_at' => now()->setTimeFromTimeString(request('start_time')),
-                'finish_at' => now()->setTimeFromTimeString(request('finish_time')),
+                'start_at' => now()->setTimeFromTimeString($validated['start_time']),
+                'finish_at' => now()->setTimeFromTimeString($validated['finish_time']),
             ]);
 
             $status[] = $day;
@@ -662,14 +662,14 @@ class AccountGroupController extends Controller
         $validated = collect($validated);
 
         $withinRange = $group->schedule_events()
-            ->where(function ($query) use($event) {
-                $query->where('start_at', '<', now()->setTimeFromTimeString(request('start_time')))
-                    ->where('finish_at', '>', now()->setTimeFromTimeString(request('start_time')))
+            ->where(function ($query) use($event, $validated) {
+                $query->where('start_at', '<', now()->setTimeFromTimeString($validated['start_time']))
+                    ->where('finish_at', '>', now()->setTimeFromTimeString($validated['start_time']))
                     ->where('day', request('day'))
                     ->whereNot('id', $event->id);
-            })->orWhere(function ($query) use($event) {
-                $query->where('start_at', '<', now()->setTimeFromTimeString(request('finish_time')))
-                    ->where('finish_at', '>', now()->setTimeFromTimeString(request('finish_time')))
+            })->orWhere(function ($query) use($event, $validated) {
+                $query->where('start_at', '<', now()->setTimeFromTimeString($validated['finish_time']))
+                    ->where('finish_at', '>', now()->setTimeFromTimeString($validated['finish_time']))
                     ->where('day', request('day'))
                     ->whereNot('id', $event->id);
             })->exists();
@@ -678,13 +678,13 @@ class AccountGroupController extends Controller
             return back()->withErrors('You have an event within this time range.');
         }
 
-        if (now()->setTimeFromTimeString(request('start_time')) > now()->setTimeFromTimeString(request('finish_time'))) {
+        if (now()->setTimeFromTimeString($validated['start_time']) > now()->setTimeFromTimeString($validated['finish_time'])) {
             return back()->withErrors('Start time must be before finish time');
         }
 
         $event->update([...$validated->except('start_time', 'finish_time', 'script_params'),
-            'start_at' => now()->setTimeFromTimeString(request('start_time')),
-            'finish_at' => now()->setTimeFromTimeString(request('finish_time')),
+            'start_at' => now()->setTimeFromTimeString($validated['start_time']),
+            'finish_at' => now()->setTimeFromTimeString($validated['finish_time']),
             'script_params' => $validated['script_params'] ?? null,
         ]);
 

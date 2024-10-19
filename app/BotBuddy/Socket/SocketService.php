@@ -3,6 +3,7 @@
 namespace App\BotBuddy\Socket;
 
 use App\BotBuddy\Socket\Commands\Command;
+use Exception;
 
 class SocketService
 {
@@ -17,6 +18,14 @@ class SocketService
      */
     public function send(string $header, array $data): string
     {
+        if (!is_string(env('RS_MASTER_HOST'))) {
+            throw new Exception("RS_MASTER_HOST is not set");
+        }
+
+        if (!is_int(env('RS_MASTER_PORT'))) {
+            throw new Exception("RS_MASTER_PORT is not set");
+        }
+
         $jsonData = sprintf("%s\r%s\n", $header, json_encode($data));
 
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
