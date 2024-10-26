@@ -40,7 +40,7 @@ class AccountController extends Controller
         }
 
         // todo: handle via event system
-        if ($validated['Status'] == Status::COMPLETED) {
+        if ($validated['Status'] == Status::COMPLETED->value) {
             // handle for specific account
             $workflows = $workflowService->getWorkflows('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
             foreach ($workflows as $workflow) {
@@ -55,7 +55,7 @@ class AccountController extends Controller
             }
         }
 
-        if ($validated['Status'] == Status::BANNED) {
+        if ($validated['Status'] == Status::BANNED->value) {
             if ($account->user->subscription && $account->user->subscription->name != 'Basic' && $account->stats?->name) {
                 // check if account is temp banned or perm banned via hiscores
                 $res = Http::get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws', [
@@ -89,11 +89,11 @@ class AccountController extends Controller
             }
         }
 
-        if ($validated['Status'] == Status::STOPPED && $account->status == Status::BANNED) {
+        if ($validated['Status'] == Status::STOPPED->value && $account->status == Status::BANNED->value) {
             return ['success' => false];
         }
 
-        if ($validated['Status'] == Status::PROXY_BLOCKED) {
+        if ($validated['Status'] == Status::PROXY_BLOCKED->value) {
             // handle for specific account
             $workflows = $workflowService->getWorkflows('account', $account->id, 'proxy_blocked', null);
             foreach ($workflows as $workflow) {
@@ -108,7 +108,7 @@ class AccountController extends Controller
             }
         }
 
-        if ($validated['Status'] == Status::LOCKED) {
+        if ($validated['Status'] == Status::LOCKED->value) {
             // specific account not necessary, as this was removed from workflow creation prior
             if ($account->account_group_id) {
                 $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'locked', null);
@@ -118,7 +118,7 @@ class AccountController extends Controller
             }
         }
 
-        if ($validated['Status'] != Status::PROXY_BLOCKED) {
+        if ($validated['Status'] != Status::PROXY_BLOCKED->value) {
             $account->status = $validated['Status'];
         }
 

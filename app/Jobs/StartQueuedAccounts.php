@@ -31,7 +31,7 @@ class StartQueuedAccounts implements ShouldQueue
     {
         $accounts = Account::query()
             ->with(['account_group.agent', 'user'])
-            ->where('status', Status::QUEUED)
+            ->where('status', Status::QUEUED->value)
             ->where('start_queued_at', '<', now())
             ->get();
 
@@ -47,14 +47,14 @@ class StartQueuedAccounts implements ShouldQueue
                 !$account->user->dreambot_username ||
                 !$account->user->dreambot_password
             ) {
-                $account->status = Status::STOPPED;
+                $account->status = Status::STOPPED->value;
                 $account->start_queued_at = null;
                 $account->save();
                 continue;
             }
 
             $socket->dispatch(new StartBotCommand($account));
-            $account->status = Status::STARTING;
+            $account->status = Status::STARTING->value;
             $account->start_queued_at = null;
             $account->last_started_at = now();
             $account->save();

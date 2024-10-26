@@ -20,8 +20,8 @@ class DashboardController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $online = $user->accounts()->where('status', Status::RUNNING)->count();
-        $offline = $user->accounts()->where('status', '!=', Status::RUNNING)->count();
+        $online = $user->accounts()->where('status', Status::RUNNING->value)->count();
+        $offline = $user->accounts()->where('status', '!=', Status::RUNNING->value)->count();
 
         $bannedLast24h = $user->accounts()
             ->where(function ($query) use ($yesterday) {
@@ -36,7 +36,7 @@ class DashboardController extends Controller
         if (request()->get('status')) {
             $query = $query->where('status', request()->get('status'));
         } else {
-            $query = $query->where('status', [Status::RUNNING, Status::NO_SCRIPT, Status::COMPLETED, Status::PROXY_BLOCKED]);
+            $query = $query->where('status', [Status::RUNNING->value, Status::NO_SCRIPT->value, Status::COMPLETED->value, Status::PROXY_BLOCKED->value]);
         }
 
         if (request()->get('account_group_id')) {

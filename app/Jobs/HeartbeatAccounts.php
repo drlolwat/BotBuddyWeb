@@ -32,7 +32,7 @@ class HeartbeatAccounts implements ShouldQueue
     {
         $users = User::where('subscription_expires_at', '>', now())
             ->whereHas('accounts', function ($query) {
-                $query->where('status', Status::RUNNING);
+                $query->where('status', Status::RUNNING->value);
             })
             ->get();
 

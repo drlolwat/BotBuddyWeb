@@ -102,17 +102,17 @@ class AccountController extends Controller
                     continue;
                 }
 
-                if ($account->status == Status::RUNNING) {
+                if ($account->status == Status::RUNNING->value) {
                     $errors[] = "$account->email is already running";
                     continue;
                 }
 
-                if ($account->status == Status::STARTING) {
+                if ($account->status == Status::STARTING->value) {
                     $errors[] = "$account->email is already starting";
                     continue;
                 }
 
-                if ($account->status == Status::COMPLETED) {
+                if ($account->status == Status::COMPLETED->value) {
                     $errors[] = "$account->email is already running";
                     continue;
                 }
@@ -124,7 +124,7 @@ class AccountController extends Controller
                     continue;
                 }
 
-                $account->status = Status::STARTING;
+                $account->status = Status::STARTING->value;
                 $account->start_queued_at = null; // in case it was formerly queued
                 $account->last_started_at = now();
                 $account->save();
@@ -156,7 +156,7 @@ class AccountController extends Controller
                     continue;
                 }
 
-                $account->status = Status::STOPPING;
+                $account->status = Status::STOPPING->value;
                 $account->save();
             }
 
@@ -209,24 +209,24 @@ class AccountController extends Controller
                     continue;
                 }
 
-                if ($account->status == Status::RUNNING) {
+                if ($account->status == Status::RUNNING->value) {
                     $errors[] = "$account->email is already running";
                     continue;
                 }
 
-                if ($account->status == Status::STARTING) {
+                if ($account->status == Status::STARTING->value) {
                     $errors[] = "$account->email is already starting";
                     continue;
                 }
 
-                if ($account->status == Status::QUEUED) {
+                if ($account->status == Status::QUEUED->value) {
                     $errors[] = "$account->email is already queued";
                     continue;
                 }
 
                 $start_queue->addMinutes($minutes);
                 $account->start_queued_at = $start_queue;
-                $account->status = Status::QUEUED;
+                $account->status = Status::QUEUED->value;
                 $account->save();
 
                 $queued_count++;
@@ -467,7 +467,7 @@ class AccountController extends Controller
     {
         $this->authorize('view', $account);
 
-        if ($account->status == Status::STARTING || $account->status == Status::RUNNING || $account->status == Status::STOPPING) {
+        if ($account->status == Status::STARTING->value || $account->status == Status::RUNNING->value || $account->status == Status::STOPPING->value) {
             return back()->withErrors('Account is currently running');
         }
 
@@ -516,7 +516,7 @@ class AccountController extends Controller
             return back()->withErrors(['status' => 'Failed to start account']);
         }
 
-        $account->status = Status::STARTING;
+        $account->status = Status::STARTING->value;
         $account->start_queued_at = null;
         $account->last_started_at = now();
         $account->save();
@@ -539,7 +539,7 @@ class AccountController extends Controller
             return back()->withErrors(['status' => 'Failed to stop account']);
         }
 
-        $account->status = Status::STOPPING;
+        $account->status = Status::STOPPING->value;
         $account->save();
 
         return back()->with('status', 'Account stopped');
@@ -743,11 +743,11 @@ class AccountController extends Controller
     {
         $this->authorize('view', $account);
 
-        if ($account->status != Status::QUEUED) {
+        if ($account->status != Status::QUEUED->value) {
             return back()->withErrors('Account is not queued');
         }
 
-        $account->status = Status::STOPPED;
+        $account->status = Status::STOPPED->value;
         $account->start_queued_at = null;
         $account->save();
 

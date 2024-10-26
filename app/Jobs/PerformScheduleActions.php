@@ -31,8 +31,8 @@ class PerformScheduleActions implements ShouldQueue
     public function handle(SocketService $socket): void
     {
         $onlineStatuses = [
-            Status::RUNNING, Status::STARTING, Status::COMPLETED,
-            Status::NO_SCRIPT, Status::PROXY_BLOCKED, Status::BANNED,
+            Status::RUNNING->value, Status::STARTING->value, Status::COMPLETED->value,
+            Status::NO_SCRIPT->value, Status::PROXY_BLOCKED->value, Status::BANNED->value,
         ];
 
         $time = now()->format('H:i') . ":00";
@@ -51,13 +51,13 @@ class PerformScheduleActions implements ShouldQueue
             foreach ($schedule->account_group->accounts as $account) {
                 $stopped = $socket->dispatch(new StopBotCommand($account));
                 if ($stopped == "true") {
-                    $account->status = Status::STOPPING;
+                    $account->status = Status::STOPPING->value;
                     $account->save();
                 }
             }
         }
 
-        $offlineStatuses = [Status::STOPPING, Status::STOPPED];
+        $offlineStatuses = [Status::STOPPING->value, Status::STOPPED->value];
 
         $startingSchedules = ScheduleEvent::query()
             ->with(['account_group' => function($query) use ($offlineStatuses) {
@@ -99,7 +99,7 @@ class PerformScheduleActions implements ShouldQueue
                     continue;
                 }
 
-                $account->status = Status::STARTING;
+                $account->status = Status::STARTING->value;
                 $account->start_queued_at = null;
                 $account->last_started_at = now();
                 $account->save();

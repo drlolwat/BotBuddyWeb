@@ -74,7 +74,7 @@ class AgentController extends Controller
             $deadAccounts = Account::query()
                 ->with('agent')
                 ->whereNotIn('id', $accountIds)
-                ->whereIn('status', [Status::RUNNING, Status::STOPPING])
+                ->whereIn('status', [Status::RUNNING->value, Status::STOPPING->value])
                 ->where('user_id', $agent->user_id)
                 ->where('agent_id', $agent->id)
                 ->get();
@@ -82,7 +82,7 @@ class AgentController extends Controller
             foreach ($deadAccounts as $deadAccount) {
                 // todo: fix the master sending an incomplete account list
                 // so this can be uncommented
-                //$deadAccount->status = Status::STOPPED;
+                //$deadAccount->status = Status::STOPPED->value;
                 //$deadAccount->save();
             }
 
@@ -122,9 +122,9 @@ class AgentController extends Controller
             ->whereNotIn('agent_id', Agent::query()
                 ->where('last_agentdata_at', '>', now()->subMinutes(5))
                 ->pluck('id'))
-            ->where('status', '!=', Status::STOPPED)
+            ->where('status', '!=', Status::STOPPED->value)
             ->where('user_id', $user->id)
-            ->update(['status' => Status::STOPPED]);
+            ->update(['status' => Status::STOPPED->value]);
     }
 
     public function customerId(Request $request): RedirectResponse|int|string

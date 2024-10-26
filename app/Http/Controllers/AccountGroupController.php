@@ -252,7 +252,7 @@ class AccountGroupController extends Controller
 
         $accounts = $group->accounts()
             ->with('agent', 'script')
-            ->whereIn('status', [Status::STOPPED, Status::QUEUED])->get();
+            ->whereIn('status', [Status::STOPPED->value, Status::QUEUED->value])->get();
 
         /** @var User $user */
         $user = auth()->user();
@@ -300,7 +300,7 @@ class AccountGroupController extends Controller
                 continue;
             }
 
-            $account->status = Status::STARTING;
+            $account->status = Status::STARTING->value;
             $account->start_queued_at = null; // in case it was formerly queued
             $account->last_started_at = now();
             $account->save();
@@ -322,8 +322,8 @@ class AccountGroupController extends Controller
     public function stop(AccountGroup $group, SocketService $socket): RedirectResponse
     {
         $statuses = [
-            Status::RUNNING, Status::STARTING, Status::COMPLETED,
-            Status::NO_SCRIPT, Status::PROXY_BLOCKED, Status::BANNED,
+            Status::RUNNING->value, Status::STARTING->value, Status::COMPLETED->value,
+            Status::NO_SCRIPT->value, Status::PROXY_BLOCKED->value, Status::BANNED->value,
         ];
 
         $this->authorize('view', $group);
@@ -337,7 +337,7 @@ class AccountGroupController extends Controller
 
             // edge case for people who have removed the agent for some reason
             if (!isset($this->account->account_group->agent->uuid)) {
-                $account->status = Status::STOPPED;
+                $account->status = Status::STOPPED->value;
                 $account->save();
                 $stop_count++;
                 continue;
@@ -348,7 +348,7 @@ class AccountGroupController extends Controller
                 continue;
             }
 
-            $account->status = Status::STOPPING;
+            $account->status = Status::STOPPING->value;
             $account->save();
             $stop_count++;
         }
@@ -375,7 +375,7 @@ class AccountGroupController extends Controller
 
         $accounts = $group->accounts()
             ->with('agent', 'script')
-            ->whereIn('status', [Status::STOPPED, Status::STOPPING])->get();
+            ->whereIn('status', [Status::STOPPED->value, Status::STOPPING->value])->get();
 
         /** @var User $user */
         $user = auth()->user();
@@ -419,7 +419,7 @@ class AccountGroupController extends Controller
 
             $start_queue->addMinutes($minutes);
             $account->start_queued_at = $start_queue;
-            $account->status = Status::QUEUED;
+            $account->status = Status::QUEUED->value;
             $account->save();
 
             $queued_count++;
@@ -440,9 +440,9 @@ class AccountGroupController extends Controller
     {
         $this->authorize('view', $group);
         $updated = $group->accounts()
-            ->where('status', Status::QUEUED)
+            ->where('status', Status::QUEUED->value)
             ->update([
-                'status' => Status::STOPPED,
+                'status' => Status::STOPPED->value,
                 'start_queued_at' => null,
             ]);
 

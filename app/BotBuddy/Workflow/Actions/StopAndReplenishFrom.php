@@ -42,12 +42,12 @@ class StopAndReplenishFrom extends Action
             return;
         }
 
-        $statuses = [Status::STOPPED];
+        $statuses = [Status::STOPPED->value];
 
         // todo: document this feature on site OR allow them to choose
         // if they want it to include banned accounts
         if (str_contains(strtolower($group->name), 'ban')) {
-            $statuses[] = Status::BANNED;
+            $statuses[] = Status::BANNED->value;
         }
 
         $replenishAccount = $group->accounts()->whereNot('id', $model->id)
