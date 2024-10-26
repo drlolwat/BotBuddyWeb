@@ -121,20 +121,22 @@
                                     </thead>
                                     <tbody>
                                     @foreach ($chunkedSkills as $skills)
-                                    <tr class="border-t border-gray-200 dark:border-gray-700">
-                                        <td class="px-6 py-4">
-                                            {{ $skills[0]['skill'] }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ $skills[0]['level'] }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            @if(isset($skills[1])){{ $skills[1]['skill'] }}@endif
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            @if(isset($skills[1])){{ $skills[1]['level'] }}@endif
-                                        </td>
-                                    </tr>
+                                    @if(count($skills) == 2)
+                                        <tr class="border-t border-gray-200 dark:border-gray-700">
+                                            <td class="px-6 py-4">
+                                                {{ $skills[0]['skill'] }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $skills[0]['level'] }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                @if(isset($skills[1])){{ $skills[1]['skill'] }}@endif
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                @if(isset($skills[1])){{ $skills[1]['level'] }}@endif
+                                            </td>
+                                        </tr>
+                                    @endif
                                     @endforeach
                                     </tbody>
                                 </table>
