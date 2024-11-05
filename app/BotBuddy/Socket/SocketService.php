@@ -22,7 +22,9 @@ class SocketService
             throw new Exception("RS_MASTER_HOST is not set");
         }
 
-        if (!is_int(env('RS_MASTER_PORT'))) {
+        $port = (int) env('RS_MASTER_PORT');
+
+        if ($port === 0) {
             throw new Exception("RS_MASTER_PORT is not set");
         }
 
