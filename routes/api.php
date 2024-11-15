@@ -24,3 +24,4 @@ Route::post('agentKey', [\App\Http\Controllers\Api\AgentController::class, 'agen
 Route::post('agentData', [\App\Http\Controllers\Api\AgentController::class, 'agentData']);
 Route::post('allowedClients', [\App\Http\Controllers\Api\AccountController::class, 'allowedClients']);
 Route::post('customerId', [\App\Http\Controllers\Api\AgentController::class, 'customerId']);
+Route::post('getCompletions', [\App\Http\Controllers\Api\AgentController::class, 'getCompletions']);

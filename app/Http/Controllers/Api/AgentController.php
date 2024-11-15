@@ -6,12 +6,42 @@ use App\BotBuddy\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Agent;
+use App\Models\ScriptLogTrigger;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class AgentController extends Controller
 {
+    public function getCompletions(): JsonResponse
+    {
+        $customerId = request()->get('customerId');
+
+        if (!$customerId) {
+            return response()->json(['data' => []]);
+        }
+
+        $completions = ScriptLogTrigger::query()
+            ->select('user_scripts.script AS scriptName', 'script_log_triggers.message AS message')
+            ->join('user_scripts', 'script_log_triggers.script_id', '=', 'user_scripts.id')
+            ->where('user_scripts.user_id', $customerId)
+            ->orderBy('script_log_triggers.created_at', 'desc')
+            ->get();
+
+        $data = $completions->map(fn($completion) => [
+            'scriptName' => $completion->scriptName,
+            'message' => $completion->message,
+        ])->toArray();
+
+
+        $response = [
+            'data' => $data,
+        ];
+
+        return response()->json($response);
+    }
+
     public function agentKey(Request $request): RedirectResponse|string
     {
         $validated = $this->validate($request, [
