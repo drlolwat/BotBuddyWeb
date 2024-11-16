@@ -12,6 +12,7 @@ class ScriptLogTrigger extends Model
 
     protected $fillable = [
         'script_id',
+        'name',
         'message',
         'created_at',
         'updated_at'

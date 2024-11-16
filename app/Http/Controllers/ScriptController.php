@@ -25,7 +25,9 @@ class ScriptController extends Controller
     {
         $this->authorize('view', $script);
 
-        return view('v1.script.show', compact('script'));
+        $triggers = $script->log_triggers()->paginate(10);
+
+        return view('v1.script.show', compact('script', 'triggers'));
     }
 
     public function create(): View

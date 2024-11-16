@@ -34,12 +34,7 @@ class AgentController extends Controller
             'message' => $completion->message,
         ])->toArray();
 
-
-        $response = [
-            'data' => $data,
-        ];
-
-        return response()->json($response);
+        return response()->json(['data' => $data]);
     }
 
     public function agentKey(Request $request): RedirectResponse|string

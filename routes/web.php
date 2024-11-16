@@ -91,6 +91,16 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
         Route::get('/{script}', [App\Http\Controllers\ScriptController::class, 'show'])->name('script.show');
         Route::put('/{script}', [App\Http\Controllers\ScriptController::class, 'update'])->name('script.update');
         Route::delete('/{script}', [App\Http\Controllers\ScriptController::class, 'destroy'])->name('script.destroy');
+
+        Route::get('/{script}/create_trigger', [App\Http\Controllers\ScriptTriggerController::class, 'create'])->name('script.trigger.create');
+        Route::post('/{script}/create_trigger', [App\Http\Controllers\ScriptTriggerController::class, 'store'])->name('script.trigger.store');
+    });
+
+    Route::group(['prefix' => 'script/trigger'], function () {
+        Route::get('/{trigger}', [App\Http\Controllers\ScriptTriggerController::class, 'show'])->name('script.trigger.show');
+        Route::put('/{trigger}', [App\Http\Controllers\ScriptTriggerController::class, 'update'])->name('script.trigger.update');
+        Route::delete('/{trigger}', [App\Http\Controllers\ScriptTriggerController::class, 'destroy'])->name('script.trigger.destroy');
+        Route::post('/bulkAction', [App\Http\Controllers\ScriptTriggerController::class, 'bulkAction'])->name('script.trigger.bulkAction');
     });
 
     Route::group(['prefix' => 'osiris', 'middleware' => 'auth'], function () {
