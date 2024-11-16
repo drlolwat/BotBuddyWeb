@@ -134,6 +134,16 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
 
     Route::get('notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications');
     Route::get('notifications/clear', [App\Http\Controllers\NotificationController::class, 'clear'])->name('notifications.clear');
+
+    Route::middleware([App\Http\Middleware\HandleInertiaRequests::class])->group(function () {
+        Route::get('test1', fn () => inertia('Test1', [
+            'user' => auth()->user()->name
+        ]));
+        Route::get('test2', fn () => inertia('Test2', [
+            'now' => now(),
+        ]));
+        Route::get('test3', fn () => inertia('Test3'));
+    });
 });
 
 Route::get('store', [\App\Http\Controllers\StoreController::class, 'index'])->name('store');
