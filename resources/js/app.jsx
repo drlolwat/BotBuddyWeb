@@ -1,3 +1,4 @@
+import {createInertiaApp} from "@inertiajs/react";
 import {createRoot} from 'react-dom/client';
 import ChangeScriptAction from "./components/actions/ChangeScriptAction.jsx";
 import Action from "./components/Action.jsx";
@@ -7,6 +8,18 @@ import Scheduler from "./components/Scheduler.jsx";
 import MultiSelect from "./components/MultiSelect.jsx";
 import DashboardSearchFilter from "./components/DashboardSearchFilter.jsx";
 import AccountSearchFilter from "./components/AccountSearchFilter.jsx";
+
+if (typeof useInertia !== 'undefined') {
+    createInertiaApp({
+        resolve: name => {
+            const pages = import.meta.glob('./Pages/**/*.jsx', {eager: true})
+            return pages[`./Pages/${name}.jsx`]
+        },
+        setup({el, App, props}) {
+            createRoot(el).render(<App {...props} />)
+        },
+    })
+}
 
 const scheduleApp = document.getElementById('schedule_app');
 if (scheduleApp) {
@@ -32,7 +45,7 @@ if (scheduleMultiSelect) {
     scheduleMultiSelectRoot.render(<MultiSelect />);
 }
 
-const app = document.getElementById('app');
+const app = document.getElementById('workflow_app');
 if (app) {
     const root = createRoot(app);
 
@@ -58,7 +71,7 @@ if (app) {
     );
 }
 
-if (newLayout) {
+if (typeof newLayout !== 'undefined') {
     document.addEventListener('DOMContentLoaded', function() {
         const navToggle = document.querySelectorAll('[data-drawer-toggle="drawer-navigation"]');
         navToggle.forEach(function(toggle) {
