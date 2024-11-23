@@ -79,6 +79,12 @@ class ScriptTriggerController extends Controller
         $script = UserScript::findOrFail(request('script_id'));
         $this->authorize('view', $script);
 
+        $this->validate(request(), [
+            'script_id' => 'required',
+            'action' => 'required|in:delete',
+            'triggers' => 'required|array',
+        ]);
+
         $ids = request('triggers');
         $action = request('action');
         $triggers = ScriptLogTrigger::query()
