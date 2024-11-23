@@ -39,7 +39,7 @@
             </button>
             <div id="dropdownAction" class="mt-2 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 hidden">
                 <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
-                    <li><form id="delete" method="post" action="{{ route('script.trigger.bulkAction') }}">@csrf<input type="hidden" name="action" value="delete"><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</button></form></li>
+                    <li><form id="delete" method="post" action="{{ route('script.trigger.bulkAction') }}">@csrf<input type="hidden" name="script_id" value="{{ $script->id }}" /><input type="hidden" name="action" value="delete"><button class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</button></form></li>
                 </ul>
             </div>
         </div>
