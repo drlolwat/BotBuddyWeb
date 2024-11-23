@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
@@ -13,7 +15,7 @@ class NotificationController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index(): View
+    public function index(): View|\Inertia\Response
     {
         /** @var User $user */
         $user = auth()->user();
@@ -22,11 +24,19 @@ class NotificationController extends Controller
             ->orderByDesc('id')
             ->paginate(10);
 
+        $notifications = $notifications->toArray();
+
+        foreach ($notifications['data'] as $key => $notification) {
+            $notifications['data'][$key]['created_at'] = Carbon::parse($notification['created_at'])->diffForHumans();
+        }
+
         $user
             ->notifications()
             ->update(['opened_at' => now()]);
 
-        return view('v1.notifications', compact('notifications'));
+        return Inertia::render('Notifications', [
+            'notifications' => $notifications,
+        ]);
     }
 
     public function clear(): RedirectResponse
@@ -36,6 +46,6 @@ class NotificationController extends Controller
 
         $user->notifications()->delete();
 
-        return redirect()->back()->with('status', 'Notifications cleared');
+        return back()->with('status', 'Notifications cleared');
     }
 }

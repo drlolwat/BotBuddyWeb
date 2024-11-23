@@ -12,8 +12,8 @@ import AccountSearchFilter from "./components/AccountSearchFilter.jsx";
 if (typeof useInertia !== 'undefined') {
     createInertiaApp({
         resolve: name => {
-            const pages = import.meta.glob('./Pages/**/*.jsx', {eager: true})
-            return pages[`./Pages/${name}.jsx`]
+            const pages = import.meta.glob('./v2/Pages/**/*.jsx', {eager: true})
+            return pages[`./v2/Pages/${name}.jsx`]
         },
         setup({el, App, props}) {
             createRoot(el).render(<App {...props} />)

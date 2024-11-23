@@ -36,7 +36,28 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            //
+            'flash' => [
+                'status' => fn () => $request->session()->get('status'),
+            ],
+            'global' => [
+                'notifications' => fn () => $this->getNotifications($request),
+                'notifications_count' => fn () => $request->user() ? $request->user()->notifications()->whereNull('opened_at')->count() : 0,
+            ]
         ]);
+    }
+
+    private function getNotifications(Request $request)
+    {
+        if (!$request->user()) {
+            return [];
+        }
+        return $request->user()->notifications()->whereNull('opened_at')->orderByDesc('id')->limit(3)->get()->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'type' => $notification->type,
+                'message' => $notification->message,
+                'created_at' => $notification->created_at->diffForHumans(),
+            ];
+        });
     }
 }
