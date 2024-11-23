@@ -9,6 +9,12 @@ class ScriptTriggerController extends Controller
 {
     public function create(UserScript $script)
     {
+        $this->authorize('view', $script);
+
+        $user = auth()->user();
+        if (!in_array($user->subscription?->name, ['Farm', 'Founder'])) {
+            return back()->withErrors(['You need the Farm subscription tier to create triggers']);
+        }
         return view('v1.script.trigger.create', compact('script'));
     }
 
@@ -16,6 +22,10 @@ class ScriptTriggerController extends Controller
     {
         $script = UserScript::findOrFail(request('script_id'));
         $this->authorize('view', $script);
+        $user = auth()->user();
+        if (!in_array($user->subscription?->name, ['Farm', 'Founder'])) {
+            return back()->withErrors(['You need the Farm subscription tier to create triggers']);
+        }
 
         // todo: validation
         $trigger = ScriptLogTrigger::create([
@@ -39,6 +49,10 @@ class ScriptTriggerController extends Controller
     public function update(ScriptLogTrigger $trigger)
     {
         $this->authorize('view', $trigger->script);
+        $user = auth()->user();
+        if (!in_array($user->subscription?->name, ['Farm', 'Founder'])) {
+            return back()->withErrors(['You need the Farm subscription tier to update triggers']);
+        }
 
         $trigger->update([
             'name' => request('name'),
@@ -64,6 +78,12 @@ class ScriptTriggerController extends Controller
     {
         $script = UserScript::findOrFail(request('script_id'));
         $this->authorize('view', $script);
+
+        $this->validate(request(), [
+            'script_id' => 'required',
+            'action' => 'required|in:delete',
+            'triggers' => 'required|array',
+        ]);
 
         $ids = request('triggers');
         $action = request('action');
