@@ -86,10 +86,6 @@ const DashboardSearchFilter = ({status, account_group_id}) => {
     const [statusOpen, setStatusOpen] = React.useState(false)
 
     const applyFilters = () => {
-        if (filters.accountGroup === '' && filters.status === '') {
-            return;
-        }
-
         let queryFilters = {};
         if (filters.accountGroup !== '') {
             const selectedGroup = accountGroups.find((group) => group.value === filters.accountGroup);
