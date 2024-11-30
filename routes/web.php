@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [IndexController::class, 'index'])->name('index');
 
 Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/dark_mode', [SettingsController::class, 'dark_mode'])->name('settings.dark_mode');
@@ -133,6 +132,7 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
     });
 
     Route::middleware([App\Http\Middleware\HandleInertiaRequests::class])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications');
         Route::get('notifications/clear', [App\Http\Controllers\NotificationController::class, 'clear'])->name('notifications.clear');
         Route::get('test', fn() => inertia('Test'));

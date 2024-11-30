@@ -8,6 +8,7 @@ import {
 import ComboBox from "./ComboBox";
 import {fetchAccountGroups} from "../utils/fetchUtils.js";
 import {useEffect} from "react";
+import {router} from '@inertiajs/react';
 
 const statuses = [
     // {
@@ -48,9 +49,12 @@ const DashboardSearchFilter = ({status, account_group_id}) => {
 
     const [accountGroups, setAccountGroups] = React.useState([]);
 
-    useEffect(async () => {
-        const groups = await fetchAccountGroups();
-        setAccountGroups(groups.map(group => ({ value: group.label, label: group.label, id: group.value })));
+    useEffect( () => {
+        async function loadAccountGroups() {
+            const groups = await fetchAccountGroups();
+            setAccountGroups(groups.map(group => ({ value: group.label, label: group.label, id: group.value })));
+        }
+        loadAccountGroups();
     }, []);
 
     const params = new URL(window.location.href).searchParams;
@@ -75,12 +79,19 @@ const DashboardSearchFilter = ({status, account_group_id}) => {
             filters.status = statusValue;
         }
 
-        const queryString = new URLSearchParams(filters);
+        const currentUrlParams = new URLSearchParams(window.location.search);
+        currentUrlParams.delete('page');
 
+        Object.entries(filters).forEach(([key, val]) => {
+            currentUrlParams.set(key, val);
+        });
 
-        let redirect = "/dashboard?";
-        window.location.href = `${redirect}${queryString.toString()}`;
-    }
+        router.visit(`/dashboard?${currentUrlParams.toString()}`, {
+            method: 'get',
+            preserveScroll: true,
+            preserveState: false, // set to true will keep the filters box open
+        });
+    };
 
     const filtersCountFn = () => {
         const params = new URL(window.location.href).searchParams;
@@ -103,7 +114,7 @@ const DashboardSearchFilter = ({status, account_group_id}) => {
             <div>
                 <Popover>
                     {(status || account_group_id) && <PopoverTrigger>
-                        <button
+                        <div
                             className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                             type="button">
                             <span className="sr-only">Filters button</span>
@@ -115,7 +126,7 @@ const DashboardSearchFilter = ({status, account_group_id}) => {
                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
                                       strokeWidth="2" d="m1 1 4 4 4-4"></path>
                             </svg>
-                        </button>
+                        </div>
                     </PopoverTrigger>}
                     {(status || account_group_id) && <PopoverContent>
                         <div className="grid gap-2">

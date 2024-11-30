@@ -3,7 +3,7 @@ import React, {Fragment} from 'react';
 const Alerts = ({ flash, errors }) => {
     return (
         <Fragment>
-            {errors && errors.length > 0 && (
+            {errors && Object.keys(errors).length > 0 && (
                 <div
                     id="alert-border-2"
                     className="flex p-4 mb-4 text-sm text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
@@ -21,7 +21,7 @@ const Alerts = ({ flash, errors }) => {
                     <div>
                         <span className="font-medium">Error:</span>
                         <ul className="mt-1.5 list-disc list-inside">
-                            {errors.map((error, index) => (
+                            {Object.values(errors).flat().map((error, index) => (
                                 <li key={index}>{error}</li>
                             ))}
                         </ul>
