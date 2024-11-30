@@ -52,14 +52,14 @@ const Notifications = ({ notifications, flash, errors, global }) => {
                             </tr>
                             </thead>
                             <tbody>
-                            {notifications.data.map((notification) => (
+                            {notifications.data.map((notification, index) => (
                                 <tr
-                                    key={notification.id}
+                                    key={index}
                                     className="border-b dark:border-gray-700"
                                 >
                                     <td
                                         className={`px-4 py-3 ${
-                                            !notification.opened_at
+                                            !notification.opened
                                                 ? "font-medium text-gray-900 whitespace-nowrap dark:text-white"
                                                 : ""
                                         }`}
@@ -68,7 +68,7 @@ const Notifications = ({ notifications, flash, errors, global }) => {
                                     </td>
                                     <td
                                         className={`px-4 py-3 ${
-                                            !notification.opened_at
+                                            !notification.opened
                                                 ? "font-medium text-gray-900 whitespace-nowrap dark:text-white"
                                                 : ""
                                         }`}
@@ -77,7 +77,7 @@ const Notifications = ({ notifications, flash, errors, global }) => {
                                     </td>
                                     <td
                                         className={`px-4 py-3 ${
-                                            !notification.opened_at
+                                            !notification.opened
                                                 ? "font-medium text-gray-900 whitespace-nowrap dark:text-white"
                                                 : ""
                                         }`}

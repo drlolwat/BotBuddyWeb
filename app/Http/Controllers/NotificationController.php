@@ -21,6 +21,7 @@ class NotificationController extends Controller
         $user = auth()->user();
 
         $notifications = $user->notifications()
+            ->select('type', 'message', 'created_at', 'opened_at')
             ->orderByDesc('id')
             ->paginate(10);
 
@@ -28,6 +29,8 @@ class NotificationController extends Controller
 
         foreach ($notifications['data'] as $key => $notification) {
             $notifications['data'][$key]['created_at'] = Carbon::parse($notification['created_at'])->diffForHumans();
+            $notifications['data'][$key]['opened'] = $notification['opened_at'] !== null;
+            unset($notifications['data'][$key]['opened_at']);
         }
 
         $user

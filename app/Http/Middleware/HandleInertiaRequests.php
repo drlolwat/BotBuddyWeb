@@ -53,7 +53,6 @@ class HandleInertiaRequests extends Middleware
         }
         return $request->user()->notifications()->whereNull('opened_at')->orderByDesc('id')->limit(3)->get()->map(function ($notification) {
             return [
-                'id' => $notification->id,
                 'type' => $notification->type,
                 'message' => $notification->message,
                 'created_at' => $notification->created_at->diffForHumans(),
