@@ -119,12 +119,12 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
     Route::group(['prefix' => 'api/user', 'middleware' => 'auth'], function () {
 
         // currently used for workflows
-        Route::get('account', fn () => auth()->user()->accounts);
-        Route::get('account/group', fn () => auth()->user()->account_groups);
+        Route::get('account', fn () => auth()->user()->accounts()->select('id', 'email')->get());
+        Route::get('account/group', fn () => auth()->user()->account_groups()->select('id', 'name')->get());
         //Route::get('proxy', fn () => auth()->user()->proxies);
-        Route::get('proxy/group', fn () => auth()->user()->proxy_groups);
+        Route::get('proxy/group', fn () => auth()->user()->proxy_groups()->select('id', 'name')->get());
         //Route::get('agent', fn () => auth()->user()->agents);
-        Route::get('script', fn () => auth()->user()->scripts);
+        Route::get('script', fn () => auth()->user()->scripts()->select('id', 'name')->get());
         Route::get('workflow/event', [WorkflowController::class, 'events'])->name('workflow.events');
 
         Route::get('getRunningBotsByClient', function(\App\BotBuddy\Socket\SocketService $socket) {
