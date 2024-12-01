@@ -1,4 +1,5 @@
 import NotificationDropdown from "./NotificationsDropdown.jsx";
+import {Link} from "@inertiajs/react";
 
 const Header = ({ global }) => {
     return (
@@ -23,11 +24,11 @@ const Header = ({ global }) => {
                         </svg>
                         <span className="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="/" className="flex items-center justify-between mr-4">
+                    <Link href="/" className="flex items-center justify-between mr-4">
                         <span
                             className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BotBuddy <span
                             className="text-sm">Beta</span></span>
-                    </a>
+                    </Link>
                 </div>
                 <NotificationDropdown notificationCount={global.notifications_count} notifications={global.notifications}/>
             </div>

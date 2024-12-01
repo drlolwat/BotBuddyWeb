@@ -1,6 +1,6 @@
 import React from "react";
 import { Head, Link } from "@inertiajs/react";
-import Layout from "../components/Layout.jsx";
+import Layout from "../components/layout/Layout.jsx";
 
 const Notifications = ({ notifications, flash, errors, global }) => {
     const currentPage = notifications.current_page;

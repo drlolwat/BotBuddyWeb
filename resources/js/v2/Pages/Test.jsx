@@ -1,4 +1,4 @@
-import Layout from "../components/Layout.jsx";
+import Layout from "../components/layout/Layout.jsx";
 
 const Test = ({ global, flash, errors }) => {
     return (
