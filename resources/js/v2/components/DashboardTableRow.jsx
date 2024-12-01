@@ -55,7 +55,7 @@ const DashboardTableRow = ({ account, openDropdownId, handleToggleDropdown, stop
             <td className="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white">
                 {account.account_group ? (
                     <a className="font-medium"
-                       href={`/account-group/${account.account_group_id}`}>
+                       href={`/account/group/${account.account_group_id}`}>
                         {account.account_group.name}
                     </a>
                 ) : (
