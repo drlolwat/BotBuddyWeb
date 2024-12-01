@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BotBuddy\Status;
 use App\Models\User;
 use Illuminate\View\View;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -13,7 +14,7 @@ class DashboardController extends Controller
         $this->middleware(['auth', 'subscription.expire.warning']);
     }
 
-    public function index(): View
+    public function index(): \Inertia\Response
     {
         $yesterday = now()->subDay();
 
@@ -31,7 +32,13 @@ class DashboardController extends Controller
             ->count();
 
         $query = $user->accounts()
-            ->with('account_group', 'stats', 'agent', 'script');
+            ->select(['id', 'email', 'status', 'account_group_id'])
+            ->with([
+                'stats:id,account_id,name,gp,qp,ttl',
+                'account_group:id,name,agent_id,script_id',
+                'account_group.agent:id,name',
+                'account_group.script:id,name',
+            ]);
 
         if (request()->get('status')) {
             $query = $query->where('status', request()->get('status'));
@@ -43,8 +50,17 @@ class DashboardController extends Controller
             $query = $query->where('account_group_id', request()->get('account_group_id'));
         }
 
-        $accounts = $query->paginate(25, ['*'], 'accounts');
+        $accounts = $query->paginate(25);
 
-        return view('v1.dashboard', compact('online', 'offline', 'bannedLast24h', 'accounts'));
+        foreach ($accounts as $account) {
+            if (isset($account->stats)) {
+                $account->stats->gp_formatted = $account->stats?->gp_formatted;
+            }
+            $account->status_formatted = $account->status_formatted;
+        }
+
+        //return view('v1.dashboard', compact('online', 'offline', 'bannedLast24h', 'accounts'));
+
+        return Inertia::render('Dashboard', compact('online', 'offline', 'bannedLast24h', 'accounts'));
     }
 }

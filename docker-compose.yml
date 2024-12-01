@@ -30,6 +30,8 @@ services:
     php:
         build:
             context: ./build/php
+        ports:
+            - '5173:5173'
         networks:
             - sail
         volumes:
@@ -38,6 +40,8 @@ services:
         depends_on:
             - mysql
             - redis
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
     cron:
         build:
             context: ./build/cron

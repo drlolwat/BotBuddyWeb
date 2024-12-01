@@ -8,6 +8,7 @@
     @else
         <title>BotBuddy</title>
     @endif
+    @viteReactRefresh
     @vite('resources/css/app.css')
 </head>
 <body class="antialiased bg-gray-100 dark:bg-gray-900">
