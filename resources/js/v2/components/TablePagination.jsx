@@ -1,7 +1,7 @@
 import {Link} from "@inertiajs/react";
 import React from "react";
 
-const TablePagination = ({ currentPage, perPage, total, lastPage }) => {
+const TablePagination = ({ current_page: currentPage, per_page: perPage, total, last_page: lastPage }) => {
 
     const getPageRange = () => {
         const pages = [];
