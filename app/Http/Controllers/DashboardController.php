@@ -56,6 +56,7 @@ class DashboardController extends Controller
             if (isset($account->stats)) {
                 $account->stats->gp_formatted = $account->stats?->gp_formatted;
             }
+            $account->status_formatted = $account->status_formatted;
         }
 
         //return view('v1.dashboard', compact('online', 'offline', 'bannedLast24h', 'accounts'));

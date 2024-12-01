@@ -71,4 +71,21 @@ class Account extends Model
     {
         return $this->hasOne(AccountStat::class);
     }
+
+    public function getStatusFormattedAttribute()
+    {
+        if ($this->perm_banned_at && ($this->subscription?->name === "Basic" || !$this->subscription)) {
+            return "Banned";
+        }
+
+        if ($this->temp_banned_at) {
+            return "Banned (Temporary)";
+        }
+
+        if ($this->perm_banned_at) {
+            return "Banned (Permanent)";
+        }
+
+        return $this->status;
+    }
 }

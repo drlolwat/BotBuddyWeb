@@ -12,17 +12,7 @@ const DashboardTableRow = ({ account, openDropdownId, handleToggleDropdown, stop
         return <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>;
     })();
 
-    let status = account.status;
-    if (
-        account.perm_banned_at &&
-        account.subscription?.name === "Basic"
-    ) {
-        status = "Banned";
-    } else if (account.temp_banned_at) {
-        status = "Banned (Temporary)";
-    } else if (account.perm_banned_at) {
-        status = "Banned (Permanent)";
-    }
+    let status = account.status_formatted;
 
     return (
         <tr className="border-b dark:border-gray-700">

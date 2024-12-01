@@ -55,8 +55,6 @@ const DashboardSearchFilter = ({status, account_group_id}) => {
 
     const params = new URL(window.location.href).searchParams;
     const accountGroup = accountGroups.find(group => parseInt(group.id, 10) === parseInt(params.get('account_group_id'), 10));
-    console.log(filters);
-    const [value, setValue] = React.useState(accountGroup?.value || "");
 
     useEffect(() => {
         async function loadAccountGroups() {
