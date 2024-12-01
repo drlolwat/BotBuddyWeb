@@ -10,7 +10,7 @@ import DashboardTableRow from "../components/DashboardTableRow.jsx";
 
 const Dashboard = ({flash, errors, global, online, offline, bannedLast24h, accounts}) => {
 
-    usePoll(10000);
+    const {stop, start} = usePoll(10000);
 
     // todo: move dropdown functionality into context+component
     const [openDropdownId, setOpenDropdownId] = useState(null);
@@ -75,6 +75,8 @@ const Dashboard = ({flash, errors, global, online, offline, bannedLast24h, accou
                                     key={account.id}
                                     openDropdownId={openDropdownId}
                                     handleToggleDropdown={handleToggleDropdown}
+                                    stop={stop}
+                                    start={start}
                                 />)}
                                 </tbody>
                             </table>

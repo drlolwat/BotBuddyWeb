@@ -1,7 +1,7 @@
 import {router} from "@inertiajs/react";
 import React from "react";
 
-const DashboardTableRow = ({ account, openDropdownId, handleToggleDropdown }) => {
+const DashboardTableRow = ({ account, openDropdownId, handleToggleDropdown, stop, start }) => {
     const icon = (() => {
         if (["Starting", "Stopping", "Queued"].includes(account.status)) {
             return <div className="h-2.5 w-2.5 rounded-full bg-yellow-500 me-2"></div>;
@@ -129,7 +129,11 @@ const DashboardTableRow = ({ account, openDropdownId, handleToggleDropdown }) =>
                         {["Running", "Starting", "Completed"].includes(account.status) && (
                             <li>
                                 <button
-                                    onClick={() => router.post(`/account/stop/${account.id}`)}
+                                    onClick={() => {
+                                        stop();
+                                        router.post(`/account/stop/${account.id}`);
+                                        start();
+                                    }}
                                     className="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                     Stop
                                 </button>
@@ -138,7 +142,11 @@ const DashboardTableRow = ({ account, openDropdownId, handleToggleDropdown }) =>
                         {["Stopped", "Stopping", "Banned", "NoScript"].includes(account.status) && (
                             <li>
                                 <button
-                                    onClick={() => router.post(`/account/start/${account.id}`)}
+                                    onClick={() => {
+                                        stop();
+                                        router.post(`/account/start/${account.id}`);
+                                        start();
+                                    }}
                                     className="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                     Start
                                 </button>
@@ -147,7 +155,11 @@ const DashboardTableRow = ({ account, openDropdownId, handleToggleDropdown }) =>
                         {account.status === "Queued" && (
                             <li>
                                 <button
-                                    onClick={() => router.post(`/account/dequeue/${account.id}`)}
+                                    onClick={() => {
+                                        stop();
+                                        router.post(`/account/dequeue/${account.id}`);
+                                        start();
+                                    }}
                                     className="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                     Cancel
                                 </button>
