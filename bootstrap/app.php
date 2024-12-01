@@ -18,9 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
             remove: [\Illuminate\Routing\Middleware\ThrottleRequests::class.':api']
         );
 
-        //$middleware->web(
-        //    append: [HandleInertiaRequests::class]
-        //);
+        $middleware->web(
+            append: [HandleInertiaRequests::class]
+        );
 
         $middleware->validateCsrfTokens(except: [
             'store/webhook',

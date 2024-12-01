@@ -131,7 +131,8 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
         });
     });
 
-    Route::middleware([App\Http\Middleware\HandleInertiaRequests::class])->group(function () {
+    // requests converted to inertia
+    Route::middleware([])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications');
         Route::get('notifications/clear', [App\Http\Controllers\NotificationController::class, 'clear'])->name('notifications.clear');
