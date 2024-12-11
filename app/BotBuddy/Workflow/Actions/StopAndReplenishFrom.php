@@ -87,6 +87,8 @@ class StopAndReplenishFrom extends Action
             $replenishAccount->save();
         }
 
+        $replenishAccount->refresh();
+
         switch ($data['type']) {
             case 'existing':
                 $this->socket->dispatch(new StartBotCommand($replenishAccount));
