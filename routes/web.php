@@ -143,3 +143,11 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
 Route::get('store', [\App\Http\Controllers\StoreController::class, 'index'])->name('store');
 Route::get('store/{product}', [\App\Http\Controllers\StoreController::class, 'checkout'])->name('store.checkout');
 Route::post('store/webhook', [\App\Http\Controllers\StoreController::class, 'webhook'])->name('store.webhook');
+
+Route::get('checkout/success', function () {
+    dd('success');
+})->name('checkout.success');
+
+Route::get('checkout/cancel', function () {
+    dd('checkout.cancel');
+})->name('checkout.cancel');

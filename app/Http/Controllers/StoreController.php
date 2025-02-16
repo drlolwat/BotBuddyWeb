@@ -8,7 +8,12 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Stripe\Checkout\Session;
+use Stripe\Customer;
+use Stripe\Stripe;
+use Stripe\Webhook;
 use function Sentry\captureException;
 use Throwable;
 
@@ -35,7 +40,161 @@ class StoreController extends Controller
         return view('v1.store', compact('subscriptions'));
     }
 
-    public function checkout(string $product, SellixService $sellix): RedirectResponse
+    public function checkout(string $product): RedirectResponse
+    {
+        if (!in_array(auth()->user()->email, ['chchproud@gmail.com', 'demo@botbuddy.net'])) {
+            return back()->withErrors('The store will be available soon.');
+        }
+
+        $subscription = Subscription::query()
+            ->where('slug', $product)
+            ->where('name', '!=', 'Founder')
+            ->first();
+
+        if (!$subscription) {
+            return back()->withErrors('This product does not exist.');
+        }
+
+        $interval = 'month';
+
+        if (Str::endsWith('-annually', $subscription->slug)) {
+            $interval = 'year';
+        }
+
+        $intervalFormatted = match ($interval) {
+            'month' => 'Monthly',
+            'year' => 'Yearly',
+        };
+
+        $price = match ($subscription->slug) {
+            'basic-monthly' => 9_99,
+            'essential-monthly' => 19_99,
+            'farm-monthly' => 39_99,
+            'basic-annually' => 95_88,
+            'essential-annually' => 191_88,
+            'farm-annually' => 383_88,
+        };
+
+        if ($price === 0) {
+            return back()->withErrors('Something went wrong. Please try again later.');
+        }
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        Stripe::setApiKey('sk_test_51Qnq93IDlpHjbxqzFJRe2xhDvKhZEcX55H4r5yJYMk72kONiWGa5uyDcwnpBSRNjL2L19i7HOASdIKZGvl1gBGdI008T4VZNWd');
+
+        try {
+            if (!$user->stripe_customer_id) {
+                $customer = Customer::create([
+                    'email' => $user->email,
+                    'name' => $user->name,
+                ]);
+
+                $user->stripe_customer_id = $customer->id;
+                $user->save();
+            }
+        } catch (Throwable $e) {
+            captureException($e);
+            return back()->withErrors('Failed to create or retrieve customer.');
+        }
+
+        try {
+            $session = Session::create([
+                'customer' => $user->stripe_customer_id,
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency'     => 'usd',
+                        'unit_amount'  => 999,
+                        'recurring'    => ['interval' => $interval],
+                        'product_data' => [
+                            'name' => "{$subscription->name} - {$intervalFormatted}",
+                        ],
+                    ],
+                    'quantity' => 1,
+                ]],
+                'mode' => 'subscription',
+                'success_url' => route('checkout.success'),
+                'cancel_url' => route('checkout.cancel'),
+            ]);
+
+            return redirect($session->url);
+        } catch(Throwable $e) {
+            captureException($e);
+            return back()->withErrors('Failed to create checkout session.');
+        }
+    }
+
+    public function webhook(Request $request)
+    {
+        $payload = @file_get_contents('php://input');
+        $event = null;
+
+        try {
+            $event = \Stripe\Event::constructFrom(
+                json_decode($payload, true)
+            );
+        } catch(\UnexpectedValueException $e) {
+            captureException(new \Exception("failed to parse webhook: {$payload}"));
+            return response()->json(['error' => 'Invalid request'], 400);
+        }
+
+        if ($event->type === 'payment_intent.succeeded') {
+            try {
+                $amount = $event->data->object->amount;
+                $customer = $event->data->object->customer;
+
+                if (!$amount || $amount === 0) {
+                    captureException(new \Exception("Invalid amount"));
+                    return response()->json(['error' => 'Invalid amount'], 401);
+                }
+
+                if (!$customer) {
+                    captureException(new \Exception("No customer provided"));
+                    return response()->json(['error' => 'Invalid customer'], 400);
+                }
+
+                $subscriptions = array_flip([
+                    'basic-monthly' => 9_99,
+                    'essential-monthly' => 19_99,
+                    'farm-monthly' => 39_99,
+                    'basic-annually' => 95_88,
+                    'essential-annually' => 191_88,
+                    'farm-annually' => 383_88,
+                ]);
+
+                $subscription_slug = $subscriptions[$amount];
+                $subscription = Subscription::query()->where('slug', $subscription_slug)->first();
+
+                $user = User::query()->where('stripe_customer_id', $customer)->first();
+                if (!$user) {
+                    captureException(new \Exception("User not found for customer: {$customer}"));
+                    return response()->json(['error' => 'Invalid user'], 400);
+                }
+
+                if (!$user->subscription_ends_at || $user->subscription_ends_at->isPast()) {
+                    $user->subscription_ends_at = now();
+                }
+
+                if (Str::endsWith($subscription_slug, '-annually')) {
+                    $user->subscription_ends_at = $user->subscription_ends_at->addYear();
+                } else {
+                    $user->subscription_ends_at = $user->subscription_ends_at->addMonth();
+                }
+
+                $user->subscription_id = $subscription->id;
+                $user->save();
+            } catch (Throwable $e) {
+                captureException($e);
+                return response()->json(['error' => 'Something went wrong'], 406);
+            }
+        }
+
+        return response()->json(['status' => 'success'], 200);
+    }
+
+    public function checkout_sellix(string $product, SellixService $sellix): RedirectResponse
     {
         $subscriptions = Subscription::query()
             ->where('name', '!=', 'Founder')
@@ -112,7 +271,7 @@ class StoreController extends Controller
         }
     }
 
-    public function webhook(Request $request): void
+    public function webhook_sellix(Request $request): void
     {
         $payload = $request->all();
 
