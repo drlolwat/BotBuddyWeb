@@ -177,11 +177,14 @@ class StoreController extends Controller
                     return response()->json(['error' => 'Invalid user'], 400);
                 }
 
-                if (!$user->subscription_expires_at || $user->subscription_expires_at->isPast()) {
+                $expired = $user->subscription_expires_at->isPast();
+
+                if (!$user->subscription_expires_at || $expired) {
                     $user->subscription_expires_at = now();
                 }
 
                 if ($user->subscription_id != $subscription->id) {
+                    captureException(new \Exception("user $user->id has diff existing sub $user->subscription_id, expiry $user->subscription_expires_at"));
                     $user->subscription_expires_at = now();
                 }
 
