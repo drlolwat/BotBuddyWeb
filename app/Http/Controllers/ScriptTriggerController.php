@@ -71,7 +71,7 @@ class ScriptTriggerController extends Controller
 
         return redirect()
             ->route('script.show', $trigger->script_id)
-            ->with('success', 'Script trigger deleted');
+            ->with('status', 'Script trigger deleted');
     }
 
     public function bulkAction()

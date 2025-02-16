@@ -145,7 +145,7 @@ Route::get('store/{product}', [\App\Http\Controllers\StoreController::class, 'ch
 Route::post('store/webhook/dw89hfg389hg8fh89rg', [\App\Http\Controllers\StoreController::class, 'webhook'])->name('store.webhook');
 
 Route::get('checkout/success', function () {
-    return redirect(route('store'))->with('success', 'Thank you! We are processing your purchase.');
+    return redirect(route('store'))->with('status', 'Thank you! We are processing your purchase.');
 })->name('checkout.success');
 
 Route::get('checkout/cancel', function () {
