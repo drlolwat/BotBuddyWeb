@@ -42,10 +42,6 @@ class StoreController extends Controller
 
     public function checkout(string $product): RedirectResponse
     {
-        if (!in_array(auth()->user()->email, ['chchproud@gmail.com', 'demo@botbuddy.net'])) {
-            return back()->withErrors('The store will be available soon.');
-        }
-
         if (config('stripe.secret') === null) {
             return back()->withErrors('The store will be available soon.');
         }
