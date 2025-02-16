@@ -173,14 +173,18 @@ class StoreController extends Controller
                     return response()->json(['error' => 'Invalid user'], 400);
                 }
 
-                if (!$user->subscription_ends_at || $user->subscription_ends_at->isPast()) {
-                    $user->subscription_ends_at = now();
+                if (!$user->subscription_expires_at || $user->subscription_expires_at->isPast()) {
+                    $user->subscription_expires_at = now();
+                }
+
+                if ($user->subscription_id != $subscription->id) {
+                    $user->subscription_expires_at = now();
                 }
 
                 if (Str::endsWith($subscription_slug, '-annually')) {
-                    $user->subscription_ends_at = $user->subscription_ends_at->addYear();
+                    $user->subscription_expires_at = $user->subscription_expires_at->addYear();
                 } else {
-                    $user->subscription_ends_at = $user->subscription_ends_at->addMonth();
+                    $user->subscription_expires_at = $user->subscription_expires_at->addMonth();
                 }
 
                 $user->subscription_id = $subscription->id;
