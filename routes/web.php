@@ -142,12 +142,12 @@ Route::group(['middleware' => ['verified', 'has.never.subscribed']], function() 
 
 Route::get('store', [\App\Http\Controllers\StoreController::class, 'index'])->name('store');
 Route::get('store/{product}', [\App\Http\Controllers\StoreController::class, 'checkout'])->name('store.checkout');
-Route::post('store/webhook', [\App\Http\Controllers\StoreController::class, 'webhook'])->name('store.webhook');
+Route::post('store/webhook/dw89hfg389hg8fh89rg', [\App\Http\Controllers\StoreController::class, 'webhook'])->name('store.webhook');
 
 Route::get('checkout/success', function () {
-    dd('success');
+    return redirect(route('store'))->with('success', 'Thank you! We are processing your purchase.');
 })->name('checkout.success');
 
 Route::get('checkout/cancel', function () {
-    dd('checkout.cancel');
+    return redirect(route('store'));
 })->name('checkout.cancel');

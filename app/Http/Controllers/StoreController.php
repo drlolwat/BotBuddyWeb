@@ -46,6 +46,10 @@ class StoreController extends Controller
             return back()->withErrors('The store will be available soon.');
         }
 
+        if (config('stripe.secret') === null) {
+            return back()->withErrors('The store will be available soon.');
+        }
+
         $subscription = Subscription::query()
             ->where('slug', $product)
             ->where('name', '!=', 'Founder')
@@ -82,7 +86,7 @@ class StoreController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        Stripe::setApiKey('sk_test_51Qnq93IDlpHjbxqzFJRe2xhDvKhZEcX55H4r5yJYMk72kONiWGa5uyDcwnpBSRNjL2L19i7HOASdIKZGvl1gBGdI008T4VZNWd');
+        Stripe::setApiKey(config('stripe.secret'));
 
         try {
             if (!$user->stripe_customer_id) {
