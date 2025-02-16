@@ -106,7 +106,7 @@ class StoreController extends Controller
                 'line_items' => [[
                     'price_data' => [
                         'currency'     => 'usd',
-                        'unit_amount'  => 999,
+                        'unit_amount'  => $price,
                         'recurring'    => ['interval' => $interval],
                         'product_data' => [
                             'name' => "{$subscription->name} - {$intervalFormatted}",
