@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $middleware->validateCsrfTokens(except: [
-            'store/webhook',
+            'store/webhook/dw89hfg389hg8fh89rg',
         ]);
 
         $middleware->trustProxies(at: '*');
