@@ -177,7 +177,7 @@ class StoreController extends Controller
                     $user->subscription_expires_at = now();
                 }
 
-                if ($user->subscription_id != $subscription->id) {
+                if ($user->subscription_id !== null && $user->subscription_id != $subscription->id) {
                     captureException(new \Exception("user $user->id has diff existing sub $user->subscription_id, expiry $user->subscription_expires_at"));
                     $user->subscription_expires_at = now();
                 }
