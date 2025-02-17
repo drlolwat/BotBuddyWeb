@@ -173,9 +173,7 @@ class StoreController extends Controller
                     return response()->json(['error' => 'Invalid user'], 400);
                 }
 
-                $expired = $user->subscription_expires_at->isPast();
-
-                if (!$user->subscription_expires_at || $expired) {
+                if (!$user->subscription_expires_at || $user->subscription_expires_at->isPast()) {
                     $user->subscription_expires_at = now();
                 }
 
