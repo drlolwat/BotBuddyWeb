@@ -32,7 +32,7 @@ class SubscriptionExpireWarning
 
             $diffForHumans = now()->diffForHumans($user->subscription_expires_at, 1);
 
-            session()->flash('warning', 'Your subscription is expiring in ' . $diffForHumans . '. Please renew your subscription.');
+            session()->flash('warning', 'Your subscription is due for renewal in ' . $diffForHumans . '.');
         }
 
         return $next($request);
