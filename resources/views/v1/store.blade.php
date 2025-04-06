@@ -1,7 +1,7 @@
 <x-v1.layout>
     @if(auth()->user()->subscription)
     <div class="overflow-hidden rounded-lg bg-white border border-gray-200 px-4 py-5 dark:bg-gray-800 dark:border-gray-700">
-        <dt class="text-sm font-medium tracking-tight text-gray-900 dark:text-white">You have an active {{ auth()->user()->subscription->name }} subscription. Your subscription is due for renewal at {{ auth()->user()->subscription_expires_at->format('Y-m-d H:i:s T') }}.</dt>
+        <dt class="text-sm font-medium tracking-tight text-gray-900 dark:text-white">You have an active {{ auth()->user()->subscription->name }} subscription. Your subscription is due for renewal at {{ auth()->user()->subscription_expires_at->format('Y-m-d H:i:s T') }}. <a class="hover:underline" href="https://billing.stripe.com/p/login/00gcNec2ufLz4iQ9AA" target="_blank">Manage subscription</a></dt>
     </div>
     @endif
     <div class="py-6 sm:py-8">
