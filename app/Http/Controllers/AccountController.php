@@ -409,7 +409,6 @@ class AccountController extends Controller
             'password_2fa' => $validated['password_2fa'] ?? null,
             'account_group_id' => $validated['account_group_id'] ?? null,
             'proxy_id' => $validated['proxy_id'],
-            'script_id' => 1, // todo: remove once column is removed
             'user_id' => auth()->id(),
             'bank_pin' => $validated['bank_pin'] ?? null,
         ]);
