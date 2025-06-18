@@ -43,4 +43,6 @@ RUN mkdir -p /go/src /go/bin /go/cache && chmod -R 777 /go
 
 ENV GOCACHE /go/cache
 
+RUN apk add openjdk8 maven
+
 USER 1000:1000

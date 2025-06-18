@@ -21,3 +21,5 @@ yarn-error.log
 /masterserver
 /goagent
 /gomaster
+/scriptwrapper
+/public/*.jar
