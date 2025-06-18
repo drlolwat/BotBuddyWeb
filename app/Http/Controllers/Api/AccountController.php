@@ -42,13 +42,13 @@ class AccountController extends Controller
         // todo: handle via event system
         if ($validated['Status'] == Status::COMPLETED->value) {
             // handle for specific account
-            $workflows = $workflowService->getWorkflows('account', $account->id, 'script_complete', ['script_id' => $account->script_id]);
+            $workflows = $workflowService->getWorkflows('account', $account->id, 'script_complete', ['script_id' => $account->account_group->script_id]);
             foreach ($workflows as $workflow) {
                 $workflowService->handle($account, $workflow);
             }
             // handle for account groups instead if they are not defined for the account
             if ($workflows->count() == 0 && $account->account_group_id) {
-                $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->script_id]);
+                $workflows = $workflowService->getWorkflows('account_group', $account->account_group_id, 'script_complete', ['script_id' => $account->account_group->script_id]);
                 foreach ($workflows as $workflow) {
                     $workflowService->handle($account, $workflow);
                 }

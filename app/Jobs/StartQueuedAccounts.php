@@ -40,7 +40,7 @@ class StartQueuedAccounts implements ShouldQueue
             $agent = $account->account_group->agent ?? null;
             if (
                 !$agent ||
-                !$account->script ||
+                !$account->account_group->script ||
                 $agent->client_type != 'DreamBot' ||
                 !$agent->dreambot_client_path ||
                 !$agent->dreambot_scripts_path ||

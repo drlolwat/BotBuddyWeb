@@ -267,13 +267,13 @@ class AccountGroupController extends Controller
         $started_count = 0;
 
         foreach ($accounts as $account) {
-            $agent = $account->agent ?? $account->account_group->agent ?? null;
+            $agent = $account->account_group->agent ?? null;
             if(!$agent) {
                 $errors[] = "$account->email is not assigned to an agent";
                 continue;
             }
 
-            if(!$account->script) {
+            if(!$account->account_group->script) {
                 $errors[] = "$account->email does not have a script assigned";
                 continue;
             }
@@ -391,13 +391,13 @@ class AccountGroupController extends Controller
         $start_queue = now()->addMinute()->second(0);
 
         foreach ($accounts as $account) {
-            $agent = $account->agent ?? $account->account_group->agent ?? null;
+            $agent = $account->account_group->agent ?? null;
             if(!$agent) {
                 $errors[] = "$account->email is not assigned to an agent";
                 continue;
             }
 
-            if(!$account->script) {
+            if(!$account->account_group->script) {
                 $errors[] = "$account->email does not have a script assigned";
                 continue;
             }

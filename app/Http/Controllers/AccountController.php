@@ -75,14 +75,14 @@ class AccountController extends Controller
 
             foreach ($accounts as $account) {
 
-                $agent = $account->agent ?? $account->account_group->agent ?? null;
+                $agent = $account->account_group->agent ?? null;
 
                 if (!$agent) {
                     $errors[] = "$account->email is not assigned to an agent";
                     continue;
                 }
 
-                if(!$account->script) {
+                if(!$account->account_group->script) {
                     $errors[] = "$account->email does not have a script assigned";
                     continue;
                 }
@@ -145,7 +145,7 @@ class AccountController extends Controller
 
         if ($validated['action'] == 'stop') {
             foreach ($accounts as $account) {
-                $agent = $account->agent ?? $account->account_group->agent ?? null;
+                $agent = $account->account_group->agent ?? null;
                 if(!$agent) {
                     // skip this account, not assigned to agent
                     continue;
@@ -183,13 +183,13 @@ class AccountController extends Controller
             $start_queue = now()->addMinute()->second(0);
 
             foreach ($accounts as $account) {
-                $agent = $account->agent ?? $account->account_group->agent ?? null;
+                $agent = $account->account_group->agent ?? null;
                 if(!$agent) {
                     $errors[] = "$account->email is not assigned to an agent";
                     continue;
                 }
 
-                if(!$account->script) {
+                if(!$account->account_group->script) {
                     $errors[] = "$account->email does not have a script assigned";
                     continue;
                 }
@@ -488,13 +488,13 @@ class AccountController extends Controller
                 ->withErrors(['dreambot_username' => 'Please configure your DreamBot credentials to start an account']);
         }
 
-        $agent = $account->agent ?? $account->account_group->agent ?? null;
+        $agent = $account->account_group->agent ?? null;
 
         if(!$agent) {
             return back()->withErrors('Account is not assigned to an agent');
         }
 
-        if(!$account->script) {
+        if(!$account->account_group->script) {
             return back()->withErrors('Select a script for the account');
         }
 
@@ -528,7 +528,7 @@ class AccountController extends Controller
     {
         $this->authorize('view', $account);
 
-        $agent = $account->agent ?? $account->account_group->agent ?? null;
+        $agent = $account->account_group->agent ?? null;
         if(!$agent) {
             return back()->withErrors('Account is not assigned to an agent');
         }
