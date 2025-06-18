@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('accounts', function (Blueprint $table) {
-            $table->unsignedBigInteger('script_id')->nullable()->change();
             $table->unsignedInteger('fps')->nullable()->change();
             $table->string('world')->nullable()->change();
             $table->unsignedBigInteger('account_group_id')->nullable()->change();

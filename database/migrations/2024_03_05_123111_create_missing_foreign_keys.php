@@ -14,14 +14,10 @@ return new class extends Migration
         Schema::table('accounts', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id')->change();
             $table->unsignedBigInteger('account_group_id')->change();
-            $table->unsignedBigInteger('agent_id')->nullable()->change();
             $table->unsignedBigInteger('proxy_id')->nullable()->change();
-            $table->unsignedBigInteger('script_id')->change();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('account_group_id')->references('id')->on('account_groups');
-            $table->foreign('agent_id')->references('id')->on('agents');
             $table->foreign('proxy_id')->references('id')->on('proxies');
-            $table->foreign('script_id')->references('id')->on('user_scripts');
         });
 
         Schema::table('account_groups', function (Blueprint $table) {
