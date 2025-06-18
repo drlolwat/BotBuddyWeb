@@ -126,8 +126,8 @@ class AgentController extends Controller
         $arch = request()->get('arch');
 
         $command = match($arch) {
-            'linux' => 'cd /var/www/html/goagent && go build -o %s -ldflags "-s -w -X main.CLIENT_UUID=%s -X main.CLIENT_KEY=%s" .',
-            'windows' => 'cd /var/www/html/goagent && GOOS=windows GOARCH=amd64 go build -o %s -ldflags "-s -w -X main.CLIENT_UUID=%s -X main.CLIENT_KEY=%s" .',
+            'linux' => 'cd /var/www/html/goagent && go build -o %s -ldflags "-s -w -X main.CLIENT_UUID=%s -X main.CLIENT_KEY=%s -X main.MASTER_HOST=%s" .',
+            'windows' => 'cd /var/www/html/goagent && GOOS=windows GOARCH=amd64 go build -o %s -ldflags "-s -w -X main.CLIENT_UUID=%s -X main.CLIENT_KEY=%s -X main.MASTER_HOST=%s" .',
             default => null,
         };
 
@@ -153,7 +153,8 @@ class AgentController extends Controller
             $command,
             $file,
             $agent->uuid,
-            $agent->agent_key
+            $agent->agent_key,
+            config('app.master_host'),
         );
 
         if (exec($command) === false) {

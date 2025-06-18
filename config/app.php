@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'master_host' => env('BOTBUDDY_MASTER_HOST', 'localhost:7888'),
 ];
