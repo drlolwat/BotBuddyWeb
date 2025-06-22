@@ -124,4 +124,5 @@ return [
     ],
 
     'master_host' => env('BOTBUDDY_MASTER_HOST', 'localhost:7888'),
+    'stripe_manage_url' => env('STRIPE_MANAGE_URL', ''),
 ];
